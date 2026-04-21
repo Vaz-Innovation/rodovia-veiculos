@@ -41,7 +41,7 @@ export function SiteHeader() {
           <BrandLogo size="lg" />
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-12 justify-self-center">
+        <nav className="hidden md:flex items-center gap-8 lg:gap-12 justify-self-center">
           {navLinks.map((l) => (
             <Link
               key={l.to}
