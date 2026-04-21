@@ -58,7 +58,7 @@ export function SiteHeader() {
           <button
             onClick={() => setOpen((o) => !o)}
             aria-label={open ? "Fechar menu" : "Abrir menu"}
-            className="lg:hidden text-foreground"
+            className="md:hidden text-foreground"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
