@@ -4,26 +4,26 @@ import { BrandLogo } from "@/components/brand-logo";
 export function SiteFooter() {
   return (
     <footer className="bg-background border-t border-border text-foreground">
-      <div className="mx-auto max-w-[1600px] px-6 lg:px-10 py-16 grid grid-cols-2 md:grid-cols-3 gap-10">
-        <div>
+      <div className="mx-auto max-w-[1600px] px-6 lg:px-10 py-20 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8">
+        <div className="md:col-span-6">
           <BrandLogo size="lg" />
-          <p className="mt-6 text-xs text-muted-foreground leading-relaxed max-w-xs">
+          <p className="mt-8 text-sm text-muted-foreground leading-relaxed max-w-sm">
             Trabalho em equipe e dedicação ao cliente: transformando qualidade em tradição há 26 anos.
           </p>
         </div>
-        <div>
-          <h4 className="text-xs uppercase tracking-[0.2em] text-foreground mb-4">Marca</h4>
-          <ul className="space-y-2 text-xs text-muted-foreground">
-            <li><Link to="/estoque" className="hover:text-foreground">Estoque</Link></li>
-            <li><Link to="/delivery" className="hover:text-foreground">Delivery</Link></li>
-            <li><Link to="/localizacao" className="hover:text-foreground">Localização</Link></li>
+        <div className="md:col-span-3 md:pt-3">
+          <h4 className="text-[11px] uppercase tracking-[0.25em] text-foreground mb-5">Marca</h4>
+          <ul className="space-y-3 text-sm text-muted-foreground">
+            <li><Link to="/estoque" className="hover:text-foreground transition-colors">Estoque</Link></li>
+            <li><Link to="/delivery" className="hover:text-foreground transition-colors">Delivery</Link></li>
+            <li><Link to="/localizacao" className="hover:text-foreground transition-colors">Localização</Link></li>
           </ul>
         </div>
-        <div>
-          <h4 className="text-xs uppercase tracking-[0.2em] text-foreground mb-4">Atendimento</h4>
-          <ul className="space-y-2 text-xs text-muted-foreground">
-            <li><Link to="/contato" className="hover:text-foreground">Contato</Link></li>
-            <li><Link to="/localizacao" className="hover:text-foreground">Como chegar</Link></li>
+        <div className="md:col-span-3 md:pt-3">
+          <h4 className="text-[11px] uppercase tracking-[0.25em] text-foreground mb-5">Atendimento</h4>
+          <ul className="space-y-3 text-sm text-muted-foreground">
+            <li><Link to="/contato" className="hover:text-foreground transition-colors">Contato</Link></li>
+            <li><Link to="/localizacao" className="hover:text-foreground transition-colors">Como chegar</Link></li>
           </ul>
         </div>
       </div>
