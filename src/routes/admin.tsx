@@ -43,6 +43,7 @@ function AdminPage() {
 }
 
 function LoginScreen() {
+  const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -50,6 +51,21 @@ function LoginScreen() {
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    if (mode === "signup") {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: `${window.location.origin}/admin` },
+      });
+      setSubmitting(false);
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      toast.success("Conta criada! Você já pode entrar.");
+      setMode("login");
+      return;
+    }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setSubmitting(false);
     if (error) toast.error(error.message);
