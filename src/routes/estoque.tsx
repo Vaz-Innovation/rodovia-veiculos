@@ -108,7 +108,7 @@ function EstoquePage() {
 
   const update = (patch: Partial<SearchParams>) => {
     navigate({
-      search: (prev) => ({ ...prev, ...patch, page: patch.page ?? 1 }),
+      search: (prev: SearchParams) => ({ ...prev, ...patch, page: patch.page ?? 1 }),
       replace: true,
     });
   };
@@ -335,7 +335,7 @@ function EstoquePage() {
                         checked={checked}
                         onChange={() => {
                           const next = checked
-                            ? search.features.filter((x) => x !== f)
+                            ? search.features.filter((x: string) => x !== f)
                             : [...search.features, f];
                           update({ features: next });
                         }}
@@ -589,7 +589,7 @@ function filterVehicles(list: VehicleWithPhoto[], s: SearchParams): VehicleWithP
     if (s.fuel && v.fuel !== (s.fuel as FuelType)) return false;
     if (s.color && v.color.toLowerCase() !== s.color.toLowerCase()) return false;
     if (s.features.length > 0) {
-      const has = s.features.every((f) =>
+      const has = s.features.every((f: string) =>
         v.features.some((vf) => vf.toLowerCase() === f.toLowerCase()),
       );
       if (!has) return false;
