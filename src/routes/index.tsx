@@ -159,8 +159,13 @@ function HomePage() {
               { n: "03", label: "Compromisso" },
               { n: "04", label: "Satisfação do cliente" },
               { n: "05", label: "Paz" },
-            ].map((item) => (
-              <li key={item.n} className="border-t border-border pt-5">
+            ].map((item, idx) => (
+              <li
+                key={item.n}
+                className={`border-t border-border pt-5 ${
+                  idx === 4 ? "col-span-2 md:col-span-1 text-center md:text-left" : ""
+                }`}
+              >
                 <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">
                   {item.n}
                 </p>
