@@ -43,7 +43,7 @@ function AdminPage() {
 }
 
 function LoginScreen() {
-  const [mode, setMode] = useState<"login" | "signup">("login");
+  const [mode, setMode] = useState<"login" | "signup" | "forgot">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -51,6 +51,19 @@ function LoginScreen() {
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    if (mode === "forgot") {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      setSubmitting(false);
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      toast.success("Enviamos um e-mail com o link de redefinição.");
+      setMode("login");
+      return;
+    }
     if (mode === "signup") {
       const { error } = await supabase.auth.signUp({
         email,
@@ -71,6 +84,33 @@ function LoginScreen() {
     if (error) toast.error(error.message);
   };
 
+  const title =
+    mode === "forgot"
+      ? "Recuperar senha"
+      : mode === "signup"
+        ? "Criar conta admin"
+        : "Acesso administrativo";
+
+  const subtitle =
+    mode === "forgot"
+      ? "Informe seu e-mail e enviaremos um link para redefinir sua senha."
+      : mode === "signup"
+        ? "Cadastre-se para gerenciar o estoque."
+        : "Entre com sua conta para gerenciar o estoque.";
+
+  const cta =
+    mode === "forgot"
+      ? submitting
+        ? "Enviando..."
+        : "Enviar link"
+      : mode === "signup"
+        ? submitting
+          ? "Cadastrando..."
+          : "Criar conta"
+        : submitting
+          ? "Entrando..."
+          : "Entrar";
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background text-foreground px-6">
       <div className="w-full max-w-sm">
@@ -78,10 +118,10 @@ function LoginScreen() {
           <BrandLogo size="lg" />
         </div>
         <h1 className="text-2xl font-light tracking-tight text-center mb-2">
-          Acesso administrativo
+          {title}
         </h1>
         <p className="text-sm text-muted-foreground text-center mb-8">
-          Entre com sua conta para gerenciar o estoque.
+          {subtitle}
         </p>
         <form onSubmit={submit} className="space-y-4">
           <div>
@@ -96,44 +136,64 @@ function LoginScreen() {
               className="mt-2 w-full bg-card border border-border px-4 py-3 text-sm focus:outline-none focus:border-foreground/40"
             />
           </div>
-          <div>
-            <label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-              Senha
-            </label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-2 w-full bg-card border border-border px-4 py-3 text-sm focus:outline-none focus:border-foreground/40"
-            />
-          </div>
+          {mode !== "forgot" && (
+            <div>
+              <label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
+                Senha
+              </label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="mt-2 w-full bg-card border border-border px-4 py-3 text-sm focus:outline-none focus:border-foreground/40"
+              />
+            </div>
+          )}
           <button
             type="submit"
             disabled={submitting}
             className="w-full bg-primary text-primary-foreground py-3 text-xs uppercase tracking-[0.25em] hover:bg-primary/90 disabled:opacity-60"
           >
-            {submitting
-              ? mode === "signup"
-                ? "Cadastrando..."
-                : "Entrando..."
-              : mode === "signup"
-                ? "Criar conta"
-                : "Entrar"}
+            {cta}
           </button>
         </form>
-        <button
-          type="button"
-          onClick={() => setMode(mode === "login" ? "signup" : "login")}
-          className="mt-6 w-full text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
-        >
-          {mode === "login"
-            ? "Primeiro acesso? Criar conta admin"
-            : "Já tem conta? Entrar"}
-        </button>
-        <p className="mt-4 text-[11px] text-center text-muted-foreground">
-          A primeira conta criada se torna administradora automaticamente.
-        </p>
+
+        <div className="mt-6 flex flex-col gap-3 items-center">
+          {mode === "login" && (
+            <>
+              <button
+                type="button"
+                onClick={() => setMode("forgot")}
+                className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
+              >
+                Esqueci minha senha
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode("signup")}
+                className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
+              >
+                Primeiro acesso? Criar conta admin
+              </button>
+            </>
+          )}
+          {mode !== "login" && (
+            <button
+              type="button"
+              onClick={() => setMode("login")}
+              className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
+            >
+              Voltar ao login
+            </button>
+          )}
+        </div>
+
+        {mode === "signup" && (
+          <p className="mt-4 text-[11px] text-center text-muted-foreground">
+            A primeira conta criada se torna administradora automaticamente.
+          </p>
+        )}
       </div>
     </div>
   );
