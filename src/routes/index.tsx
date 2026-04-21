@@ -153,13 +153,13 @@ function HomePage() {
         </div>
       </section>
 
-      {/* UNIVERSO */}
+      {/* AVALIAÇÃO DO VEÍCULO */}
       <section className="py-24 lg:py-32 bg-card">
         <div className="mx-auto max-w-[1600px] px-6 lg:px-10 grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="aspect-[4/3] overflow-hidden">
             <img
               src={universe}
-              alt="Atelier Vellora"
+              alt="Avaliação de veículo na Rodovia Veículos"
               width={1600}
               height={900}
               loading="lazy"
@@ -168,22 +168,27 @@ function HomePage() {
           </div>
           <div>
             <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
-              Universo Vellora
+              Avaliação do seu veículo
             </p>
             <h2 className="text-4xl md:text-5xl font-light tracking-tight">
-              Cada detalhe, uma assinatura.
+              Quer vender ou trocar? <span className="italic font-extralight">Avaliamos para você.</span>
             </h2>
-            <p className="mt-6 text-muted-foreground leading-relaxed">
-              Do atelier de personalização ao programa de proprietários,
-              entrelaçamos artesanato italiano, tecnologia e exclusividade
-              para uma experiência sem paralelo.
+            <p className="mt-6 text-muted-foreground leading-relaxed max-w-lg">
+              Receba uma proposta justa e transparente pelo seu veículo. Nossa equipe analisa
+              modelo, ano e estado de conservação para oferecer o melhor valor de mercado.
             </p>
-            <Link
-              to="/localizacao"
-              className="mt-8 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] hover:text-muted-foreground"
+            <a
+              href="https://wa.me/556199719187?text=Ol%C3%A1%21%20Gostaria%20de%20solicitar%20a%20avalia%C3%A7%C3%A3o%20do%20meu%20ve%C3%ADculo."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group mt-10 inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-primary/90 transition-colors"
             >
-              Explorar universo <ArrowRight className="h-4 w-4" />
-            </Link>
+              Solicite sua avaliação
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </a>
+            <p className="mt-4 text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
+              Atendimento direto no WhatsApp
+            </p>
           </div>
         </div>
       </section>
