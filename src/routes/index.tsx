@@ -71,7 +71,7 @@ function HomePage() {
               to="/contato"
               className="inline-flex items-center gap-3 border border-foreground/50 px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-foreground hover:text-background transition-colors"
             >
-              Agendar test-drive
+              Estoque
             </Link>
           </div>
         </div>
