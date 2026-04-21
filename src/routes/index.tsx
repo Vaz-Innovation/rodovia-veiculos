@@ -47,30 +47,31 @@ function HomePage() {
           height={1080}
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/20" />
-        <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 lg:px-10 flex flex-col justify-end pb-24">
-          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
-            Sem Custo · Sem Compromisso
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
+        <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 lg:px-10 flex flex-col items-center justify-center text-center">
+          <p className="text-[11px] uppercase tracking-[0.5em] text-foreground/80 mb-6">
+            Sem custo · Sem compromisso
           </p>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight max-w-4xl leading-[0.95]">
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-light tracking-tight leading-[0.95] text-foreground">
             <span className="italic font-extralight">Delivery</span>
           </h1>
-          <p className="mt-6 max-w-xl text-base text-muted-foreground">
-            Gostou de um modelo? Nós levamos o carro até sua casa ou trabalho, para um test-drive!
+          <div className="mt-8 h-px w-16 bg-foreground/40" />
+          <p className="mt-8 max-w-xl text-base md:text-lg text-foreground/85 leading-relaxed">
+            Gostou de um modelo? Nós levamos o carro até sua casa ou trabalho para um test-drive.
           </p>
-          <div className="mt-10 flex flex-wrap gap-4">
+          <div className="mt-12 flex flex-wrap gap-4 justify-center">
             <Link
               to="/estoque"
-              className="group inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 text-xs uppercase tracking-[0.2em] hover:bg-primary/90 transition-colors"
+              className="group inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-primary/90 transition-colors"
             >
-              Descobrir
+              Ver estoque
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
               to="/contato"
-              className="inline-flex items-center gap-3 border border-foreground/40 px-8 py-4 text-xs uppercase tracking-[0.2em] hover:bg-foreground/10 transition-colors"
+              className="inline-flex items-center gap-3 border border-foreground/50 px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-foreground hover:text-background transition-colors"
             >
-              Configurar
+              Agendar test-drive
             </Link>
           </div>
         </div>
