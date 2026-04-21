@@ -55,15 +55,6 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <button aria-label="Buscar" className="hidden sm:inline-flex text-foreground/80 hover:text-foreground">
-            <Search className="h-4 w-4" />
-          </button>
-          <button aria-label="Conta" className="hidden sm:inline-flex text-foreground/80 hover:text-foreground">
-            <User className="h-4 w-4" />
-          </button>
-          <button aria-label="Sacola" className="hidden sm:inline-flex text-foreground/80 hover:text-foreground">
-            <ShoppingBag className="h-4 w-4" />
-          </button>
           <button
             onClick={() => setOpen((o) => !o)}
             aria-label={open ? "Fechar menu" : "Abrir menu"}
