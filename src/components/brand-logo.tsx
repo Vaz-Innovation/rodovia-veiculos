@@ -20,7 +20,7 @@ export function BrandLogo({ className, size = "sm" }: BrandLogoProps) {
       <span
         className={cn(
           "uppercase font-light text-foreground/95 mt-1.5 self-end",
-          isLarge ? "text-[11px] tracking-[0.35em] pr-[2px]" : "text-[9px] tracking-[0.32em] pr-[2px]",
+          isLarge ? "text-[11px] tracking-[0.28em] pr-0" : "text-[9px] tracking-[0.26em] pr-0",
         )}
       >
         Veículos
