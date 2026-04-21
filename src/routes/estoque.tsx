@@ -6,7 +6,7 @@ import model2 from "@/assets/model-2.jpg";
 import model3 from "@/assets/model-3.jpg";
 import heroCar from "@/assets/hero-car.jpg";
 
-export const Route = createFileRoute("/modelos")({
+export const Route = createFileRoute("/estoque")({
   head: () => ({
     meta: [
       { title: "Modelos — Vellora Motors" },

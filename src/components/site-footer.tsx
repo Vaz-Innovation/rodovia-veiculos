@@ -13,15 +13,14 @@ export function SiteFooter() {
         <div>
           <h4 className="text-xs uppercase tracking-[0.2em] text-foreground mb-4">Marca</h4>
           <ul className="space-y-2 text-xs text-muted-foreground">
-            <li><Link to="/modelos" className="hover:text-foreground">Modelos</Link></li>
-            <li><Link to="/esportes" className="hover:text-foreground">Esportes</Link></li>
-            <li><Link to="/universo" className="hover:text-foreground">Universo</Link></li>
+            <li><Link to="/estoque" className="hover:text-foreground">Estoque</Link></li>
+            <li><Link to="/delivery" className="hover:text-foreground">Delivery</Link></li>
+            <li><Link to="/localizacao" className="hover:text-foreground">Localização</Link></li>
           </ul>
         </div>
         <div>
           <h4 className="text-xs uppercase tracking-[0.2em] text-foreground mb-4">Serviços</h4>
           <ul className="space-y-2 text-xs text-muted-foreground">
-            <li><Link to="/loja" className="hover:text-foreground">Loja Oficial</Link></li>
             <li><Link to="/contato" className="hover:text-foreground">Concessionárias</Link></li>
             <li><Link to="/contato" className="hover:text-foreground">Pós-venda</Link></li>
           </ul>

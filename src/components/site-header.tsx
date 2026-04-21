@@ -4,10 +4,9 @@ import { Menu, X, Search, User, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { to: "/modelos", label: "Modelos" },
-  { to: "/esportes", label: "Esportes" },
-  { to: "/universo", label: "Universo" },
-  { to: "/loja", label: "Loja" },
+  { to: "/estoque", label: "Estoque" },
+  { to: "/delivery", label: "Delivery" },
+  { to: "/localizacao", label: "Localização" },
   { to: "/contato", label: "Contato" },
 ] as const;
 

@@ -5,7 +5,7 @@ import universe from "@/assets/universe.jpg";
 import model2 from "@/assets/model-2.jpg";
 import model3 from "@/assets/model-3.jpg";
 
-export const Route = createFileRoute("/universo")({
+export const Route = createFileRoute("/localizacao")({
   head: () => ({
     meta: [
       { title: "Universo — Vellora Motors" },
