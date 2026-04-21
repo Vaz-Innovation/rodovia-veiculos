@@ -9,31 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as UniversoRouteImport } from './routes/universo'
-import { Route as ModelosRouteImport } from './routes/modelos'
-import { Route as LojaRouteImport } from './routes/loja'
-import { Route as EsportesRouteImport } from './routes/esportes'
+import { Route as LocalizacaoRouteImport } from './routes/localizacao'
+import { Route as EstoqueRouteImport } from './routes/estoque'
+import { Route as DeliveryRouteImport } from './routes/delivery'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as IndexRouteImport } from './routes/index'
 
-const UniversoRoute = UniversoRouteImport.update({
-  id: '/universo',
-  path: '/universo',
+const LocalizacaoRoute = LocalizacaoRouteImport.update({
+  id: '/localizacao',
+  path: '/localizacao',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ModelosRoute = ModelosRouteImport.update({
-  id: '/modelos',
-  path: '/modelos',
+const EstoqueRoute = EstoqueRouteImport.update({
+  id: '/estoque',
+  path: '/estoque',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LojaRoute = LojaRouteImport.update({
-  id: '/loja',
-  path: '/loja',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EsportesRoute = EsportesRouteImport.update({
-  id: '/esportes',
-  path: '/esportes',
+const DeliveryRoute = DeliveryRouteImport.update({
+  id: '/delivery',
+  path: '/delivery',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContatoRoute = ContatoRouteImport.update({
@@ -50,80 +44,62 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
-  '/esportes': typeof EsportesRoute
-  '/loja': typeof LojaRoute
-  '/modelos': typeof ModelosRoute
-  '/universo': typeof UniversoRoute
+  '/delivery': typeof DeliveryRoute
+  '/estoque': typeof EstoqueRoute
+  '/localizacao': typeof LocalizacaoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
-  '/esportes': typeof EsportesRoute
-  '/loja': typeof LojaRoute
-  '/modelos': typeof ModelosRoute
-  '/universo': typeof UniversoRoute
+  '/delivery': typeof DeliveryRoute
+  '/estoque': typeof EstoqueRoute
+  '/localizacao': typeof LocalizacaoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
-  '/esportes': typeof EsportesRoute
-  '/loja': typeof LojaRoute
-  '/modelos': typeof ModelosRoute
-  '/universo': typeof UniversoRoute
+  '/delivery': typeof DeliveryRoute
+  '/estoque': typeof EstoqueRoute
+  '/localizacao': typeof LocalizacaoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contato' | '/esportes' | '/loja' | '/modelos' | '/universo'
+  fullPaths: '/' | '/contato' | '/delivery' | '/estoque' | '/localizacao'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contato' | '/esportes' | '/loja' | '/modelos' | '/universo'
-  id:
-    | '__root__'
-    | '/'
-    | '/contato'
-    | '/esportes'
-    | '/loja'
-    | '/modelos'
-    | '/universo'
+  to: '/' | '/contato' | '/delivery' | '/estoque' | '/localizacao'
+  id: '__root__' | '/' | '/contato' | '/delivery' | '/estoque' | '/localizacao'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContatoRoute: typeof ContatoRoute
-  EsportesRoute: typeof EsportesRoute
-  LojaRoute: typeof LojaRoute
-  ModelosRoute: typeof ModelosRoute
-  UniversoRoute: typeof UniversoRoute
+  DeliveryRoute: typeof DeliveryRoute
+  EstoqueRoute: typeof EstoqueRoute
+  LocalizacaoRoute: typeof LocalizacaoRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/universo': {
-      id: '/universo'
-      path: '/universo'
-      fullPath: '/universo'
-      preLoaderRoute: typeof UniversoRouteImport
+    '/localizacao': {
+      id: '/localizacao'
+      path: '/localizacao'
+      fullPath: '/localizacao'
+      preLoaderRoute: typeof LocalizacaoRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/modelos': {
-      id: '/modelos'
-      path: '/modelos'
-      fullPath: '/modelos'
-      preLoaderRoute: typeof ModelosRouteImport
+    '/estoque': {
+      id: '/estoque'
+      path: '/estoque'
+      fullPath: '/estoque'
+      preLoaderRoute: typeof EstoqueRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/loja': {
-      id: '/loja'
-      path: '/loja'
-      fullPath: '/loja'
-      preLoaderRoute: typeof LojaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/esportes': {
-      id: '/esportes'
-      path: '/esportes'
-      fullPath: '/esportes'
-      preLoaderRoute: typeof EsportesRouteImport
+    '/delivery': {
+      id: '/delivery'
+      path: '/delivery'
+      fullPath: '/delivery'
+      preLoaderRoute: typeof DeliveryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contato': {
@@ -146,10 +122,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContatoRoute: ContatoRoute,
-  EsportesRoute: EsportesRoute,
-  LojaRoute: LojaRoute,
-  ModelosRoute: ModelosRoute,
-  UniversoRoute: UniversoRoute,
+  DeliveryRoute: DeliveryRoute,
+  EstoqueRoute: EstoqueRoute,
+  LocalizacaoRoute: LocalizacaoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

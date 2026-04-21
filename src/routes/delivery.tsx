@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import racing from "@/assets/racing.jpg";
 
-export const Route = createFileRoute("/esportes")({
+export const Route = createFileRoute("/delivery")({
   head: () => ({
     meta: [
       { title: "Esportes — Vellora Corse" },
