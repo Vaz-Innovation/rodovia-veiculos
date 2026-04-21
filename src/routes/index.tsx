@@ -50,7 +50,7 @@ function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/20" />
         <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 lg:px-10 flex flex-col justify-end pb-24">
           <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
-            Nova coleção · 2026
+            Sem Custo · Sem Compromisso
           </p>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight max-w-4xl leading-[0.95]">
             <span className="italic font-extralight">Delivery</span>
