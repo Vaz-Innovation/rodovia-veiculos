@@ -1,14 +1,12 @@
 import { Link } from "@tanstack/react-router";
+import { BrandLogo } from "@/components/brand-logo";
 
 export function SiteFooter() {
   return (
     <footer className="bg-background border-t border-border text-foreground">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
         <div className="col-span-2 md:col-span-1">
-          <div className="flex flex-col leading-none">
-            <span className="font-serif text-4xl font-normal tracking-tight text-foreground">Rodovia</span>
-            <span className="text-[11px] uppercase tracking-[0.82em] text-foreground/90 mt-2 font-light pl-0.5">Veículos</span>
-          </div>
+          <BrandLogo className="h-14 w-auto text-foreground" />
           <p className="mt-6 text-xs text-muted-foreground leading-relaxed max-w-xs">
             Seu próximo veículo está aqui. Estoque selecionado, delivery e atendimento dedicado.
           </p>
