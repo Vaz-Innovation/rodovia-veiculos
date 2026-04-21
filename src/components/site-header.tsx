@@ -41,7 +41,7 @@ export function SiteHeader() {
           <BrandLogo size="lg" />
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-12 justify-self-center">
+        <nav className="hidden md:flex items-center gap-8 lg:gap-12 justify-self-center">
           {navLinks.map((l) => (
             <Link
               key={l.to}
@@ -58,7 +58,7 @@ export function SiteHeader() {
           <button
             onClick={() => setOpen((o) => !o)}
             aria-label={open ? "Fechar menu" : "Abrir menu"}
-            className="lg:hidden text-foreground"
+            className="md:hidden text-foreground"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -66,7 +66,7 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <nav className="lg:hidden border-t border-border bg-background">
+        <nav className="md:hidden border-t border-border bg-background">
           <div className="mx-auto max-w-[1600px] px-6 py-6 flex flex-col gap-5">
             {navLinks.map((l) => (
               <Link
