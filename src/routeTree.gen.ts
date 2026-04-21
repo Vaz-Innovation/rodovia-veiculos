@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as LocalizacaoRouteImport } from './routes/localizacao'
 import { Route as EstoqueRouteImport } from './routes/estoque'
 import { Route as DeliveryRouteImport } from './routes/delivery'
@@ -18,6 +19,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as EstoqueVehicleIdRouteImport } from './routes/estoque.$vehicleId'
 import { Route as AdminVeiculoIdRouteImport } from './routes/admin.veiculo.$id'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LocalizacaoRoute = LocalizacaoRouteImport.update({
   id: '/localizacao',
   path: '/localizacao',
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/delivery': typeof DeliveryRoute
   '/estoque': typeof EstoqueRouteWithChildren
   '/localizacao': typeof LocalizacaoRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/estoque/$vehicleId': typeof EstoqueVehicleIdRoute
   '/admin/veiculo/$id': typeof AdminVeiculoIdRoute
 }
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/delivery': typeof DeliveryRoute
   '/estoque': typeof EstoqueRouteWithChildren
   '/localizacao': typeof LocalizacaoRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/estoque/$vehicleId': typeof EstoqueVehicleIdRoute
   '/admin/veiculo/$id': typeof AdminVeiculoIdRoute
 }
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/delivery': typeof DeliveryRoute
   '/estoque': typeof EstoqueRouteWithChildren
   '/localizacao': typeof LocalizacaoRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/estoque/$vehicleId': typeof EstoqueVehicleIdRoute
   '/admin/veiculo/$id': typeof AdminVeiculoIdRoute
 }
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/delivery'
     | '/estoque'
     | '/localizacao'
+    | '/reset-password'
     | '/estoque/$vehicleId'
     | '/admin/veiculo/$id'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/delivery'
     | '/estoque'
     | '/localizacao'
+    | '/reset-password'
     | '/estoque/$vehicleId'
     | '/admin/veiculo/$id'
   id:
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/delivery'
     | '/estoque'
     | '/localizacao'
+    | '/reset-password'
     | '/estoque/$vehicleId'
     | '/admin/veiculo/$id'
   fileRoutesById: FileRoutesById
@@ -130,10 +142,18 @@ export interface RootRouteChildren {
   DeliveryRoute: typeof DeliveryRoute
   EstoqueRoute: typeof EstoqueRouteWithChildren
   LocalizacaoRoute: typeof LocalizacaoRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/localizacao': {
       id: '/localizacao'
       path: '/localizacao'
@@ -221,7 +241,17 @@ const rootRouteChildren: RootRouteChildren = {
   DeliveryRoute: DeliveryRoute,
   EstoqueRoute: EstoqueRouteWithChildren,
   LocalizacaoRoute: LocalizacaoRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
