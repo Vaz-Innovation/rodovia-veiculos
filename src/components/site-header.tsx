@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { Menu, X, Search, User, ShoppingBag } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/brand-logo";
 
