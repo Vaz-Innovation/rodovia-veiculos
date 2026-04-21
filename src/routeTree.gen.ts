@@ -14,6 +14,7 @@ import { Route as EstoqueRouteImport } from './routes/estoque'
 import { Route as DeliveryRouteImport } from './routes/delivery'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EstoqueVehicleIdRouteImport } from './routes/estoque.$vehicleId'
 
 const LocalizacaoRoute = LocalizacaoRouteImport.update({
   id: '/localizacao',
@@ -40,42 +41,69 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EstoqueVehicleIdRoute = EstoqueVehicleIdRouteImport.update({
+  id: '/$vehicleId',
+  path: '/$vehicleId',
+  getParentRoute: () => EstoqueRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/delivery': typeof DeliveryRoute
-  '/estoque': typeof EstoqueRoute
+  '/estoque': typeof EstoqueRouteWithChildren
   '/localizacao': typeof LocalizacaoRoute
+  '/estoque/$vehicleId': typeof EstoqueVehicleIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/delivery': typeof DeliveryRoute
-  '/estoque': typeof EstoqueRoute
+  '/estoque': typeof EstoqueRouteWithChildren
   '/localizacao': typeof LocalizacaoRoute
+  '/estoque/$vehicleId': typeof EstoqueVehicleIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
   '/delivery': typeof DeliveryRoute
-  '/estoque': typeof EstoqueRoute
+  '/estoque': typeof EstoqueRouteWithChildren
   '/localizacao': typeof LocalizacaoRoute
+  '/estoque/$vehicleId': typeof EstoqueVehicleIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contato' | '/delivery' | '/estoque' | '/localizacao'
+  fullPaths:
+    | '/'
+    | '/contato'
+    | '/delivery'
+    | '/estoque'
+    | '/localizacao'
+    | '/estoque/$vehicleId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contato' | '/delivery' | '/estoque' | '/localizacao'
-  id: '__root__' | '/' | '/contato' | '/delivery' | '/estoque' | '/localizacao'
+  to:
+    | '/'
+    | '/contato'
+    | '/delivery'
+    | '/estoque'
+    | '/localizacao'
+    | '/estoque/$vehicleId'
+  id:
+    | '__root__'
+    | '/'
+    | '/contato'
+    | '/delivery'
+    | '/estoque'
+    | '/localizacao'
+    | '/estoque/$vehicleId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContatoRoute: typeof ContatoRoute
   DeliveryRoute: typeof DeliveryRoute
-  EstoqueRoute: typeof EstoqueRoute
+  EstoqueRoute: typeof EstoqueRouteWithChildren
   LocalizacaoRoute: typeof LocalizacaoRoute
 }
 
@@ -116,16 +144,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/estoque/$vehicleId': {
+      id: '/estoque/$vehicleId'
+      path: '/$vehicleId'
+      fullPath: '/estoque/$vehicleId'
+      preLoaderRoute: typeof EstoqueVehicleIdRouteImport
+      parentRoute: typeof EstoqueRoute
+    }
   }
 }
+
+interface EstoqueRouteChildren {
+  EstoqueVehicleIdRoute: typeof EstoqueVehicleIdRoute
+}
+
+const EstoqueRouteChildren: EstoqueRouteChildren = {
+  EstoqueVehicleIdRoute: EstoqueVehicleIdRoute,
+}
+
+const EstoqueRouteWithChildren =
+  EstoqueRoute._addFileChildren(EstoqueRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContatoRoute: ContatoRoute,
   DeliveryRoute: DeliveryRoute,
-  EstoqueRoute: EstoqueRoute,
+  EstoqueRoute: EstoqueRouteWithChildren,
   LocalizacaoRoute: LocalizacaoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
