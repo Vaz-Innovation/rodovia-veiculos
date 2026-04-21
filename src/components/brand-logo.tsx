@@ -1,38 +1,30 @@
+import { cn } from "@/lib/utils";
+
 interface BrandLogoProps {
   className?: string;
+  size?: "sm" | "lg";
 }
 
-export function BrandLogo({ className }: BrandLogoProps) {
+export function BrandLogo({ className, size = "sm" }: BrandLogoProps) {
+  const isLarge = size === "lg";
   return (
-    <svg
-      viewBox="0 0 200 70"
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-label="Rodovia Veículos"
-      role="img"
-    >
-      <text
-        x="0"
-        y="42"
-        fill="currentColor"
-        fontFamily="Georgia, 'Times New Roman', serif"
-        fontWeight="400"
-        fontSize="44"
-        letterSpacing="-1"
+    <div className={cn("flex flex-col leading-none text-foreground", className)}>
+      <span
+        className={cn(
+          "font-serif font-normal tracking-tight text-foreground",
+          isLarge ? "text-4xl" : "text-[28px]",
+        )}
       >
         Rodovia
-      </text>
-      <text
-        x="2"
-        y="62"
-        fill="currentColor"
-        fontFamily="Georgia, 'Times New Roman', serif"
-        fontWeight="300"
-        fontSize="10"
-        letterSpacing="11.5"
+      </span>
+      <span
+        className={cn(
+          "uppercase font-light text-foreground/95 mt-1.5",
+          isLarge ? "text-[11px] tracking-[0.78em] pl-[2px]" : "text-[9px] tracking-[0.72em] pl-[2px]",
+        )}
       >
-        VEÍCULOS
-      </text>
-    </svg>
+        Veículos
+      </span>
+    </div>
   );
 }
