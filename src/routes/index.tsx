@@ -49,7 +49,7 @@ function HomePage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
         <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 lg:px-10 flex flex-col items-center justify-center text-center">
-          <p className="text-[11px] uppercase tracking-[0.5em] text-foreground/80 mb-6">
+          <p className="text-[11px] uppercase tracking-[0.5em] text-foreground/80 mb-6 indent-[0.5em]">
             Sem custo · Sem compromisso
           </p>
           <h1 className="text-6xl md:text-8xl lg:text-9xl font-light tracking-tight leading-[0.95] text-foreground">
