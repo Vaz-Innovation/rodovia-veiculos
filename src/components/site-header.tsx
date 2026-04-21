@@ -32,10 +32,10 @@ export function SiteHeader() {
           : "bg-background/70 backdrop-blur-sm",
       )}
     >
-      <div className="mx-auto max-w-[1600px] px-6 lg:px-10 h-24 grid grid-cols-[1fr_auto_1fr] items-center">
+      <div className="mx-auto max-w-[1600px] px-6 lg:px-10 h-24 flex items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
         <Link
           to="/"
-          className="flex items-center text-foreground justify-self-start"
+          className="flex items-center text-foreground md:justify-self-start"
           aria-label="Rodovia Veículos — Página inicial"
         >
           <BrandLogo size="lg" />
@@ -54,7 +54,7 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="flex items-center justify-self-end">
+        <div className="flex items-center md:justify-self-end">
           <button
             onClick={() => setOpen((o) => !o)}
             aria-label={open ? "Fechar menu" : "Abrir menu"}
