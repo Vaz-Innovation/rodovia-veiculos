@@ -14,16 +14,149 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vehicle_photos: {
+        Row: {
+          created_at: string
+          id: string
+          is_cover: boolean
+          position: number
+          storage_path: string | null
+          url: string
+          vehicle_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_cover?: boolean
+          position?: number
+          storage_path?: string | null
+          url: string
+          vehicle_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_cover?: boolean
+          position?: number
+          storage_path?: string | null
+          url?: string
+          vehicle_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vehicle_photos_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vehicles: {
+        Row: {
+          brand: string
+          color: string
+          created_at: string
+          description: string | null
+          doors: number | null
+          featured: boolean
+          features: string[]
+          fuel: Database["public"]["Enums"]["fuel_type"]
+          id: string
+          mileage: number
+          model: string
+          plate_end: string | null
+          price: number
+          status: Database["public"]["Enums"]["vehicle_status"]
+          transmission: Database["public"]["Enums"]["transmission_type"]
+          updated_at: string
+          version: string | null
+          year_manufacture: number
+          year_model: number
+        }
+        Insert: {
+          brand: string
+          color: string
+          created_at?: string
+          description?: string | null
+          doors?: number | null
+          featured?: boolean
+          features?: string[]
+          fuel: Database["public"]["Enums"]["fuel_type"]
+          id?: string
+          mileage?: number
+          model: string
+          plate_end?: string | null
+          price: number
+          status?: Database["public"]["Enums"]["vehicle_status"]
+          transmission: Database["public"]["Enums"]["transmission_type"]
+          updated_at?: string
+          version?: string | null
+          year_manufacture: number
+          year_model: number
+        }
+        Update: {
+          brand?: string
+          color?: string
+          created_at?: string
+          description?: string | null
+          doors?: number | null
+          featured?: boolean
+          features?: string[]
+          fuel?: Database["public"]["Enums"]["fuel_type"]
+          id?: string
+          mileage?: number
+          model?: string
+          plate_end?: string | null
+          price?: number
+          status?: Database["public"]["Enums"]["vehicle_status"]
+          transmission?: Database["public"]["Enums"]["transmission_type"]
+          updated_at?: string
+          version?: string | null
+          year_manufacture?: number
+          year_model?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      fuel_type: "flex" | "gasolina" | "diesel" | "hibrido" | "eletrico" | "gnv"
+      transmission_type: "manual" | "automatico" | "cvt" | "automatizado"
+      vehicle_status: "disponivel" | "vendido" | "reservado"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +283,11 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      fuel_type: ["flex", "gasolina", "diesel", "hibrido", "eletrico", "gnv"],
+      transmission_type: ["manual", "automatico", "cvt", "automatizado"],
+      vehicle_status: ["disponivel", "vendido", "reservado"],
+    },
   },
 } as const
