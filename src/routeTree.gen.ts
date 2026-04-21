@@ -16,6 +16,7 @@ import { Route as DeliveryRouteImport } from './routes/delivery'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as EstoqueIndexRouteImport } from './routes/estoque.index'
 import { Route as EstoqueVehicleIdRouteImport } from './routes/estoque.$vehicleId'
 import { Route as AdminVeiculoIdRouteImport } from './routes/admin.veiculo.$id'
 
@@ -54,6 +55,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EstoqueIndexRoute = EstoqueIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => EstoqueRoute,
+} as any)
 const EstoqueVehicleIdRoute = EstoqueVehicleIdRouteImport.update({
   id: '/$vehicleId',
   path: '/$vehicleId',
@@ -74,6 +80,7 @@ export interface FileRoutesByFullPath {
   '/localizacao': typeof LocalizacaoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/estoque/$vehicleId': typeof EstoqueVehicleIdRoute
+  '/estoque/': typeof EstoqueIndexRoute
   '/admin/veiculo/$id': typeof AdminVeiculoIdRoute
 }
 export interface FileRoutesByTo {
@@ -81,10 +88,10 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRouteWithChildren
   '/contato': typeof ContatoRoute
   '/delivery': typeof DeliveryRoute
-  '/estoque': typeof EstoqueRouteWithChildren
   '/localizacao': typeof LocalizacaoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/estoque/$vehicleId': typeof EstoqueVehicleIdRoute
+  '/estoque': typeof EstoqueIndexRoute
   '/admin/veiculo/$id': typeof AdminVeiculoIdRoute
 }
 export interface FileRoutesById {
@@ -97,6 +104,7 @@ export interface FileRoutesById {
   '/localizacao': typeof LocalizacaoRoute
   '/reset-password': typeof ResetPasswordRoute
   '/estoque/$vehicleId': typeof EstoqueVehicleIdRoute
+  '/estoque/': typeof EstoqueIndexRoute
   '/admin/veiculo/$id': typeof AdminVeiculoIdRoute
 }
 export interface FileRouteTypes {
@@ -110,6 +118,7 @@ export interface FileRouteTypes {
     | '/localizacao'
     | '/reset-password'
     | '/estoque/$vehicleId'
+    | '/estoque/'
     | '/admin/veiculo/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -117,10 +126,10 @@ export interface FileRouteTypes {
     | '/admin'
     | '/contato'
     | '/delivery'
-    | '/estoque'
     | '/localizacao'
     | '/reset-password'
     | '/estoque/$vehicleId'
+    | '/estoque'
     | '/admin/veiculo/$id'
   id:
     | '__root__'
@@ -132,6 +141,7 @@ export interface FileRouteTypes {
     | '/localizacao'
     | '/reset-password'
     | '/estoque/$vehicleId'
+    | '/estoque/'
     | '/admin/veiculo/$id'
   fileRoutesById: FileRoutesById
 }
@@ -196,6 +206,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/estoque/': {
+      id: '/estoque/'
+      path: '/'
+      fullPath: '/estoque/'
+      preLoaderRoute: typeof EstoqueIndexRouteImport
+      parentRoute: typeof EstoqueRoute
+    }
     '/estoque/$vehicleId': {
       id: '/estoque/$vehicleId'
       path: '/$vehicleId'
@@ -225,10 +242,12 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface EstoqueRouteChildren {
   EstoqueVehicleIdRoute: typeof EstoqueVehicleIdRoute
+  EstoqueIndexRoute: typeof EstoqueIndexRoute
 }
 
 const EstoqueRouteChildren: EstoqueRouteChildren = {
   EstoqueVehicleIdRoute: EstoqueVehicleIdRoute,
+  EstoqueIndexRoute: EstoqueIndexRoute,
 }
 
 const EstoqueRouteWithChildren =
@@ -246,3 +265,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
