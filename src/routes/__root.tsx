@@ -31,14 +31,18 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Rodovia Veículos" },
+      { name: "description", content: "Trabalho em equipe e dedicação ao cliente: transformando qualidade em tradição há 26 anos." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Rodovia Veículos" },
+      { property: "og:description", content: "Trabalho em equipe e dedicação ao cliente: transformando qualidade em tradição há 26 anos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Rodovia Veículos" },
+      { name: "twitter:description", content: "Trabalho em equipe e dedicação ao cliente: transformando qualidade em tradição há 26 anos." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/4A97JHj6NrZ8Gkvc5GTBv7kLJVj1/social-images/social-1776811962380-TECH_FEST.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/4A97JHj6NrZ8Gkvc5GTBv7kLJVj1/social-images/social-1776811962380-TECH_FEST.webp" },
     ],
     links: [
       {
