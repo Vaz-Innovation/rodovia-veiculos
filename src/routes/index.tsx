@@ -7,7 +7,7 @@ import model1 from "@/assets/model-1.jpg";
 import model2 from "@/assets/model-2.jpg";
 import model3 from "@/assets/model-3.jpg";
 import racing from "@/assets/racing.jpg";
-import universe from "@/assets/universe.jpg";
+import avaliacao from "@/assets/avaliacao-veiculo.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -158,8 +158,8 @@ function HomePage() {
         <div className="mx-auto max-w-[1600px] px-6 lg:px-10 grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="aspect-[4/3] overflow-hidden">
             <img
-              src={universe}
-              alt="Avaliação de veículo na Rodovia Veículos"
+              src={avaliacao}
+              alt="Avaliação profissional de veículo na Rodovia Veículos"
               width={1600}
               height={900}
               loading="lazy"
