@@ -60,7 +60,7 @@ function ContatoPage() {
             className="group border border-border bg-card/40 p-8 flex gap-5 hover:border-foreground/40 transition-colors"
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-border">
-              <MessageCircle className="h-4 w-4 text-foreground" />
+              <WhatsAppIcon className="h-4 w-4 text-foreground" />
             </div>
             <div className="flex-1">
               <h3 className="text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-3">
