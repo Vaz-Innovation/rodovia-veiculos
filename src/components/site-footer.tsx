@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import logo from "@/assets/logo-rodovia.png";
+import logo from "@/assets/logo-rodovia.svg";
 
 export function SiteFooter() {
   return (

@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Menu, X, Search, User, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logo from "@/assets/logo-rodovia.png";
+import logo from "@/assets/logo-rodovia.svg";
 
 const navLinks = [
   { to: "/estoque", label: "Estoque" },
