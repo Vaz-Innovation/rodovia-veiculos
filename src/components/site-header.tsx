@@ -66,7 +66,7 @@ export function SiteHeader() {
       </div>
 
       {open && (
-        <nav className="lg:hidden border-t border-border bg-background">
+        <nav className="md:hidden border-t border-border bg-background">
           <div className="mx-auto max-w-[1600px] px-6 py-6 flex flex-col gap-5">
             {navLinks.map((l) => (
               <Link
