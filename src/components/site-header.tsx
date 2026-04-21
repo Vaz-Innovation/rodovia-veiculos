@@ -38,7 +38,7 @@ export function SiteHeader() {
           aria-label="Rodovia Veículos — Página inicial"
         >
           <span className="font-serif text-3xl font-normal tracking-tight text-foreground">Rodovia</span>
-          <span className="text-[10px] uppercase tracking-[0.5em] text-foreground/90 mt-1.5 font-light">Veículos</span>
+          <span className="text-[10px] uppercase tracking-[0.78em] text-foreground/90 mt-1.5 font-light pl-0.5">Veículos</span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-10">

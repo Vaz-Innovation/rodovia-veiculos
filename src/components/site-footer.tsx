@@ -7,7 +7,7 @@ export function SiteFooter() {
         <div className="col-span-2 md:col-span-1">
           <div className="flex flex-col leading-none">
             <span className="font-serif text-4xl font-normal tracking-tight text-foreground">Rodovia</span>
-            <span className="text-[11px] uppercase tracking-[0.5em] text-foreground/90 mt-2 font-light">Veículos</span>
+            <span className="text-[11px] uppercase tracking-[0.82em] text-foreground/90 mt-2 font-light pl-0.5">Veículos</span>
           </div>
           <p className="mt-6 text-xs text-muted-foreground leading-relaxed max-w-xs">
             Seu próximo veículo está aqui. Estoque selecionado, delivery e atendimento dedicado.
