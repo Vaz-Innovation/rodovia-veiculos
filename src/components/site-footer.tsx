@@ -8,7 +8,7 @@ export function SiteFooter() {
         <div>
           <BrandLogo size="lg" />
           <p className="mt-6 text-xs text-muted-foreground leading-relaxed max-w-xs">
-            Seu próximo veículo está aqui. Estoque selecionado, delivery e atendimento dedicado.
+            Trabalho em equipe e dedicação ao cliente: transformando qualidade em tradição há 26 anos.
           </p>
         </div>
         <div>
