@@ -61,19 +61,22 @@ function HomePage() {
           </p>
           <div className="mt-12 flex flex-wrap gap-4 justify-center">
             <Link
-              to="/estoque"
+              to="/delivery"
               className="group inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-primary/90 transition-colors"
             >
-              Ver estoque
+              Quero meu test-drive
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
-              to="/contato"
+              to="/estoque"
               className="inline-flex items-center gap-3 border border-foreground/50 px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-foreground hover:text-background transition-colors"
             >
-              Estoque
+              Ver estoque
             </Link>
           </div>
+          <p className="mt-6 text-[11px] uppercase tracking-[0.3em] text-foreground/60">
+            Resposta em até 30 minutos
+          </p>
         </div>
       </section>
 
