@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Phone, MessageCircle, MapPin, Clock, Globe, Instagram, Facebook, ArrowUpRight } from "lucide-react";
+import { Phone, MapPin, Clock, Globe, Instagram, Facebook, ArrowUpRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
