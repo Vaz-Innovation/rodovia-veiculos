@@ -1,4 +1,4 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useRef, type FormEvent } from "react";
 import {
@@ -38,7 +38,10 @@ import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/estoque/$vehicleId")({
   component: VehicleDetailPage,
-  notFoundComponent: () => (
+});
+
+function NotFoundView() {
+  return (
     <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
       <div className="text-center">
         <h1 className="text-3xl font-light">Veículo não encontrado</h1>
@@ -50,8 +53,8 @@ export const Route = createFileRoute("/estoque/$vehicleId")({
         </Link>
       </div>
     </div>
-  ),
-});
+  );
+}
 
 type VehicleWithPhotos = Vehicle & { vehicle_photos: VehiclePhoto[] };
 
@@ -93,7 +96,7 @@ function VehicleDetailPage() {
   }
 
   if (error || !data) {
-    throw notFound();
+    return <NotFoundView />;
   }
 
   const photos = [...data.vehicle_photos].sort(
