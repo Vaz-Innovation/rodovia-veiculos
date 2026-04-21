@@ -99,7 +99,12 @@ function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {featured.map((m) => (
-              <article key={m.name} className="group cursor-pointer">
+              <Link
+                key={m.name}
+                to="/estoque"
+                className="group cursor-pointer block"
+                aria-label={`Ver ${m.name} no estoque`}
+              >
                 <div className="aspect-[4/3] overflow-hidden bg-card">
                   <img
                     src={m.img}
@@ -114,9 +119,9 @@ function HomePage() {
                   <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
                     {m.tag}
                   </p>
-                  <h3 className="mt-2 text-xl font-light">{m.name}</h3>
+                  <h3 className="mt-2 text-xl font-light group-hover:text-muted-foreground transition-colors">{m.name}</h3>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         </div>
