@@ -1,13 +1,14 @@
 import { Link } from "@tanstack/react-router";
+import logo from "@/assets/logo-rodovia.png";
 
 export function SiteFooter() {
   return (
     <footer className="bg-background border-t border-border text-foreground">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
         <div className="col-span-2 md:col-span-1">
-          <div className="text-xl font-light tracking-[0.3em]">VELLORA</div>
+          <img src={logo} alt="Rodovia Veículos" className="h-10 w-auto object-contain" />
           <p className="mt-4 text-xs text-muted-foreground leading-relaxed max-w-xs">
-            Engenharia, design e paixão por desempenho desde 1962.
+            Seu próximo veículo está aqui. Estoque selecionado, delivery e atendimento dedicado.
           </p>
         </div>
         <div>
@@ -42,7 +43,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-border">
         <div className="mx-auto max-w-[1600px] px-6 lg:px-10 py-6 flex flex-col md:flex-row justify-between gap-4 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-          <p>© {new Date().getFullYear()} Vellora Motors. Todos os direitos reservados.</p>
+          <p>© {new Date().getFullYear()} Rodovia Veículos. Todos os direitos reservados.</p>
           <div className="flex gap-6">
             <a href="#" className="hover:text-foreground">Privacidade</a>
             <a href="#" className="hover:text-foreground">Termos</a>
