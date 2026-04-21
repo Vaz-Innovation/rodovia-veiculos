@@ -2,8 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X, ArrowRight } from "lucide-react";
-import { z } from "zod";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,31 +21,52 @@ import {
 import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 12;
+const SORT_OPTIONS = ["recent", "price_asc", "price_desc", "year_desc", "km_asc"] as const;
 
-const searchSchema = z.object({
-  q: fallback(z.string(), "").default(""),
-  brand: fallback(z.string(), "").default(""),
-  model: fallback(z.string(), "").default(""),
-  priceMin: fallback(z.number().optional(), undefined),
-  priceMax: fallback(z.number().optional(), undefined),
-  yearMin: fallback(z.number().optional(), undefined),
-  yearMax: fallback(z.number().optional(), undefined),
-  kmMax: fallback(z.number().optional(), undefined),
-  transmission: fallback(z.string(), "").default(""),
-  fuel: fallback(z.string(), "").default(""),
-  color: fallback(z.string(), "").default(""),
-  features: fallback(z.array(z.string()), []).default([]),
-  sort: fallback(
-    z.enum(["recent", "price_asc", "price_desc", "year_desc", "km_asc"]),
-    "recent",
-  ).default("recent"),
-  page: fallback(z.number().int().min(1), 1).default(1),
+type SearchSort = (typeof SORT_OPTIONS)[number];
+
+type SearchParams = {
+  q: string;
+  brand: string;
+  model: string;
+  priceMin?: number;
+  priceMax?: number;
+  yearMin?: number;
+  yearMax?: number;
+  kmMax?: number;
+  transmission: string;
+  fuel: string;
+  color: string;
+  features: string[];
+  sort: SearchSort;
+  page: number;
+};
+
+const toStringValue = (value: unknown) => (typeof value === "string" ? value : "");
+const toNumberValue = (value: unknown) => {
+  const number = typeof value === "number" ? value : typeof value === "string" ? Number(value) : NaN;
+  return Number.isFinite(number) ? number : undefined;
+};
+
+const validateEstoqueSearch = (search: Record<string, unknown>): SearchParams => ({
+  q: toStringValue(search.q),
+  brand: toStringValue(search.brand),
+  model: toStringValue(search.model),
+  priceMin: toNumberValue(search.priceMin),
+  priceMax: toNumberValue(search.priceMax),
+  yearMin: toNumberValue(search.yearMin),
+  yearMax: toNumberValue(search.yearMax),
+  kmMax: toNumberValue(search.kmMax),
+  transmission: toStringValue(search.transmission),
+  fuel: toStringValue(search.fuel),
+  color: toStringValue(search.color),
+  features: Array.isArray(search.features) ? search.features.filter((f): f is string => typeof f === "string") : [],
+  sort: SORT_OPTIONS.includes(search.sort as SearchSort) ? (search.sort as SearchSort) : "recent",
+  page: Math.max(1, Math.floor(toNumberValue(search.page) ?? 1)),
 });
 
-type SearchParams = z.infer<typeof searchSchema>;
-
 export const Route = createFileRoute("/estoque")({
-  validateSearch: zodValidator(searchSchema),
+  validateSearch: validateEstoqueSearch,
   head: () => ({
     meta: [
       { title: "Estoque — Rodovia Veículos" },
