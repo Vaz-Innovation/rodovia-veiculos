@@ -140,7 +140,7 @@ function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/50" />
         <div className="relative z-10 mx-auto max-w-[1600px] px-6 lg:px-10 py-24 lg:py-32">
           <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-6">
-            Nossa essência · 26 anos de estrada
+            Nossa essência
           </p>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight max-w-3xl leading-[1.05]">
             Tradição construída sobre
