@@ -170,7 +170,7 @@ function AdminDashboard() {
       <header className="border-b border-border bg-card/50">
         <div className="mx-auto max-w-[1600px] px-6 lg:px-10 h-20 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-3">
-            <BrandLogo size="md" />
+            <BrandLogo size="sm" />
             <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground border-l border-border pl-3">
               Painel admin
             </span>
