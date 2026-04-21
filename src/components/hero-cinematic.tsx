@@ -7,7 +7,7 @@ import slide3 from "@/assets/hero-slide-3.jpg";
 import slide4 from "@/assets/hero-slide-4.jpg";
 
 const SLIDES = [slide1, slide2, slide3, slide4];
-const SLIDE_DURATION = 7000; // ms per slide
+const SLIDE_DURATION = 4500; // ms per slide
 
 export function HeroCinematic() {
   const [active, setActive] = useState(0);
@@ -36,7 +36,7 @@ export function HeroCinematic() {
           return (
             <div
               key={src}
-              className="absolute inset-0 transition-opacity duration-[1500ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
+              className="absolute inset-0 transition-opacity duration-[900ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
               style={{ opacity: isActive ? 1 : 0 }}
               aria-hidden={!isActive}
             >
@@ -48,7 +48,7 @@ export function HeroCinematic() {
                 className="absolute inset-0 h-full w-full object-cover"
                 style={{
                   animation: isActive
-                    ? `kenburns ${SLIDE_DURATION + 1500}ms ease-out forwards`
+                    ? `kenburns ${SLIDE_DURATION + 900}ms ease-out forwards`
                     : "none",
                 }}
               />
@@ -63,12 +63,12 @@ export function HeroCinematic() {
       <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 lg:px-10 flex flex-col items-center justify-end pb-24 md:pb-32 text-center">
         {/* Kicker — letter-spacing reveal */}
         <p
-          className="text-[10px] md:text-[11px] uppercase text-muted-foreground mb-4 md:mb-6 transition-all duration-[1400ms] ease-out"
+          className="text-[10px] md:text-[11px] uppercase text-muted-foreground mb-4 md:mb-6 transition-all duration-[700ms] ease-out"
           style={{
             opacity: revealed ? 1 : 0,
             letterSpacing: revealed ? "0.4em" : "0.2em",
             paddingLeft: revealed ? "0.4em" : "0.2em",
-            transitionDelay: "200ms",
+            transitionDelay: "100ms",
           }}
         >
           Sem custo · Sem compromisso
@@ -77,10 +77,10 @@ export function HeroCinematic() {
         {/* Headline — mask reveal (curtain down) */}
         <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tight leading-[0.95] text-foreground overflow-hidden pb-2">
           <span
-            className="inline-block italic font-extralight transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
+            className="inline-block italic font-extralight transition-transform duration-[700ms] ease-[cubic-bezier(0.16,1,0.3,1)]"
             style={{
               transform: revealed ? "translateY(0)" : "translateY(110%)",
-              transitionDelay: "500ms",
+              transitionDelay: "250ms",
             }}
           >
             Delivery
@@ -89,20 +89,20 @@ export function HeroCinematic() {
 
         {/* Animated divider line — draws from center */}
         <div
-          className="mt-8 h-px bg-foreground/40 transition-all duration-[900ms] ease-out"
+          className="mt-8 h-px bg-foreground/40 transition-all duration-[500ms] ease-out"
           style={{
             width: revealed ? "4rem" : "0rem",
-            transitionDelay: "1100ms",
+            transitionDelay: "600ms",
           }}
         />
 
         {/* Sub-text */}
         <p
-          className="mt-6 md:mt-8 max-w-xl text-sm md:text-lg text-foreground/75 leading-relaxed transition-all duration-[900ms] ease-out"
+          className="mt-6 md:mt-8 max-w-xl text-sm md:text-lg text-foreground/75 leading-relaxed transition-all duration-[500ms] ease-out"
           style={{
             opacity: revealed ? 1 : 0,
             transform: revealed ? "translateY(0)" : "translateY(20px)",
-            transitionDelay: "1400ms",
+            transitionDelay: "800ms",
           }}
         >
           Gostou de um modelo? Nós levamos o carro até sua casa ou trabalho para um test-drive.
@@ -110,11 +110,11 @@ export function HeroCinematic() {
 
         {/* CTAs */}
         <div
-          className="mt-8 md:mt-12 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto transition-all duration-[900ms] ease-out"
+          className="mt-8 md:mt-12 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto transition-all duration-[500ms] ease-out"
           style={{
             opacity: revealed ? 1 : 0,
             transform: revealed ? "translateY(0)" : "translateY(20px)",
-            transitionDelay: "1700ms",
+            transitionDelay: "1000ms",
           }}
         >
           <Link
@@ -135,7 +135,7 @@ export function HeroCinematic() {
         {/* Progress indicators — refined cinematic bars */}
         <div
           className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-3 transition-opacity duration-700"
-          style={{ opacity: revealed ? 1 : 0, transitionDelay: "2000ms" }}
+          style={{ opacity: revealed ? 1 : 0, transitionDelay: "1200ms" }}
         >
           {SLIDES.map((_, i) => {
             const isActive = i === active;
