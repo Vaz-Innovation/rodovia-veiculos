@@ -61,7 +61,7 @@ function HomePage() {
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
             <Link
-              to="/modelos"
+              to="/estoque"
               className="group inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 text-xs uppercase tracking-[0.2em] hover:bg-primary/90 transition-colors"
             >
               Descobrir
@@ -90,7 +90,7 @@ function HomePage() {
               </h2>
             </div>
             <Link
-              to="/modelos"
+              to="/estoque"
               className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] hover:text-muted-foreground transition-colors"
             >
               Ver toda a gama <ArrowRight className="h-4 w-4" />
