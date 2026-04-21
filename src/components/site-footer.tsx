@@ -1,13 +1,15 @@
 import { Link } from "@tanstack/react-router";
-import logo from "@/assets/logo-rodovia.svg";
 
 export function SiteFooter() {
   return (
     <footer className="bg-background border-t border-border text-foreground">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
         <div className="col-span-2 md:col-span-1">
-          <img src={logo} alt="Rodovia Veículos" className="h-10 w-auto object-contain" />
-          <p className="mt-4 text-xs text-muted-foreground leading-relaxed max-w-xs">
+          <div className="flex flex-col leading-none">
+            <span className="text-3xl font-light tracking-tight">Rodovia</span>
+            <span className="text-[10px] uppercase tracking-[0.4em] text-foreground/70 mt-1">Veículos</span>
+          </div>
+          <p className="mt-6 text-xs text-muted-foreground leading-relaxed max-w-xs">
             Seu próximo veículo está aqui. Estoque selecionado, delivery e atendimento dedicado.
           </p>
         </div>
