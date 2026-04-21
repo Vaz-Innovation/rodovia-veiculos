@@ -37,8 +37,8 @@ export function SiteHeader() {
           className="flex flex-col leading-none text-foreground"
           aria-label="Rodovia Veículos — Página inicial"
         >
-          <span className="text-2xl font-light tracking-tight">Rodovia</span>
-          <span className="text-[9px] uppercase tracking-[0.4em] text-foreground/70 mt-1">Veículos</span>
+          <span className="font-serif text-3xl font-normal tracking-tight text-foreground">Rodovia</span>
+          <span className="text-[10px] uppercase tracking-[0.5em] text-foreground/90 mt-1.5 font-light">Veículos</span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-10">
