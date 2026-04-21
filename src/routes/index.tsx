@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { HeroCinematic } from "@/components/hero-cinematic";
 import heroCar from "@/assets/hero-rodovia.jpg";
 import model1 from "@/assets/car-hatch.jpg";
 import model2 from "@/assets/car-sedan.jpg";
@@ -39,43 +40,7 @@ function HomePage() {
       <SiteHeader />
 
       {/* HERO */}
-      <section className="relative h-screen min-h-[700px] w-full overflow-hidden">
-        <img
-          src={heroCar}
-          alt="Carro semi-novo na Rodovia Veículos"
-          width={1920}
-          height={1080}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/30" />
-        <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 lg:px-10 flex flex-col items-center justify-end pb-32 text-center">
-          <p className="text-[11px] uppercase tracking-[0.5em] text-muted-foreground mb-6 pl-[0.5em]">
-            Sem custo · Sem compromisso
-          </p>
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-light tracking-tight leading-[0.95] text-foreground">
-            <span className="italic font-extralight">Delivery</span>
-          </h1>
-          <div className="mt-8 h-px w-16 bg-foreground/30" />
-          <p className="mt-8 max-w-xl text-base md:text-lg text-foreground/75 leading-relaxed">
-            Gostou de um modelo? Nós levamos o carro até sua casa ou trabalho para um test-drive.
-          </p>
-          <div className="mt-12 flex flex-wrap gap-4 justify-center">
-            <Link
-              to="/delivery"
-              className="group inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-primary/90 transition-colors"
-            >
-              Quero meu test-drive
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-            <Link
-              to="/estoque"
-              className="inline-flex items-center gap-3 border border-foreground/30 text-foreground px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-foreground hover:text-background transition-colors"
-            >
-              Ver estoque
-            </Link>
-          </div>
-        </div>
-      </section>
+      <HeroCinematic />
 
       {/* MODELOS EM DESTAQUE */}
       <section className="py-24 lg:py-32">
