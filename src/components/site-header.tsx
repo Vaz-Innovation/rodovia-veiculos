@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Menu, X, Search, User, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logo from "@/assets/logo-rodovia.svg";
+
 
 const navLinks = [
   { to: "/estoque", label: "Estoque" },
@@ -34,10 +34,11 @@ export function SiteHeader() {
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10 h-16 flex items-center justify-between">
         <Link
           to="/"
-          className="flex items-center"
+          className="flex flex-col leading-none text-foreground"
           aria-label="Rodovia Veículos — Página inicial"
         >
-          <img src={logo} alt="Rodovia Veículos" className="h-9 w-auto object-contain" />
+          <span className="text-2xl font-light tracking-tight">Rodovia</span>
+          <span className="text-[9px] uppercase tracking-[0.4em] text-foreground/70 mt-1">Veículos</span>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-10">
