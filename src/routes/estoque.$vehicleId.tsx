@@ -135,10 +135,48 @@ function VehicleDetailPage() {
         </nav>
       </section>
 
-      {/* Carousel: 3 photos side-by-side like Webmotors */}
-      <section className="mx-auto max-w-[1400px] w-full px-4 lg:px-8">
+      {/* Carousel: scroll-snap on mobile, 3-up grid on desktop (Webmotors style) */}
+      <section className="mx-auto max-w-[1400px] w-full md:px-4 lg:px-8">
         <div className="relative">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          {/* Mobile: horizontal scroll-snap */}
+          <div className="md:hidden -mx-0">
+            {photos.length > 0 ? (
+              <div
+                className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth gap-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                onScroll={(e) => {
+                  const el = e.currentTarget;
+                  const idx = Math.round(el.scrollLeft / el.clientWidth);
+                  if (idx !== photoIndex) setPhotoIndex(idx);
+                }}
+              >
+                {photos.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => {
+                      setPhotoIndex(photos.indexOf(p));
+                      setLightbox(true);
+                    }}
+                    className="relative shrink-0 w-full snap-center bg-slate-200 overflow-hidden aspect-[4/3]"
+                    aria-label="Ampliar foto"
+                  >
+                    <img
+                      src={p.url}
+                      alt={vehicleTitle(data)}
+                      className="h-full w-full object-cover"
+                      loading="lazy"
+                    />
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="aspect-[16/9] bg-slate-200 flex items-center justify-center text-slate-500 text-xs uppercase tracking-[0.2em]">
+                Sem fotos
+              </div>
+            )}
+          </div>
+
+          {/* Desktop: 3-up grid */}
+          <div className="hidden md:grid grid-cols-3 gap-2">
             {visiblePhotos.length > 0 ? (
               visiblePhotos.map((p, i) => (
                 <button
@@ -168,14 +206,14 @@ function VehicleDetailPage() {
             <>
               <button
                 onClick={prev}
-                className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white shadow-md w-11 h-11 rounded-full flex items-center justify-center text-slate-700"
+                className="hidden md:flex absolute left-3 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white shadow-md w-11 h-11 rounded-full items-center justify-center text-slate-700"
                 aria-label="Foto anterior"
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
               <button
                 onClick={next}
-                className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white shadow-md w-11 h-11 rounded-full flex items-center justify-center text-slate-700"
+                className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 bg-white/95 hover:bg-white shadow-md w-11 h-11 rounded-full items-center justify-center text-slate-700"
                 aria-label="Próxima foto"
               >
                 <ChevronRight className="h-5 w-5" />
@@ -184,7 +222,7 @@ function VehicleDetailPage() {
           )}
 
           {photos.length > 0 && (
-            <div className="absolute bottom-3 right-3 bg-slate-900/80 text-white text-xs px-3 py-1.5 rounded">
+            <div className="absolute bottom-3 right-3 bg-slate-900/80 text-white text-xs px-3 py-1.5 rounded pointer-events-none">
               {photoIndex + 1} / {photos.length}
             </div>
           )}
