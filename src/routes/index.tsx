@@ -47,16 +47,16 @@ function HomePage() {
           height={1080}
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-background/30" />
-        <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 lg:px-10 flex flex-col items-center justify-center text-center">
-          <p className="text-[11px] uppercase tracking-[0.5em] text-foreground/80 mb-6 pl-[0.5em]">
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/30" />
+        <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 lg:px-10 flex flex-col items-center justify-end pb-32 text-center">
+          <p className="text-[11px] uppercase tracking-[0.5em] text-muted-foreground mb-6 pl-[0.5em]">
             Sem custo · Sem compromisso
           </p>
           <h1 className="text-6xl md:text-8xl lg:text-9xl font-light tracking-tight leading-[0.95] text-foreground">
             <span className="italic font-extralight">Delivery</span>
           </h1>
-          <div className="mt-8 h-px w-16 bg-foreground/40" />
-          <p className="mt-8 max-w-xl text-base md:text-lg text-foreground/85 leading-relaxed">
+          <div className="mt-8 h-px w-16 bg-foreground/30" />
+          <p className="mt-8 max-w-xl text-base md:text-lg text-foreground/75 leading-relaxed">
             Gostou de um modelo? Nós levamos o carro até sua casa ou trabalho para um test-drive.
           </p>
           <div className="mt-12 flex flex-wrap gap-4 justify-center">
@@ -69,7 +69,7 @@ function HomePage() {
             </Link>
             <Link
               to="/estoque"
-              className="inline-flex items-center gap-3 border border-foreground/50 px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-foreground hover:text-background transition-colors"
+              className="inline-flex items-center gap-3 border border-foreground/30 text-foreground px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-foreground hover:text-background transition-colors"
             >
               Ver estoque
             </Link>
@@ -132,7 +132,7 @@ function HomePage() {
           loading="lazy"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/50" />
         <div className="relative z-10 mx-auto max-w-[1600px] px-6 lg:px-10 py-24 lg:py-32">
           <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-6">
             Nossa essência · 26 anos de estrada
