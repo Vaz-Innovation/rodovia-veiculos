@@ -170,8 +170,12 @@ function HomePage() {
             <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
               Avaliação do seu veículo
             </p>
-            <h2 className="text-4xl md:text-5xl font-light tracking-tight">
-              Quer vender ou trocar? <span className="italic font-extralight">Avaliamos para você.</span>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.05]">
+              Quer vender
+              <br />
+              ou trocar?
+              <br />
+              <span className="italic font-extralight text-muted-foreground">Avaliamos para você.</span>
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed max-w-lg">
               Receba uma proposta justa e transparente pelo seu veículo. Nossa equipe analisa
