@@ -74,9 +74,6 @@ function HomePage() {
               Ver estoque
             </Link>
           </div>
-          <p className="mt-6 text-[11px] uppercase tracking-[0.3em] text-foreground/60">
-            Resposta em até 30 minutos
-          </p>
         </div>
       </section>
 

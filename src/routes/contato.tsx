@@ -188,9 +188,6 @@ function ContatoPage() {
             Falar agora no WhatsApp
             <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
           </a>
-          <p className="text-center text-[11px] uppercase tracking-[0.3em] text-foreground/60">
-            Resposta em até 30 minutos
-          </p>
         </div>
       </section>
 
