@@ -2,10 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import heroCar from "@/assets/hero-car.jpg";
-import model1 from "@/assets/model-1.jpg";
-import model2 from "@/assets/model-2.jpg";
-import model3 from "@/assets/model-3.jpg";
+import heroCar from "@/assets/hero-rodovia.jpg";
+import model1 from "@/assets/car-hatch.jpg";
+import model2 from "@/assets/car-sedan.jpg";
+import model3 from "@/assets/car-suv.jpg";
 import racing from "@/assets/racing.jpg";
 import avaliacao from "@/assets/avaliacao-veiculo.jpg";
 
@@ -28,9 +28,9 @@ export const Route = createFileRoute("/")({
 });
 
 const featured = [
-  { img: model1, name: "Vellora F12 Stradale", tag: "Coupé" },
-  { img: model2, name: "Vellora GT Lusso", tag: "Grand Tourer" },
-  { img: model3, name: "Vellora Spyder R", tag: "Conversível" },
+  { img: model1, name: "Hatch compacto", tag: "Econômico" },
+  { img: model2, name: "Sedan", tag: "Conforto" },
+  { img: model3, name: "SUV compacto", tag: "Versátil" },
 ];
 
 function HomePage() {
@@ -42,7 +42,7 @@ function HomePage() {
       <section className="relative h-screen min-h-[700px] w-full overflow-hidden">
         <img
           src={heroCar}
-          alt="Vellora F12 Stradale em estúdio"
+          alt="Carro semi-novo na Rodovia Veículos"
           width={1920}
           height={1080}
           className="absolute inset-0 h-full w-full object-cover"
