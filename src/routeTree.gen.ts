@@ -16,6 +16,7 @@ import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as EstoqueVehicleIdRouteImport } from './routes/estoque.$vehicleId'
+import { Route as AdminVeiculoIdRouteImport } from './routes/admin.veiculo.$id'
 
 const LocalizacaoRoute = LocalizacaoRouteImport.update({
   id: '/localizacao',
@@ -52,34 +53,42 @@ const EstoqueVehicleIdRoute = EstoqueVehicleIdRouteImport.update({
   path: '/$vehicleId',
   getParentRoute: () => EstoqueRoute,
 } as any)
+const AdminVeiculoIdRoute = AdminVeiculoIdRouteImport.update({
+  id: '/veiculo/$id',
+  path: '/veiculo/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/contato': typeof ContatoRoute
   '/delivery': typeof DeliveryRoute
   '/estoque': typeof EstoqueRouteWithChildren
   '/localizacao': typeof LocalizacaoRoute
   '/estoque/$vehicleId': typeof EstoqueVehicleIdRoute
+  '/admin/veiculo/$id': typeof AdminVeiculoIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/contato': typeof ContatoRoute
   '/delivery': typeof DeliveryRoute
   '/estoque': typeof EstoqueRouteWithChildren
   '/localizacao': typeof LocalizacaoRoute
   '/estoque/$vehicleId': typeof EstoqueVehicleIdRoute
+  '/admin/veiculo/$id': typeof AdminVeiculoIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/contato': typeof ContatoRoute
   '/delivery': typeof DeliveryRoute
   '/estoque': typeof EstoqueRouteWithChildren
   '/localizacao': typeof LocalizacaoRoute
   '/estoque/$vehicleId': typeof EstoqueVehicleIdRoute
+  '/admin/veiculo/$id': typeof AdminVeiculoIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/estoque'
     | '/localizacao'
     | '/estoque/$vehicleId'
+    | '/admin/veiculo/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/estoque'
     | '/localizacao'
     | '/estoque/$vehicleId'
+    | '/admin/veiculo/$id'
   id:
     | '__root__'
     | '/'
@@ -109,11 +120,12 @@ export interface FileRouteTypes {
     | '/estoque'
     | '/localizacao'
     | '/estoque/$vehicleId'
+    | '/admin/veiculo/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ContatoRoute: typeof ContatoRoute
   DeliveryRoute: typeof DeliveryRoute
   EstoqueRoute: typeof EstoqueRouteWithChildren
@@ -171,8 +183,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EstoqueVehicleIdRouteImport
       parentRoute: typeof EstoqueRoute
     }
+    '/admin/veiculo/$id': {
+      id: '/admin/veiculo/$id'
+      path: '/veiculo/$id'
+      fullPath: '/admin/veiculo/$id'
+      preLoaderRoute: typeof AdminVeiculoIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminVeiculoIdRoute: typeof AdminVeiculoIdRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminVeiculoIdRoute: AdminVeiculoIdRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface EstoqueRouteChildren {
   EstoqueVehicleIdRoute: typeof EstoqueVehicleIdRoute
@@ -187,7 +216,7 @@ const EstoqueRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   ContatoRoute: ContatoRoute,
   DeliveryRoute: DeliveryRoute,
   EstoqueRoute: EstoqueRouteWithChildren,
@@ -196,3 +225,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
