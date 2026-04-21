@@ -38,7 +38,7 @@ export function SiteHeader() {
           className="flex items-center text-foreground"
           aria-label="Rodovia Veículos — Página inicial"
         >
-          <BrandLogo className="h-11 w-auto" />
+          <BrandLogo size="sm" />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-10">

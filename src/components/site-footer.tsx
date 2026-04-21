@@ -6,7 +6,7 @@ export function SiteFooter() {
     <footer className="bg-background border-t border-border text-foreground">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
         <div className="col-span-2 md:col-span-1">
-          <BrandLogo className="h-14 w-auto text-foreground" />
+          <BrandLogo size="lg" />
           <p className="mt-6 text-xs text-muted-foreground leading-relaxed max-w-xs">
             Seu próximo veículo está aqui. Estoque selecionado, delivery e atendimento dedicado.
           </p>
