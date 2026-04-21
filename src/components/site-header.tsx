@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Menu, X, Search, User, ShoppingBag } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BrandLogo } from "@/components/brand-logo";
 
 
 const navLinks = [
@@ -34,11 +35,10 @@ export function SiteHeader() {
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10 h-16 flex items-center justify-between">
         <Link
           to="/"
-          className="flex flex-col leading-none text-foreground"
+          className="flex items-center text-foreground"
           aria-label="Rodovia Veículos — Página inicial"
         >
-          <span className="font-serif text-3xl font-normal tracking-tight text-foreground">Rodovia</span>
-          <span className="text-[10px] uppercase tracking-[0.78em] text-foreground/90 mt-1.5 font-light pl-0.5">Veículos</span>
+          <BrandLogo className="h-11 w-auto" />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-10">
