@@ -32,13 +32,13 @@ export function SiteHeader() {
           : "bg-transparent",
       )}
     >
-      <div className="mx-auto max-w-[1600px] px-6 lg:px-10 h-16 flex items-center justify-between">
+      <div className="mx-auto max-w-[1600px] px-6 lg:px-10 h-24 flex items-center justify-between">
         <Link
           to="/"
           className="flex items-center text-foreground"
           aria-label="Rodovia Veículos — Página inicial"
         >
-          <BrandLogo size="sm" />
+          <BrandLogo size="lg" />
         </Link>
 
         <nav className="hidden lg:flex items-center gap-10">
