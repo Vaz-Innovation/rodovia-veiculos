@@ -38,7 +38,7 @@ export function HeroCinematic() {
                 alt=""
                 width={1920}
                 height={1080}
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover object-[center_70%] md:object-center"
                 style={{
                   animation: isActive
                     ? `kenburns ${SLIDE_DURATION + 900}ms ease-out forwards`
@@ -49,7 +49,7 @@ export function HeroCinematic() {
           );
         })}
         {/* Light overlay for legibility (light theme) */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/10 md:via-background/85 md:to-background/40" />
       </div>
 
       {/* CONTENT */}
