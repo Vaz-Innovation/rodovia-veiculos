@@ -145,7 +145,7 @@ function HomePage() {
             nossa linha de montagem.
           </p>
           <Link
-            to="/esportes"
+            to="/delivery"
             className="mt-10 inline-flex w-fit items-center gap-3 border border-foreground px-8 py-4 text-xs uppercase tracking-[0.2em] hover:bg-foreground hover:text-background transition-colors"
           >
             Conhecer a equipe <ArrowRight className="h-4 w-4" />
@@ -179,7 +179,7 @@ function HomePage() {
               para uma experiência sem paralelo.
             </p>
             <Link
-              to="/universo"
+              to="/localizacao"
               className="mt-8 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] hover:text-muted-foreground"
             >
               Explorar universo <ArrowRight className="h-4 w-4" />
