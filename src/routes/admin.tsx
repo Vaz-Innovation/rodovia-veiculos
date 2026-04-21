@@ -43,6 +43,7 @@ function AdminPage() {
 }
 
 function LoginScreen() {
+  const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -50,6 +51,21 @@ function LoginScreen() {
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    if (mode === "signup") {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: `${window.location.origin}/admin` },
+      });
+      setSubmitting(false);
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
+      toast.success("Conta criada! Você já pode entrar.");
+      setMode("login");
+      return;
+    }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setSubmitting(false);
     if (error) toast.error(error.message);
@@ -97,11 +113,26 @@ function LoginScreen() {
             disabled={submitting}
             className="w-full bg-primary text-primary-foreground py-3 text-xs uppercase tracking-[0.25em] hover:bg-primary/90 disabled:opacity-60"
           >
-            {submitting ? "Entrando..." : "Entrar"}
+            {submitting
+              ? mode === "signup"
+                ? "Cadastrando..."
+                : "Entrando..."
+              : mode === "signup"
+                ? "Criar conta"
+                : "Entrar"}
           </button>
         </form>
-        <p className="mt-6 text-[11px] text-center text-muted-foreground">
-          Acesso restrito a administradores autorizados.
+        <button
+          type="button"
+          onClick={() => setMode(mode === "login" ? "signup" : "login")}
+          className="mt-6 w-full text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
+        >
+          {mode === "login"
+            ? "Primeiro acesso? Criar conta admin"
+            : "Já tem conta? Entrar"}
+        </button>
+        <p className="mt-4 text-[11px] text-center text-muted-foreground">
+          A primeira conta criada se torna administradora automaticamente.
         </p>
       </div>
     </div>
