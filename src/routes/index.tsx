@@ -93,7 +93,7 @@ function HomePage() {
               to="/estoque"
               className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] hover:text-muted-foreground transition-colors"
             >
-              Ver toda a gama <ArrowRight className="h-4 w-4" />
+              Ver todo estoque <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
