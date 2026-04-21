@@ -46,7 +46,7 @@ export function SiteHeader() {
             <Link
               key={l.to}
               to={l.to}
-              className="text-xs uppercase tracking-[0.2em] font-medium text-foreground hover:text-foreground/70 transition-colors"
+              className="text-xs uppercase tracking-[0.2em] text-foreground/80 hover:text-foreground transition-colors"
               activeProps={{ className: "text-foreground" }}
             >
               {l.label}
