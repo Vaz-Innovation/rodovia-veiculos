@@ -122,34 +122,49 @@ function HomePage() {
         </div>
       </section>
 
-      {/* ESPORTES */}
-      <section className="relative h-[80vh] min-h-[600px] overflow-hidden">
+      {/* SOBRE A EMPRESA / DIFERENCIAIS */}
+      <section className="relative min-h-[80vh] overflow-hidden">
         <img
           src={racing}
-          alt="Vellora Corse na pista"
+          alt="Rodovia Veículos — tradição e compromisso"
           width={1600}
           height={900}
           loading="lazy"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-background/40 to-transparent" />
-        <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 lg:px-10 flex flex-col justify-center">
-          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
-            Vellora Corse
+        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/40" />
+        <div className="relative z-10 mx-auto max-w-[1600px] px-6 lg:px-10 py-24 lg:py-32">
+          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-6">
+            Sobre nós
           </p>
-          <h2 className="text-4xl md:text-6xl font-light tracking-tight max-w-2xl">
-            Nascidos na pista. Forjados em vitórias.
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight max-w-3xl leading-[1.05]">
+            Tradição construída sobre
+            <br />
+            <span className="italic font-extralight text-muted-foreground">princípios sólidos.</span>
           </h2>
-          <p className="mt-6 max-w-lg text-muted-foreground">
-            Décadas de competição traduzidas em cada componente que sai da
-            nossa linha de montagem.
+          <p className="mt-8 max-w-xl text-muted-foreground leading-relaxed">
+            Há 26 anos, a Rodovia Veículos cultiva relações duradouras com seus clientes — guiada
+            por valores que definem cada negociação e cada entrega.
           </p>
-          <Link
-            to="/delivery"
-            className="mt-10 inline-flex w-fit items-center gap-3 border border-foreground px-8 py-4 text-xs uppercase tracking-[0.2em] hover:bg-foreground hover:text-background transition-colors"
-          >
-            Conhecer a equipe <ArrowRight className="h-4 w-4" />
-          </Link>
+
+          <ul className="mt-16 grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-10 max-w-5xl">
+            {[
+              { n: "01", label: "Respeito" },
+              { n: "02", label: "Seriedade" },
+              { n: "03", label: "Compromisso" },
+              { n: "04", label: "Satisfação do cliente" },
+              { n: "05", label: "Paz" },
+            ].map((item) => (
+              <li key={item.n} className="border-t border-border pt-5">
+                <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">
+                  {item.n}
+                </p>
+                <p className="text-base md:text-lg font-light text-foreground leading-snug">
+                  {item.label}
+                </p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
