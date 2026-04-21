@@ -83,7 +83,7 @@ function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
             <div>
               <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
-                A coleção
+                Estoque
               </p>
               <h2 className="text-4xl md:text-5xl font-light tracking-tight">
                 Modelos em destaque
