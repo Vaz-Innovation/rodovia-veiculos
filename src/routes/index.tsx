@@ -56,8 +56,7 @@ function HomePage() {
             <span className="italic font-extralight">Delivery</span>
           </h1>
           <p className="mt-6 max-w-xl text-base text-muted-foreground">
-            Uma sinfonia de engenharia, design e instinto. Concebida para quem
-            transforma cada estrada em uma declaração.
+            Gostou de um modelo? Nós levamos o carro até sua casa ou trabalho, para um test-drive!
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
             <Link
