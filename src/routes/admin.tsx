@@ -113,11 +113,26 @@ function LoginScreen() {
             disabled={submitting}
             className="w-full bg-primary text-primary-foreground py-3 text-xs uppercase tracking-[0.25em] hover:bg-primary/90 disabled:opacity-60"
           >
-            {submitting ? "Entrando..." : "Entrar"}
+            {submitting
+              ? mode === "signup"
+                ? "Cadastrando..."
+                : "Entrando..."
+              : mode === "signup"
+                ? "Criar conta"
+                : "Entrar"}
           </button>
         </form>
-        <p className="mt-6 text-[11px] text-center text-muted-foreground">
-          Acesso restrito a administradores autorizados.
+        <button
+          type="button"
+          onClick={() => setMode(mode === "login" ? "signup" : "login")}
+          className="mt-6 w-full text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
+        >
+          {mode === "login"
+            ? "Primeiro acesso? Criar conta admin"
+            : "Já tem conta? Entrar"}
+        </button>
+        <p className="mt-4 text-[11px] text-center text-muted-foreground">
+          A primeira conta criada se torna administradora automaticamente.
         </p>
       </div>
     </div>
