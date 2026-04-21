@@ -6,8 +6,8 @@ export function SiteFooter() {
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
         <div className="col-span-2 md:col-span-1">
           <div className="flex flex-col leading-none">
-            <span className="text-3xl font-light tracking-tight">Rodovia</span>
-            <span className="text-[10px] uppercase tracking-[0.4em] text-foreground/70 mt-1">Veículos</span>
+            <span className="font-serif text-4xl font-normal tracking-tight text-foreground">Rodovia</span>
+            <span className="text-[11px] uppercase tracking-[0.5em] text-foreground/90 mt-2 font-light">Veículos</span>
           </div>
           <p className="mt-6 text-xs text-muted-foreground leading-relaxed max-w-xs">
             Seu próximo veículo está aqui. Estoque selecionado, delivery e atendimento dedicado.
