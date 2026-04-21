@@ -53,7 +53,7 @@ function HomePage() {
             Nova coleção · 2026
           </p>
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight max-w-4xl leading-[0.95]">
-            Vellora F12 <span className="italic font-extralight">Stradale</span>
+            <span className="italic font-extralight">Delivery</span>
           </h1>
           <p className="mt-6 max-w-xl text-base text-muted-foreground">
             Uma sinfonia de engenharia, design e instinto. Concebida para quem
