@@ -32,21 +32,21 @@ export function SiteHeader() {
           : "bg-background/70 backdrop-blur-sm",
       )}
     >
-      <div className="mx-auto max-w-[1600px] px-6 lg:px-10 h-24 flex items-center justify-between">
+      <div className="mx-auto max-w-[1600px] px-6 lg:px-10 h-24 grid grid-cols-[1fr_auto_1fr] items-center">
         <Link
           to="/"
-          className="flex items-center text-foreground"
+          className="flex items-center text-foreground justify-self-start"
           aria-label="Rodovia Veículos — Página inicial"
         >
           <BrandLogo size="lg" />
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-10">
+        <nav className="hidden lg:flex items-center gap-12 justify-self-center">
           {navLinks.map((l) => (
             <Link
               key={l.to}
               to={l.to}
-              className="text-xs uppercase tracking-[0.2em] text-foreground/80 hover:text-foreground transition-colors"
+              className="text-[11px] uppercase tracking-[0.3em] text-foreground/75 hover:text-foreground transition-colors"
               activeProps={{ className: "text-foreground" }}
             >
               {l.label}
@@ -54,7 +54,7 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-self-end">
           <button
             onClick={() => setOpen((o) => !o)}
             aria-label={open ? "Fechar menu" : "Abrir menu"}
