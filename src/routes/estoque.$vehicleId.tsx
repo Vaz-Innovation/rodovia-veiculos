@@ -42,7 +42,7 @@ function NotFoundView() {
         <h1 className="text-3xl font-light">Veículo não encontrado</h1>
         <Link
           to="/estoque"
-          search={{}}
+          search={(prev) => prev}
           className="mt-6 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-slate-600 hover:text-slate-900"
         >
           <ArrowLeft className="h-4 w-4" /> Voltar ao estoque
@@ -126,7 +126,7 @@ function VehicleDetailPage() {
       {/* Breadcrumb */}
       <section className="pt-28 pb-3 mx-auto max-w-[1400px] w-full px-4 lg:px-8">
         <nav className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-slate-500">
-          <Link to="/estoque" search={{}} className="hover:text-slate-900 inline-flex items-center gap-2">
+          <Link to="/estoque" search={(prev) => prev} className="hover:text-slate-900 inline-flex items-center gap-2">
             <ArrowLeft className="h-3.5 w-3.5" /> Estoque
           </Link>
           <span className="text-slate-300">/</span>
