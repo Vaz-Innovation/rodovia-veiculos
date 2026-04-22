@@ -272,6 +272,7 @@ function AdminDashboard() {
             </span>
             <Link
               to="/estoque"
+              search={{}}
               className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
             >
               <Eye className="h-3.5 w-3.5" /> Ver site

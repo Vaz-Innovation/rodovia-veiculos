@@ -14,7 +14,7 @@ export function SiteFooter() {
         <div className="md:col-span-3 md:pt-3">
           <h4 className="text-[11px] uppercase tracking-[0.25em] text-foreground mb-5">Marca</h4>
           <ul className="space-y-3 text-sm text-muted-foreground">
-            <li><Link to="/estoque" className="hover:text-foreground transition-colors">Estoque</Link></li>
+            <li><Link to="/estoque" search={{}} className="hover:text-foreground transition-colors">Estoque</Link></li>
             <li><Link to="/delivery" className="hover:text-foreground transition-colors">Delivery</Link></li>
             <li><Link to="/localizacao" className="hover:text-foreground transition-colors">Localização</Link></li>
           </ul>
