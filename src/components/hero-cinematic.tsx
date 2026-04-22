@@ -48,8 +48,17 @@ export function HeroCinematic() {
             </div>
           );
         })}
-        {/* Light overlay for legibility (light theme) */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/30 to-background/5 md:from-background/75 md:via-background/15 md:to-transparent" />
+        {/* Overlays for legibility */}
+        {/* Base gradient — bottom heavy */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/70 to-background/30 md:from-background/90 md:via-background/55 md:to-background/20" />
+        {/* Radial scrim focused on the text area (lower-center) */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 70% 55% at 50% 78%, color-mix(in oklab, var(--background) 75%, transparent) 0%, transparent 70%)",
+          }}
+        />
       </div>
 
       {/* CONTENT */}
