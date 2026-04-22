@@ -41,8 +41,6 @@ export const Route = createRootRoute({
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Rodovia Veículos" },
       { name: "twitter:description", content: "Trabalho em equipe e dedicação ao cliente: transformando qualidade em tradição há 26 anos." },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/4A97JHj6NrZ8Gkvc5GTBv7kLJVj1/social-images/social-1776811962380-TECH_FEST.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/4A97JHj6NrZ8Gkvc5GTBv7kLJVj1/social-images/social-1776811962380-TECH_FEST.webp" },
     ],
     links: [
       {
