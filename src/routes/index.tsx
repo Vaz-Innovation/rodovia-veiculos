@@ -13,14 +13,14 @@ import avaliacao from "@/assets/avaliacao-veiculo.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Vellora Motors — Engenharia, Design e Performance" },
+      { title: "Rodovia Veículos — Tradição e qualidade há 26 anos" },
       {
         name: "description",
         content:
-          "Vellora Motors. Carros esportivos de luxo, edições limitadas, herança em corridas e a mais avançada engenharia italiana.",
+          "Rodovia Veículos. Carros seminovos selecionados, avaliação justa do seu veículo e test-drive delivery em Brasília.",
       },
-      { property: "og:title", content: "Vellora Motors" },
-      { property: "og:description", content: "Carros esportivos de luxo." },
+      { property: "og:title", content: "Rodovia Veículos" },
+      { property: "og:description", content: "Carros seminovos selecionados, avaliação justa e test-drive delivery." },
       { property: "og:image", content: heroCar },
       { name: "twitter:image", content: heroCar },
     ],
