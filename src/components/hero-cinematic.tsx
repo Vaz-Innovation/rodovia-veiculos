@@ -49,7 +49,7 @@ export function HeroCinematic() {
           );
         })}
         {/* Light overlay for legibility (light theme) */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/10 md:via-background/85 md:to-background/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/30 to-background/5 md:from-background/75 md:via-background/15 md:to-transparent" />
       </div>
 
       {/* CONTENT */}
