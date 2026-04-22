@@ -95,7 +95,7 @@ export function HeroCinematic() {
           </Link>
           <Link
             to="/estoque"
-            search={(prev) => prev}
+           
             className="inline-flex items-center justify-center gap-3 border border-foreground/30 text-foreground px-6 sm:px-8 py-4 text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] hover:bg-foreground hover:text-background transition-colors"
           >
             Ver estoque
