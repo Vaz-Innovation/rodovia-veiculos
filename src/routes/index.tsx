@@ -56,7 +56,7 @@ function HomePage() {
             </div>
             <Link
               to="/estoque"
-             
+              search={{ q: "", brand: "", model: "", transmission: "", fuel: "", color: "", features: [], sort: "recent", page: 1 }}
               className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] hover:text-muted-foreground transition-colors"
             >
               Ver todo estoque <ArrowRight className="h-4 w-4" />
@@ -68,7 +68,7 @@ function HomePage() {
               <Link
                 key={m.name}
                 to="/estoque"
-               
+                search={{ q: "", brand: "", model: "", transmission: "", fuel: "", color: "", features: [], sort: "recent", page: 1 }}
                 className="group cursor-pointer block"
                 aria-label={`Ver ${m.name} no estoque`}
               >

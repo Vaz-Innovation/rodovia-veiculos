@@ -62,9 +62,9 @@ export function HeroCinematic() {
         </p>
 
         {/* Headline — mask reveal (curtain down) */}
-        <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tight leading-[0.95] text-foreground overflow-hidden pb-2">
+        <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tight leading-[1.15] text-foreground pb-4">
           <span
-            className="animate-hero-title inline-block italic font-extralight"
+            className="animate-hero-title inline-block italic font-extralight pb-2"
           >
             Delivery
           </span>
@@ -95,7 +95,7 @@ export function HeroCinematic() {
           </Link>
           <Link
             to="/estoque"
-           
+            search={{ q: "", brand: "", model: "", transmission: "", fuel: "", color: "", features: [], sort: "recent", page: 1 }}
             className="inline-flex items-center justify-center gap-3 border border-foreground/30 text-foreground px-6 sm:px-8 py-4 text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] hover:bg-foreground hover:text-background transition-colors"
           >
             Ver estoque
