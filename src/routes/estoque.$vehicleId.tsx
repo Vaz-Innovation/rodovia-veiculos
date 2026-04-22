@@ -42,7 +42,7 @@ function NotFoundView() {
         <h1 className="text-3xl font-light">Veículo não encontrado</h1>
         <Link
           to="/estoque"
-         
+          search={{ q: "", brand: "", model: "", transmission: "", fuel: "", color: "", features: [], sort: "recent", page: 1 }}
           className="mt-6 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-slate-600 hover:text-slate-900"
         >
           <ArrowLeft className="h-4 w-4" /> Voltar ao estoque
