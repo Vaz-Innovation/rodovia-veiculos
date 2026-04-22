@@ -494,7 +494,7 @@ function VehicleCard({ vehicle }: { vehicle: VehicleWithPhoto }) {
             src={cover.url}
             alt={vehicleTitle(vehicle)}
             loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
           <div className="flex items-center justify-center h-full text-muted-foreground text-xs uppercase tracking-[0.2em]">
