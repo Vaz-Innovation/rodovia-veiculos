@@ -62,9 +62,9 @@ export function HeroCinematic() {
         </p>
 
         {/* Headline — mask reveal (curtain down) */}
-        <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tight leading-[0.95] text-foreground overflow-hidden pb-2">
+        <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tight leading-[1.15] text-foreground pb-4">
           <span
-            className="animate-hero-title inline-block italic font-extralight"
+            className="animate-hero-title inline-block italic font-extralight pb-2"
           >
             Delivery
           </span>
