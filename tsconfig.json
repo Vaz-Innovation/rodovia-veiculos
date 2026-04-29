@@ -29,7 +29,6 @@
       "DOM",
       "DOM.Iterable"
     ],
-    "baseUrl": ".",
     /* Bundler mode */
     "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
