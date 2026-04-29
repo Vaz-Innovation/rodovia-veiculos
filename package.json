@@ -3,6 +3,7 @@
   "private": true,
   "sideEffects": false,
   "type": "module",
+  "packageManager": "pnpm@11.0.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
