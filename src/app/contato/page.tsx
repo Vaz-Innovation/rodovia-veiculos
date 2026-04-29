@@ -1,7 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Phone, MapPin, Clock, Globe, Instagram, Facebook, ArrowUpRight } from "lucide-react";
+import type { Metadata } from "next";
+
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+
+export const metadata: Metadata = {
+  title: "Contato — Rodovia Veículos",
+  description:
+    "Fale com a Rodovia Veículos. WhatsApp, telefone, endereço em Sobradinho — Brasília e horário de atendimento.",
+};
 
 const PHONE_DISPLAY = "(61) 3387-2700";
 const PHONE_TEL = "tel:+556133872700";
@@ -12,27 +18,9 @@ const ADDRESS_LINE_2 = "Sobradinho, Brasília — DF · CEP 73.026-510";
 const MAPS_URL =
   "https://www.google.com/maps/place/Rodovia+Ve%C3%ADculos/@-15.6521107,-47.8025031,17z/data=!3m1!4b1!4m6!3m5!1s0x935a3f81c27911c1:0x5db2f04c15726fcf!8m2!3d-15.6521107!4d-47.8025031!16s%2Fg%2F11b6r_wt_1?entry=ttu";
 
-export const Route = createFileRoute("/contato")({
-  head: () => ({
-    meta: [
-      { title: "Contato — Rodovia Veículos" },
-      {
-        name: "description",
-        content:
-          "Fale com a Rodovia Veículos. WhatsApp, telefone, endereço em Sobradinho — Brasília e horário de atendimento.",
-      },
-      { property: "og:title", content: "Contato — Rodovia Veículos" },
-      {
-        property: "og:description",
-        content:
-          "WhatsApp, telefone e endereço da Rodovia Veículos em Sobradinho, Brasília — DF.",
-      },
-    ],
-  }),
-  component: ContatoPage,
-});
+import { Phone, MapPin, Clock, Globe, Instagram, Facebook, ArrowUpRight } from "lucide-react";
 
-function ContatoPage() {
+export default function ContatoPage() {
   return (
     <div className="bg-background text-foreground min-h-screen">
       <SiteHeader />
@@ -41,17 +29,13 @@ function ContatoPage() {
         <p className="text-[11px] uppercase tracking-[0.5em] text-foreground/70 mb-6 pl-[0.5em]">
           Fale conosco
         </p>
-        <h1 className="text-5xl md:text-7xl font-light tracking-tight">
-          Contato
-        </h1>
+        <h1 className="text-5xl md:text-7xl font-light tracking-tight">Contato</h1>
         <p className="mt-6 max-w-xl text-muted-foreground">
-          Estamos prontos para te atender. Escolha o canal que preferir e
-          fale com nossa equipe.
+          Estamos prontos para te atender. Escolha o canal que preferir e fale com nossa equipe.
         </p>
       </section>
 
       <section className="pb-24 mx-auto max-w-[1600px] px-6 lg:px-10 grid lg:grid-cols-2 gap-8">
-        {/* Coluna esquerda: canais diretos */}
         <div className="flex flex-col gap-6">
           <a
             href={WHATSAPP_URL}
@@ -119,7 +103,6 @@ function ContatoPage() {
           </a>
         </div>
 
-        {/* Coluna direita: horário + redes */}
         <div className="flex flex-col gap-6">
           <div className="border border-border bg-card/40 p-8 flex gap-5">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-border">

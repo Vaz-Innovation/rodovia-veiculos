@@ -1,43 +1,37 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { toast } from "sonner";
+
 import { supabase } from "@/integrations/supabase/client";
 import { BrandLogo } from "@/components/brand-logo";
 
-export const Route = createFileRoute("/reset-password")({
-  head: () => ({
-    meta: [
-      { title: "Redefinir senha — Rodovia Veículos" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
-  }),
-  component: ResetPasswordPage,
-});
-
-function ResetPasswordPage() {
-  const navigate = useNavigate();
+export function ResetPasswordClient() {
+  const router = useRouter();
   const [ready, setReady] = useState(false);
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    // Supabase places the recovery token in the URL hash and triggers
-    // PASSWORD_RECOVERY when the client picks it up.
     const { data: sub } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY" || event === "SIGNED_IN") {
         setReady(true);
       }
     });
-    // Fallback: if a session already exists (link just opened), allow update.
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) setReady(true);
     });
+
     return () => sub.subscription.unsubscribe();
   }, []);
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
+
     if (password.length < 6) {
       toast.error("A senha deve ter no mínimo 6 caracteres.");
       return;
@@ -46,16 +40,19 @@ function ResetPasswordPage() {
       toast.error("As senhas não conferem.");
       return;
     }
+
     setSubmitting(true);
     const { error } = await supabase.auth.updateUser({ password });
     setSubmitting(false);
+
     if (error) {
       toast.error(error.message);
       return;
     }
+
     toast.success("Senha redefinida com sucesso!");
     await supabase.auth.signOut();
-    navigate({ to: "/admin" });
+    router.push("/admin");
   };
 
   return (
@@ -64,9 +61,7 @@ function ResetPasswordPage() {
         <div className="flex justify-center mb-10">
           <BrandLogo size="lg" />
         </div>
-        <h1 className="text-2xl font-light tracking-tight text-center mb-2">
-          Redefinir senha
-        </h1>
+        <h1 className="text-2xl font-light tracking-tight text-center mb-2">Redefinir senha</h1>
         <p className="text-sm text-muted-foreground text-center mb-8">
           Defina uma nova senha para sua conta administrativa.
         </p>
@@ -112,7 +107,7 @@ function ResetPasswordPage() {
         )}
 
         <Link
-          to="/admin"
+          href="/admin"
           className="mt-6 block text-center text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
         >
           Voltar ao login

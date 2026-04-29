@@ -1,8 +1,12 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState, type FormEvent } from "react";
 import { ArrowLeft, Trash2, Star, StarOff, Upload } from "lucide-react";
 import { toast } from "sonner";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/use-auth";
 import {
@@ -19,13 +23,6 @@ import {
 } from "@/lib/vehicles";
 import { BrandLogo } from "@/components/brand-logo";
 import { cn } from "@/lib/utils";
-
-export const Route = createFileRoute("/admin/veiculo/$id")({
-  head: () => ({
-    meta: [{ name: "robots", content: "noindex,nofollow" }],
-  }),
-  component: VehicleFormPage,
-});
 
 type VehicleWithPhotos = Vehicle & { vehicle_photos: VehiclePhoto[] };
 
@@ -67,12 +64,12 @@ const empty: FormState = {
   status: "disponivel",
 };
 
-function VehicleFormPage() {
-  const { id } = Route.useParams();
+export function VehicleFormClient({ id }: { id: string }) {
   const isNew = id === "novo";
-  const navigate = useNavigate();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { user, isAdmin, loading: authLoading } = useAuth();
+
   const [form, setForm] = useState<FormState>(empty);
   const [saving, setSaving] = useState(false);
   const [vehicleId, setVehicleId] = useState<string | null>(isNew ? null : id);
@@ -92,38 +89,42 @@ function VehicleFormPage() {
   });
 
   useEffect(() => {
-    if (existing) {
-      setForm({
-        brand: existing.brand,
-        model: existing.model,
-        version: existing.version ?? "",
-        year_model: String(existing.year_model),
-        year_manufacture: String(existing.year_manufacture),
-        price: String(existing.price),
-        mileage: String(existing.mileage),
-        transmission: existing.transmission,
-        fuel: existing.fuel,
-        color: existing.color,
-        doors: existing.doors ? String(existing.doors) : "",
-        plate_end: existing.plate_end ?? "",
-        description: existing.description ?? "",
-        features: existing.features,
-        featured: existing.featured,
-        status: existing.status,
-      });
-      setVehicleId(existing.id);
-    }
+    if (!existing) return;
+    setForm({
+      brand: existing.brand,
+      model: existing.model,
+      version: existing.version ?? "",
+      year_model: String(existing.year_model),
+      year_manufacture: String(existing.year_manufacture),
+      price: String(existing.price),
+      mileage: String(existing.mileage),
+      transmission: existing.transmission,
+      fuel: existing.fuel,
+      color: existing.color,
+      doors: existing.doors ? String(existing.doors) : "",
+      plate_end: existing.plate_end ?? "",
+      description: existing.description ?? "",
+      features: existing.features,
+      featured: existing.featured,
+      status: existing.status,
+    });
+    setVehicleId(existing.id);
   }, [existing]);
 
   if (authLoading) {
-    return <div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">Carregando...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">
+        Carregando...
+      </div>
+    );
   }
+
   if (!user || !isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
         <div className="text-center">
           <p className="text-muted-foreground mb-4">Acesso restrito.</p>
-          <Link to="/admin" className="text-xs uppercase tracking-[0.2em] hover:text-foreground">
+          <Link href="/admin" className="text-xs uppercase tracking-[0.2em] hover:text-foreground">
             Ir para login
           </Link>
         </div>
@@ -157,12 +158,10 @@ function VehicleFormPage() {
       status: form.status,
     };
 
-    let result;
-    if (isNew || !vehicleId) {
-      result = await supabase.from("vehicles").insert(payload).select().single();
-    } else {
-      result = await supabase.from("vehicles").update(payload).eq("id", vehicleId).select().single();
-    }
+    const result =
+      isNew || !vehicleId
+        ? await supabase.from("vehicles").insert(payload).select().single()
+        : await supabase.from("vehicles").update(payload).eq("id", vehicleId).select().single();
 
     setSaving(false);
 
@@ -176,9 +175,8 @@ function VehicleFormPage() {
     queryClient.invalidateQueries({ queryKey: ["vehicles"] });
 
     if (isNew && result.data) {
-      // navigate to edit URL so user can add photos
       setVehicleId(result.data.id);
-      navigate({ to: "/admin/veiculo/$id", params: { id: result.data.id }, replace: true });
+      router.replace(`/admin/veiculo/${result.data.id}`);
     }
   };
 
@@ -186,7 +184,10 @@ function VehicleFormPage() {
     <div className="bg-background text-foreground min-h-screen">
       <header className="border-b border-border bg-card/50">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-10 h-20 flex items-center justify-between">
-          <Link to="/admin" className="flex items-center gap-3 text-muted-foreground hover:text-foreground">
+          <Link
+            href="/admin"
+            className="flex items-center gap-3 text-muted-foreground hover:text-foreground"
+          >
             <ArrowLeft className="h-4 w-4" />
             <BrandLogo size="sm" />
             <span className="text-[10px] uppercase tracking-[0.3em] border-l border-border pl-3">
@@ -372,7 +373,7 @@ function VehicleFormPage() {
 
             <div className="flex items-center justify-between gap-4 sticky bottom-0 bg-background border-t border-border py-4">
               <Link
-                to="/admin"
+                href="/admin"
                 className="text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
               >
                 Cancelar
@@ -564,9 +565,7 @@ const inputCls =
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="bg-card/30 border border-border p-6">
-      <h2 className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">
-        {title}
-      </h2>
+      <h2 className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-4">{title}</h2>
       {children}
     </section>
   );

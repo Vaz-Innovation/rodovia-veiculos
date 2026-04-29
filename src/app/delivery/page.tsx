@@ -1,28 +1,17 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import type { Metadata } from "next";
+
+import Link from "next/link";
 import { ArrowRight, Car, MapPin, CalendarCheck, ShieldCheck } from "lucide-react";
+
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import heroCar from "@/assets/hero-rodovia.jpg";
 
-export const Route = createFileRoute("/delivery")({
-  head: () => ({
-    meta: [
-      { title: "Delivery de Test-Drive — Rodovia Veículos" },
-      {
-        name: "description",
-        content:
-          "Levamos o veículo até você para um test-drive sem custo e sem compromisso. Escolha o modelo no estoque e agende pelo WhatsApp.",
-      },
-      { property: "og:title", content: "Delivery de Test-Drive — Rodovia Veículos" },
-      {
-        property: "og:description",
-        content: "Test-drive em casa ou no trabalho. Sem custo, sem compromisso.",
-      },
-      { property: "og:image", content: heroCar },
-    ],
-  }),
-  component: DeliveryPage,
-});
+export const metadata: Metadata = {
+  title: "Delivery de Test-Drive — Rodovia Veículos",
+  description:
+    "Levamos o veículo até você para um test-drive sem custo e sem compromisso. Escolha o modelo no estoque e agende pelo WhatsApp.",
+};
 
 const steps = [
   {
@@ -47,15 +36,14 @@ const steps = [
   },
 ];
 
-function DeliveryPage() {
+export default function DeliveryPage() {
   return (
     <div className="bg-background text-foreground min-h-screen">
       <SiteHeader />
 
-      {/* HERO */}
       <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
         <img
-          src={heroCar}
+          src={heroCar.src}
           alt="Delivery de test-drive Rodovia Veículos"
           width={1600}
           height={900}
@@ -76,7 +64,6 @@ function DeliveryPage() {
         </div>
       </section>
 
-      {/* INTRO */}
       <section className="py-24 mx-auto max-w-[1600px] px-6 lg:px-10 grid md:grid-cols-2 gap-16">
         <div>
           <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
@@ -93,17 +80,16 @@ function DeliveryPage() {
         <div className="text-muted-foreground leading-relaxed space-y-4">
           <p>
             Sabemos que seu tempo é valioso. Por isso a Rodovia Veículos oferece o serviço de
-            delivery de test-drive: você escolhe o modelo, define o local e o horário, e nós
-            levamos o carro até você no Distrito Federal.
+            delivery de test-drive: você escolhe o modelo, define o local e o horário, e nós levamos
+            o carro até você no Distrito Federal.
           </p>
           <p>
-            É a forma mais cômoda e segura de avaliar o veículo antes da compra — sem
-            deslocamentos, sem filas e, principalmente, sem nenhum compromisso.
+            É a forma mais cômoda e segura de avaliar o veículo antes da compra — sem deslocamentos,
+            sem filas e, principalmente, sem nenhum compromisso.
           </p>
         </div>
       </section>
 
-      {/* STEPS */}
       <section className="pb-24 mx-auto max-w-[1600px] px-6 lg:px-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-t border-border">
           {steps.map((s, i) => {
@@ -125,7 +111,6 @@ function DeliveryPage() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="bg-card py-24">
         <div className="mx-auto max-w-[1200px] px-6 lg:px-10 text-center">
           <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-6">
@@ -134,14 +119,11 @@ function DeliveryPage() {
           <h2 className="text-4xl md:text-5xl font-light tracking-tight leading-[1.05]">
             Escolha seu próximo carro
             <br />
-            <span className="italic font-extralight text-muted-foreground">
-              sem sair de casa.
-            </span>
+            <span className="italic font-extralight text-muted-foreground">sem sair de casa.</span>
           </h2>
           <div className="mt-12 flex flex-wrap gap-4 justify-center">
             <Link
-              to="/estoque"
-              search={{ q: "", brand: "", model: "", transmission: "", fuel: "", color: "", features: [], sort: "recent", page: 1 }}
+              href="/estoque"
               className="group inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-primary/90 transition-colors"
             >
               Ver estoque

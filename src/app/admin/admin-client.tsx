@@ -1,8 +1,12 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, type FormEvent } from "react";
 import { Plus, Pencil, Trash2, LogOut, Eye } from "lucide-react";
 import { toast } from "sonner";
+
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/use-auth";
 import {
@@ -14,19 +18,9 @@ import {
 } from "@/lib/vehicles";
 import { BrandLogo } from "@/components/brand-logo";
 
-export const Route = createFileRoute("/admin")({
-  head: () => ({
-    meta: [
-      { title: "Admin — Rodovia Veículos" },
-      { name: "robots", content: "noindex,nofollow" },
-    ],
-  }),
-  component: AdminPage,
-});
-
 type VehicleWithPhotos = Vehicle & { vehicle_photos: VehiclePhoto[] };
 
-function AdminPage() {
+export function AdminClient() {
   const { user, isAdmin, loading } = useAuth();
 
   if (loading) {
@@ -51,6 +45,7 @@ function LoginScreen() {
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+
     if (mode === "forgot") {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
@@ -64,6 +59,7 @@ function LoginScreen() {
       setMode("login");
       return;
     }
+
     if (mode === "signup") {
       const { error } = await supabase.auth.signUp({
         email,
@@ -79,6 +75,7 @@ function LoginScreen() {
       setMode("login");
       return;
     }
+
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setSubmitting(false);
     if (error) toast.error(error.message);
@@ -117,12 +114,8 @@ function LoginScreen() {
         <div className="flex justify-center mb-10">
           <BrandLogo size="lg" />
         </div>
-        <h1 className="text-2xl font-light tracking-tight text-center mb-2">
-          {title}
-        </h1>
-        <p className="text-sm text-muted-foreground text-center mb-8">
-          {subtitle}
-        </p>
+        <h1 className="text-2xl font-light tracking-tight text-center mb-2">{title}</h1>
+        <p className="text-sm text-muted-foreground text-center mb-8">{subtitle}</p>
         <form onSubmit={submit} className="space-y-4">
           <div>
             <label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
@@ -220,7 +213,7 @@ function NotAdminScreen() {
 
 function AdminDashboard() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const router = useRouter();
   const { user } = useAuth();
 
   const { data, isLoading } = useQuery({
@@ -238,7 +231,6 @@ function AdminDashboard() {
   const handleDelete = async (id: string) => {
     if (!confirm("Excluir este veículo? Esta ação não pode ser desfeita.")) return;
 
-    // delete storage files first
     const { data: photos } = await supabase
       .from("vehicle_photos")
       .select("storage_path")
@@ -260,19 +252,16 @@ function AdminDashboard() {
     <div className="bg-background text-foreground min-h-screen">
       <header className="border-b border-border bg-card/50">
         <div className="mx-auto max-w-[1600px] px-6 lg:px-10 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3">
             <BrandLogo size="sm" />
             <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground border-l border-border pl-3">
               Painel admin
             </span>
           </Link>
           <div className="flex items-center gap-4">
-            <span className="text-xs text-muted-foreground hidden sm:inline">
-              {user?.email}
-            </span>
+            <span className="text-xs text-muted-foreground hidden sm:inline">{user?.email}</span>
             <Link
-              to="/estoque"
-              search={{ q: "", brand: "", model: "", transmission: "", fuel: "", color: "", features: [], sort: "recent", page: 1 }}
+              href="/estoque"
               className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
             >
               <Eye className="h-3.5 w-3.5" /> Ver site
@@ -296,7 +285,7 @@ function AdminDashboard() {
             </p>
           </div>
           <button
-            onClick={() => navigate({ to: "/admin/veiculo/$id", params: { id: "novo" } })}
+            onClick={() => router.push("/admin/veiculo/novo")}
             className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 text-xs uppercase tracking-[0.25em] hover:bg-primary/90"
           >
             <Plus className="h-4 w-4" /> Novo veículo
@@ -321,16 +310,13 @@ function AdminDashboard() {
                 const cover =
                   v.vehicle_photos.find((p) => p.is_cover) ??
                   [...v.vehicle_photos].sort((a, b) => a.position - b.position)[0];
+
                 return (
                   <tr key={v.id} className="border-b border-border last:border-0">
                     <td className="py-3 px-4">
                       <div className="w-16 h-12 bg-muted overflow-hidden">
                         {cover && (
-                          <img
-                            src={cover.url}
-                            alt=""
-                            className="w-full h-full object-cover"
-                          />
+                          <img src={cover.url} alt="" className="w-full h-full object-cover" />
                         )}
                       </div>
                     </td>
@@ -351,8 +337,7 @@ function AdminDashboard() {
                     <td className="py-3 px-4">
                       <div className="flex items-center justify-end gap-2">
                         <Link
-                          to="/admin/veiculo/$id"
-                          params={{ id: v.id }}
+                          href={`/admin/veiculo/${v.id}`}
                           className="p-2 hover:bg-accent"
                           aria-label="Editar"
                         >
@@ -370,6 +355,7 @@ function AdminDashboard() {
                   </tr>
                 );
               })}
+
               {(data ?? []).length === 0 && !isLoading && (
                 <tr>
                   <td colSpan={7} className="py-16 text-center text-muted-foreground">

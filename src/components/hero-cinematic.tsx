@@ -1,5 +1,7 @@
+"use client";
+
 import { useEffect, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import slide1 from "@/assets/hero-slide-1.jpg";
 import slide2 from "@/assets/hero-slide-2.jpg";
@@ -28,13 +30,13 @@ export function HeroCinematic() {
           const isActive = i === active;
           return (
             <div
-              key={src}
+              key={src.src}
               className="absolute inset-0 transition-opacity duration-[900ms] ease-[cubic-bezier(0.4,0,0.2,1)]"
               style={{ opacity: isActive ? 1 : 0 }}
               aria-hidden={!isActive}
             >
               <img
-                src={src}
+                src={src.src}
                 alt=""
                 width={1920}
                 height={1080}
@@ -64,47 +66,36 @@ export function HeroCinematic() {
       {/* CONTENT */}
       <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 lg:px-10 flex flex-col items-center justify-end pb-24 md:pb-32 text-center">
         {/* Kicker — letter-spacing reveal */}
-        <p
-          className="animate-hero-kicker text-[10px] md:text-[11px] uppercase text-muted-foreground mb-4 md:mb-6"
-        >
+        <p className="animate-hero-kicker text-[10px] md:text-[11px] uppercase text-muted-foreground mb-4 md:mb-6">
           Sem custo · Sem compromisso
         </p>
 
         {/* Headline — mask reveal (curtain down) */}
         <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tight leading-[1.15] text-foreground pb-4">
-          <span
-            className="animate-hero-title inline-block italic font-extralight pb-2"
-          >
+          <span className="animate-hero-title inline-block italic font-extralight pb-2">
             Delivery
           </span>
         </h1>
 
         {/* Animated divider line — draws from center */}
-        <div
-          className="animate-hero-divider mt-8 h-px w-16 bg-foreground/40"
-        />
+        <div className="animate-hero-divider mt-8 h-px w-16 bg-foreground/40" />
 
         {/* Sub-text */}
-        <p
-          className="animate-hero-copy mt-6 md:mt-8 max-w-xl text-sm md:text-lg text-foreground/75 leading-relaxed"
-        >
+        <p className="animate-hero-copy mt-6 md:mt-8 max-w-xl text-sm md:text-lg text-foreground/75 leading-relaxed">
           Gostou de um modelo? Nós levamos o carro até sua casa ou trabalho para um test-drive.
         </p>
 
         {/* CTAs */}
-        <div
-          className="animate-hero-actions mt-8 md:mt-12 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto"
-        >
+        <div className="animate-hero-actions mt-8 md:mt-12 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto">
           <Link
-            to="/delivery"
+            href="/delivery"
             className="group inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-6 sm:px-8 py-4 text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] hover:bg-primary/90 transition-colors"
           >
             Quero meu test-drive
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
           <Link
-            to="/estoque"
-            search={{ q: "", brand: "", model: "", transmission: "", fuel: "", color: "", features: [], sort: "recent", page: 1 }}
+            href="/estoque"
             className="inline-flex items-center justify-center gap-3 border border-foreground/30 text-foreground px-6 sm:px-8 py-4 text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] hover:bg-foreground hover:text-background transition-colors"
           >
             Ver estoque
@@ -112,9 +103,7 @@ export function HeroCinematic() {
         </div>
 
         {/* Progress indicators — refined cinematic bars */}
-        <div
-          className="animate-hero-indicators absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-3"
-        >
+        <div className="animate-hero-indicators absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 md:gap-3">
           {SLIDES.map((_, i) => {
             const isActive = i === active;
             return (
