@@ -1,4 +1,3 @@
-
 -- ========== ENUMS ==========
 CREATE TYPE public.app_role AS ENUM ('admin', 'user');
 CREATE TYPE public.vehicle_status AS ENUM ('disponivel', 'vendido', 'reservado');

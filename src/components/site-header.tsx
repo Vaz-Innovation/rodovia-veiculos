@@ -1,9 +1,11 @@
-import { Link } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandLogo } from "@/components/brand-logo";
-
 
 const navLinks = [
   { to: "/estoque", label: "Estoque" },
@@ -15,6 +17,7 @@ const navLinks = [
 export function SiteHeader() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -34,7 +37,7 @@ export function SiteHeader() {
     >
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10 h-24 flex items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr]">
         <Link
-          to="/"
+          href="/"
           className="flex items-center text-foreground md:justify-self-start"
           aria-label="Rodovia Veículos — Página inicial"
         >
@@ -45,9 +48,11 @@ export function SiteHeader() {
           {navLinks.map((l) => (
             <Link
               key={l.to}
-              to={l.to}
-              className="text-[11px] uppercase tracking-[0.3em] text-foreground/75 hover:text-foreground transition-colors"
-              activeProps={{ className: "text-foreground" }}
+              href={l.to}
+              className={cn(
+                "text-[11px] uppercase tracking-[0.3em] text-foreground/75 hover:text-foreground transition-colors",
+                pathname === l.to && "text-foreground",
+              )}
             >
               {l.label}
             </Link>
@@ -71,7 +76,7 @@ export function SiteHeader() {
             {navLinks.map((l) => (
               <Link
                 key={l.to}
-                to={l.to}
+                href={l.to}
                 onClick={() => setOpen(false)}
                 className="text-sm uppercase tracking-[0.2em] text-foreground/80 hover:text-foreground"
               >

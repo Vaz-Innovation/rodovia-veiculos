@@ -1,7 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import type { Metadata } from "next";
+
 import { MapPin, Phone, Clock, ArrowUpRight } from "lucide-react";
+
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+
+export const metadata: Metadata = {
+  title: "Localização — Rodovia Veículos",
+  description:
+    "Visite a Rodovia Veículos. Veja nosso endereço, horário de atendimento e como chegar.",
+};
 
 const MAPS_URL =
   "https://www.google.com/maps/place/Rodovia+Ve%C3%ADculos/@-15.6521107,-47.8025031,17z/data=!3m1!4b1!4m6!3m5!1s0x935a3f81c27911c1:0x5db2f04c15726fcf!8m2!3d-15.6521107!4d-47.8025031!16s%2Fg%2F11b6r_wt_1?entry=ttu";
@@ -9,26 +17,7 @@ const MAPS_URL =
 const MAPS_EMBED =
   "https://www.google.com/maps?q=-15.6521107,-47.8025031&hl=pt-BR&z=17&output=embed";
 
-export const Route = createFileRoute("/localizacao")({
-  head: () => ({
-    meta: [
-      { title: "Localização — Rodovia Veículos" },
-      {
-        name: "description",
-        content:
-          "Visite a Rodovia Veículos. Veja nosso endereço, horário de atendimento e como chegar.",
-      },
-      { property: "og:title", content: "Localização — Rodovia Veículos" },
-      {
-        property: "og:description",
-        content: "Endereço, horário e rota até a Rodovia Veículos.",
-      },
-    ],
-  }),
-  component: LocalizacaoPage,
-});
-
-function LocalizacaoPage() {
+export default function LocalizacaoPage() {
   return (
     <div className="bg-background text-foreground min-h-screen">
       <SiteHeader />
@@ -37,12 +26,9 @@ function LocalizacaoPage() {
         <p className="text-[11px] uppercase tracking-[0.5em] text-foreground/70 mb-6 pl-[0.5em]">
           Venha nos visitar
         </p>
-        <h1 className="text-5xl md:text-7xl font-light tracking-tight">
-          Localização
-        </h1>
+        <h1 className="text-5xl md:text-7xl font-light tracking-tight">Localização</h1>
         <p className="mt-6 max-w-xl text-muted-foreground">
-          Estamos prontos para te receber. Conheça nosso showroom e nosso
-          estoque pessoalmente.
+          Estamos prontos para te receber. Conheça nosso showroom e nosso estoque pessoalmente.
         </p>
       </section>
 
@@ -107,8 +93,8 @@ function LocalizacaoPage() {
                 Atendimento
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                Fale conosco pelo WhatsApp ou telefone para agendar sua
-                visita ou test-drive em casa.
+                Fale conosco pelo WhatsApp ou telefone para agendar sua visita ou test-drive em
+                casa.
               </p>
             </div>
           </div>

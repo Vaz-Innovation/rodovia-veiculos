@@ -1,7 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X, ArrowRight } from "lucide-react";
+
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { supabase } from "@/integrations/supabase/client";
@@ -42,54 +46,91 @@ type SearchParams = {
   page: number;
 };
 
-const toStringValue = (value: unknown) => (typeof value === "string" ? value : "");
-const toNumberValue = (value: unknown) => {
-  const number = typeof value === "number" ? value : typeof value === "string" ? Number(value) : NaN;
+const DEFAULT_SEARCH: SearchParams = {
+  q: "",
+  brand: "",
+  model: "",
+  priceMin: undefined,
+  priceMax: undefined,
+  yearMin: undefined,
+  yearMax: undefined,
+  kmMax: undefined,
+  transmission: "",
+  fuel: "",
+  color: "",
+  features: [],
+  sort: "recent",
+  page: 1,
+};
+
+const toNumber = (value: string | null) => {
+  if (value == null || value === "") return undefined;
+  const number = Number(value);
   return Number.isFinite(number) ? number : undefined;
 };
 
-const validateEstoqueSearch = (search: Record<string, unknown>): SearchParams => ({
-  q: toStringValue(search.q),
-  brand: toStringValue(search.brand),
-  model: toStringValue(search.model),
-  priceMin: toNumberValue(search.priceMin),
-  priceMax: toNumberValue(search.priceMax),
-  yearMin: toNumberValue(search.yearMin),
-  yearMax: toNumberValue(search.yearMax),
-  kmMax: toNumberValue(search.kmMax),
-  transmission: toStringValue(search.transmission),
-  fuel: toStringValue(search.fuel),
-  color: toStringValue(search.color),
-  features: Array.isArray(search.features) ? search.features.filter((f): f is string => typeof f === "string") : [],
-  sort: SORT_OPTIONS.includes(search.sort as SearchSort) ? (search.sort as SearchSort) : "recent",
-  page: Math.max(1, Math.floor(toNumberValue(search.page) ?? 1)),
-});
+function parseSearchParams(params: URLSearchParams): SearchParams {
+  const sortRaw = params.get("sort") ?? "recent";
+  const sort = SORT_OPTIONS.includes(sortRaw as SearchSort) ? (sortRaw as SearchSort) : "recent";
+  const page = Math.max(1, Math.floor(toNumber(params.get("page")) ?? 1));
 
-export const Route = createFileRoute("/estoque/")({
-  validateSearch: validateEstoqueSearch,
-  head: () => ({
-    meta: [
-      { title: "Estoque — Rodovia Veículos" },
-      {
-        name: "description",
-        content:
-          "Confira nosso estoque de carros semi-novos. Filtre por marca, modelo, preço, ano e mais.",
-      },
-      { property: "og:title", content: "Estoque — Rodovia Veículos" },
-      {
-        property: "og:description",
-        content: "Carros semi-novos selecionados, com procedência garantida.",
-      },
-    ],
-  }),
-  component: EstoquePage,
-});
+  return {
+    ...DEFAULT_SEARCH,
+    q: params.get("q") ?? "",
+    brand: params.get("brand") ?? "",
+    model: params.get("model") ?? "",
+    priceMin: toNumber(params.get("priceMin")),
+    priceMax: toNumber(params.get("priceMax")),
+    yearMin: toNumber(params.get("yearMin")),
+    yearMax: toNumber(params.get("yearMax")),
+    kmMax: toNumber(params.get("kmMax")),
+    transmission: params.get("transmission") ?? "",
+    fuel: params.get("fuel") ?? "",
+    color: params.get("color") ?? "",
+    features: params.getAll("features").filter(Boolean),
+    sort,
+    page,
+  };
+}
+
+function buildQueryString(next: SearchParams): string {
+  const params = new URLSearchParams();
+
+  const set = (key: string, value: string | number | undefined) => {
+    if (value === undefined || value === "") return;
+    params.set(key, String(value));
+  };
+
+  set("q", next.q);
+  set("brand", next.brand);
+  set("model", next.model);
+  set("priceMin", next.priceMin);
+  set("priceMax", next.priceMax);
+  set("yearMin", next.yearMin);
+  set("yearMax", next.yearMax);
+  set("kmMax", next.kmMax);
+  set("transmission", next.transmission);
+  set("fuel", next.fuel);
+  set("color", next.color);
+
+  for (const feature of next.features) params.append("features", feature);
+
+  if (next.sort !== DEFAULT_SEARCH.sort) set("sort", next.sort);
+  if (next.page !== DEFAULT_SEARCH.page) set("page", next.page);
+
+  return params.toString();
+}
 
 type VehicleWithPhoto = Vehicle & { vehicle_photos: VehiclePhoto[] };
 
-function EstoquePage() {
-  const search = Route.useSearch();
-  const navigate = Route.useNavigate();
+export function EstoqueClient() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const search = useMemo(
+    () => parseSearchParams(new URLSearchParams(searchParams.toString())),
+    [searchParams],
+  );
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const { data: vehicles, isLoading } = useQuery({
@@ -108,10 +149,7 @@ function EstoquePage() {
 
   const all = vehicles ?? [];
 
-  // Filter options derived from data
-  const brandOptions = useMemo(() => {
-    return Array.from(new Set(all.map((v) => v.brand))).sort();
-  }, [all]);
+  const brandOptions = useMemo(() => Array.from(new Set(all.map((v) => v.brand))).sort(), [all]);
   const modelOptions = useMemo(() => {
     return Array.from(
       new Set(all.filter((v) => !search.brand || v.brand === search.brand).map((v) => v.model)),
@@ -125,33 +163,20 @@ function EstoquePage() {
   const page = Math.min(search.page, totalPages);
   const pageItems = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
+  const replaceSearch = (next: SearchParams) => {
+    const qs = buildQueryString(next);
+    router.replace(qs ? `/estoque?${qs}` : "/estoque");
+  };
+
   const update = (patch: Partial<SearchParams>) => {
-    navigate({
-      search: (prev: SearchParams) => ({ ...prev, ...patch, page: patch.page ?? 1 }),
-      replace: true,
+    replaceSearch({
+      ...search,
+      ...patch,
+      page: patch.page ?? 1,
     });
   };
 
-  const clearFilters = () => {
-    navigate({
-      search: {
-        q: "",
-        brand: "",
-        model: "",
-        priceMin: undefined,
-        priceMax: undefined,
-        yearMin: undefined,
-        yearMax: undefined,
-        kmMax: undefined,
-        transmission: "",
-        fuel: "",
-        color: "",
-        features: [],
-        sort: "recent",
-        page: 1,
-      },
-    });
-  };
+  const clearFilters = () => replaceSearch(DEFAULT_SEARCH);
 
   const activeFiltersCount =
     (search.brand ? 1 : 0) +
@@ -176,7 +201,6 @@ function EstoquePage() {
           Encontre seu próximo carro
         </h1>
 
-        {/* Search bar */}
         <div className="mt-8 flex flex-col md:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -205,7 +229,6 @@ function EstoquePage() {
 
       <section className="flex-1 mx-auto max-w-[1600px] w-full px-6 lg:px-10 pb-24">
         <div className="grid lg:grid-cols-[280px_1fr] gap-8">
-          {/* Sidebar filters */}
           <aside
             className={cn(
               "lg:sticky lg:top-28 lg:self-start lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto",
@@ -213,9 +236,7 @@ function EstoquePage() {
             )}
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                Filtros
-              </h2>
+              <h2 className="text-xs uppercase tracking-[0.3em] text-muted-foreground">Filtros</h2>
               {activeFiltersCount > 0 && (
                 <button
                   onClick={clearFilters}
@@ -354,7 +375,7 @@ function EstoquePage() {
                         checked={checked}
                         onChange={() => {
                           const next = checked
-                            ? search.features.filter((x: string) => x !== f)
+                            ? search.features.filter((x) => x !== f)
                             : [...search.features, f];
                           update({ features: next });
                         }}
@@ -368,7 +389,6 @@ function EstoquePage() {
             </FilterGroup>
           </aside>
 
-          {/* Results */}
           <div>
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-border">
               <p className="text-sm text-muted-foreground">
@@ -382,9 +402,7 @@ function EstoquePage() {
                 </label>
                 <select
                   value={search.sort}
-                  onChange={(e) =>
-                    update({ sort: e.target.value as SearchParams["sort"] })
-                  }
+                  onChange={(e) => update({ sort: e.target.value as SearchParams["sort"] })}
                   className="bg-card border border-border px-3 py-2 text-sm"
                 >
                   <option value="recent">Mais recentes</option>
@@ -445,9 +463,7 @@ function EstoquePage() {
 function FilterGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="mb-6 pb-6 border-b border-border last:border-0">
-      <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">
-        {label}
-      </p>
+      <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">{label}</p>
       {children}
     </div>
   );
@@ -484,8 +500,7 @@ function VehicleCard({ vehicle }: { vehicle: VehicleWithPhoto }) {
 
   return (
     <Link
-      to="/estoque/$vehicleId"
-      params={{ vehicleId: vehicle.id }}
+      href={`/estoque/${vehicle.id}`}
       className="group block bg-card border border-border hover:border-foreground/30 transition-colors"
     >
       <div className="aspect-[4/3] overflow-hidden bg-muted relative">
@@ -608,7 +623,7 @@ function filterVehicles(list: VehicleWithPhoto[], s: SearchParams): VehicleWithP
     if (s.fuel && v.fuel !== (s.fuel as FuelType)) return false;
     if (s.color && v.color.toLowerCase() !== s.color.toLowerCase()) return false;
     if (s.features.length > 0) {
-      const has = s.features.every((f: string) =>
+      const has = s.features.every((f) =>
         v.features.some((vf) => vf.toLowerCase() === f.toLowerCase()),
       );
       if (!has) return false;

@@ -1,32 +1,15 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { HeroCinematic } from "@/components/hero-cinematic";
-import heroCar from "@/assets/hero-rodovia.jpg";
+
 import model1 from "@/assets/car-hatch.jpg";
 import model2 from "@/assets/car-sedan.jpg";
 import model3 from "@/assets/car-suv.jpg";
 import racing from "@/assets/racing.jpg";
 import avaliacao from "@/assets/avaliacao-veiculo.jpg";
-
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Rodovia Veículos — Tradição e qualidade há 26 anos" },
-      {
-        name: "description",
-        content:
-          "Rodovia Veículos. Carros seminovos selecionados, avaliação justa do seu veículo e test-drive delivery em Brasília.",
-      },
-      { property: "og:title", content: "Rodovia Veículos" },
-      { property: "og:description", content: "Carros seminovos selecionados, avaliação justa e test-drive delivery." },
-      { property: "og:image", content: heroCar },
-      { name: "twitter:image", content: heroCar },
-    ],
-  }),
-  component: HomePage,
-});
 
 const featured = [
   { img: model1, name: "Hatch compacto", tag: "Econômico" },
@@ -34,15 +17,13 @@ const featured = [
   { img: model3, name: "SUV compacto", tag: "Versátil" },
 ];
 
-function HomePage() {
+export default function HomePage() {
   return (
     <div className="bg-background text-foreground">
       <SiteHeader />
 
-      {/* HERO */}
       <HeroCinematic />
 
-      {/* MODELOS EM DESTAQUE */}
       <section className="py-24 lg:py-32">
         <div className="mx-auto max-w-[1600px] px-6 lg:px-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
@@ -55,8 +36,7 @@ function HomePage() {
               </h2>
             </div>
             <Link
-              to="/estoque"
-              search={{ q: "", brand: "", model: "", transmission: "", fuel: "", color: "", features: [], sort: "recent", page: 1 }}
+              href="/estoque"
               className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] hover:text-muted-foreground transition-colors"
             >
               Ver todo estoque <ArrowRight className="h-4 w-4" />
@@ -67,14 +47,13 @@ function HomePage() {
             {featured.map((m) => (
               <Link
                 key={m.name}
-                to="/estoque"
-                search={{ q: "", brand: "", model: "", transmission: "", fuel: "", color: "", features: [], sort: "recent", page: 1 }}
+                href="/estoque"
                 className="group cursor-pointer block"
                 aria-label={`Ver ${m.name} no estoque`}
               >
                 <div className="aspect-[4/3] overflow-hidden bg-card">
                   <img
-                    src={m.img}
+                    src={m.img.src}
                     alt={m.name}
                     width={1280}
                     height={896}
@@ -86,7 +65,9 @@ function HomePage() {
                   <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
                     {m.tag}
                   </p>
-                  <h3 className="mt-2 text-xl font-light group-hover:text-muted-foreground transition-colors">{m.name}</h3>
+                  <h3 className="mt-2 text-xl font-light group-hover:text-muted-foreground transition-colors">
+                    {m.name}
+                  </h3>
                 </div>
               </Link>
             ))}
@@ -94,10 +75,9 @@ function HomePage() {
         </div>
       </section>
 
-      {/* SOBRE A EMPRESA / DIFERENCIAIS */}
       <section className="relative min-h-[80vh] overflow-hidden">
         <img
-          src={racing}
+          src={racing.src}
           alt="Rodovia Veículos — tradição e compromisso"
           width={1600}
           height={900}
@@ -112,7 +92,9 @@ function HomePage() {
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight max-w-3xl leading-[1.05]">
             Tradição construída sobre
             <br />
-            <span className="italic font-extralight text-muted-foreground">princípios sólidos.</span>
+            <span className="italic font-extralight text-muted-foreground">
+              princípios sólidos.
+            </span>
           </h2>
           <p className="mt-8 max-w-xl text-muted-foreground leading-relaxed">
             Há 26 anos, a Rodovia Veículos cultiva relações duradouras com seus clientes — guiada
@@ -145,12 +127,11 @@ function HomePage() {
         </div>
       </section>
 
-      {/* AVALIAÇÃO DO VEÍCULO */}
       <section className="py-24 lg:py-32 bg-card">
         <div className="mx-auto max-w-[1600px] px-6 lg:px-10 grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="aspect-[4/3] overflow-hidden">
             <img
-              src={avaliacao}
+              src={avaliacao.src}
               alt="Avaliação profissional de veículo na Rodovia Veículos"
               width={1600}
               height={900}
@@ -167,7 +148,9 @@ function HomePage() {
               <br />
               ou trocar?
               <br />
-              <span className="italic font-extralight text-muted-foreground">Avaliamos para você.</span>
+              <span className="italic font-extralight text-muted-foreground">
+                Avaliamos para você.
+              </span>
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed max-w-lg">
               Receba uma proposta justa e transparente pelo seu veículo. Nossa equipe analisa
