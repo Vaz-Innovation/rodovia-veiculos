@@ -8,7 +8,7 @@ echo "⏳ Aguardando usuário wordpress..."
 
 echo "🔍 Tentando conectar ao MySQL com as credenciais: $WORDPRESS_DB_USER"
 
-until mysql -h db -u"$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" --skip-ssl -e "SELECT 1" >/dev/null 2>&1; do
+until mysql -h "$WORDPRESS_DB_HOST" -u"$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" --skip-ssl -e "SELECT 1" >/dev/null 2>&1; do
   echo "⏳ Usuário wordpress ainda não pronto..."
   sleep 2
 done
