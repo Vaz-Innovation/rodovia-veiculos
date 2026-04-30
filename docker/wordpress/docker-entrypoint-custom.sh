@@ -33,7 +33,7 @@ if ! wp core is-installed --allow-root; then
   echo "🚀 Instalando WordPress..."
 
   wp core install \
-    --url="http://localhost:8080" \
+    --url="$WORDPRESS_URL" \
     --title="Meu WP" \
     --admin_user="admin" \
     --admin_password="admin" \
