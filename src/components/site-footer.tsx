@@ -54,15 +54,15 @@ export function SiteFooter() {
         <div className="mx-auto max-w-[1600px] px-6 lg:px-10 py-6 flex flex-col md:flex-row justify-between gap-4 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
           <p>© {new Date().getFullYear()} Rodovia Veículos. Todos os direitos reservados.</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-foreground">
+            <Link href="/privacidade" className="hover:text-foreground">
               Privacidade
-            </a>
-            <a href="#" className="hover:text-foreground">
+            </Link>
+            <Link href="/termos" className="hover:text-foreground">
               Termos
-            </a>
-            <a href="#" className="hover:text-foreground">
+            </Link>
+            <Link href="/cookies" className="hover:text-foreground">
               Cookies
-            </a>
+            </Link>
           </div>
         </div>
       </div>
