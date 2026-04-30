@@ -23,6 +23,8 @@ import {
   type VehiclePhoto,
 } from "@/lib/vehicles";
 import { cn } from "@/lib/utils";
+import { gqlQueryOptions } from "@/graphql/gqlpc";
+import { CarsListQuery } from "@/graphql/pages/estoque";
 
 const PAGE_SIZE = 12;
 const SORT_OPTIONS = ["recent", "price_asc", "price_desc", "year_desc", "km_asc"] as const;
@@ -126,12 +128,14 @@ type VehicleWithPhoto = Vehicle & { vehicle_photos: VehiclePhoto[] };
 export function EstoqueClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const search = useMemo(
     () => parseSearchParams(new URLSearchParams(searchParams.toString())),
     [searchParams],
   );
-  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  const { data } = useQuery(gqlQueryOptions(CarsListQuery));
 
   const { data: vehicles, isLoading } = useQuery({
     queryKey: ["vehicles", "list"],
@@ -193,7 +197,7 @@ export function EstoqueClient() {
     <div className="bg-background text-foreground min-h-screen flex flex-col">
       <SiteHeader />
 
-      <section className="pt-32 pb-8 mx-auto max-w-[1600px] w-full px-6 lg:px-10">
+      <section className="pt-32 pb-8 mx-auto max-w-400 w-full px-6 lg:px-10">
         <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
           Estoque atual
         </p>
