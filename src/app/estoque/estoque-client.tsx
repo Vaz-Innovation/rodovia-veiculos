@@ -8,7 +8,6 @@ import { Search, SlidersHorizontal, X, ArrowRight } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { supabase } from "@/integrations/supabase/client";
 import {
   COMMON_COLORS,
   COMMON_FEATURES,
@@ -31,22 +30,22 @@ const SORT_OPTIONS = ["recent", "price_asc", "price_desc", "year_desc", "km_asc"
 
 type SearchSort = (typeof SORT_OPTIONS)[number];
 
-type SearchParams = {
+interface SearchParams {
   q: string;
   brand: string;
   model: string;
-  priceMin?: number;
-  priceMax?: number;
-  yearMin?: number;
-  yearMax?: number;
-  kmMax?: number;
+  priceMin: number | undefined;
+  priceMax: number | undefined;
+  yearMin: number | undefined;
+  yearMax: number | undefined;
+  kmMax: number | undefined;
   transmission: string;
   fuel: string;
   color: string;
   features: string[];
   sort: SearchSort;
   page: number;
-};
+}
 
 const DEFAULT_SEARCH: SearchParams = {
   q: "",
@@ -65,6 +64,38 @@ const DEFAULT_SEARCH: SearchParams = {
   page: 1,
 };
 
+function mapProductToVehicle(node: any): VehicleWithPhoto {
+  return {
+    id: node.id,
+
+    brand: node.productBrands?.edges?.[0]?.node?.name ?? "",
+    model: node.productsfields?.model ?? "",
+    version: node.productsfields?.version ?? "",
+
+    year_model: Number(node.productsfields?.yearModel ?? 0),
+    mileage: Number(node.productsfields?.mileage ?? 0),
+
+    transmission: node.productsfields?.transmission,
+    fuel: node.productsfields?.fuel,
+    color: node.productsfields?.color ?? "",
+
+    features: node.productsfields?.features?.edges?.map((e: any) => e.node.name) ?? [],
+
+    price: Number(node.rawPrice ?? 0),
+
+    featured: Boolean(node.productsfields?.featured),
+    created_at: node.date,
+
+    vehicle_photos: [
+      ...(node.image ? [{ url: node.image.sourceUrl, is_cover: true, position: 0 }] : []),
+      ...(node.galleryImages?.nodes?.map((img: any, i: number) => ({
+        url: img.sourceUrl,
+        is_cover: false,
+        position: i + 1,
+      })) ?? []),
+    ],
+  };
+}
 const toNumber = (value: string | null) => {
   if (value == null || value === "") return undefined;
   const number = Number(value);
@@ -135,23 +166,12 @@ export function EstoqueClient() {
     [searchParams],
   );
 
-  const { data } = useQuery(gqlQueryOptions(CarsListQuery));
+  const { data, isLoading } = useQuery(gqlQueryOptions(CarsListQuery));
 
-  const { data: vehicles, isLoading } = useQuery({
-    queryKey: ["vehicles", "list"],
-    queryFn: async (): Promise<VehicleWithPhoto[]> => {
-      const { data, error } = await supabase
-        .from("vehicles")
-        .select("*, vehicle_photos(*)")
-        .eq("status", "disponivel")
-        .order("featured", { ascending: false })
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return (data ?? []) as VehicleWithPhoto[];
-    },
-  });
-
-  const all = vehicles ?? [];
+  const all: VehicleWithPhoto[] = useMemo(() => {
+    const edges = data?.products?.edges ?? [];
+    return edges.map((e) => mapProductToVehicle(e.node));
+  }, [data]);
 
   const brandOptions = useMemo(() => Array.from(new Set(all.map((v) => v.brand))).sort(), [all]);
   const modelOptions = useMemo(() => {

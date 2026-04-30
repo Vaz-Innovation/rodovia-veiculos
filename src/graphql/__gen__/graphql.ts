@@ -18,6 +18,24 @@ export type Scalars = {
   _Any: { input: any; output: any; }
 };
 
+/** A Field Group managed by ACF */
+export type AcfFieldGroup = {
+  /**
+   * The name of the field group
+   * @deprecated Use __typename instead
+   */
+  fieldGroupName?: Maybe<Scalars['String']['output']>;
+};
+
+/** Fields associated with an ACF Field Group */
+export type AcfFieldGroupFields = {
+  /**
+   * The name of the field group
+   * @deprecated Use __typename instead
+   */
+  fieldGroupName?: Maybe<Scalars['String']['output']>;
+};
+
 /** Input for the addCartItems mutation. */
 export type AddCartItemsInput = {
   /** This is an ID that can be passed to a mutation by the client to track the progress of mutations and catch possible duplicate mutation submissions. */
@@ -5711,7 +5729,7 @@ export type EnqueuedStylesheetConnectionPageInfo = {
 };
 
 /** A external product object */
-export type ExternalProduct = ContentNode & DatabaseIdentifier & MenuItemLinkable & Node & NodeWithComments & NodeWithContentEditor & NodeWithExcerpt & NodeWithFeaturedImage & NodeWithTemplate & NodeWithTitle & Previewable & Product & ProductUnion & ProductWithAttributes & ProductWithPricing & UniformResourceIdentifiable & {
+export type ExternalProduct = ContentNode & DatabaseIdentifier & MenuItemLinkable & Node & NodeWithComments & NodeWithContentEditor & NodeWithExcerpt & NodeWithFeaturedImage & NodeWithTemplate & NodeWithTitle & Previewable & Product & ProductUnion & ProductWithAttributes & ProductWithPricing & UniformResourceIdentifiable & WithAcfProductsfields & {
   __typename?: 'ExternalProduct';
   /** Connection between the ProductWithAttributes type and the ProductAttribute type */
   attributes?: Maybe<ProductWithAttributesToProductAttributeConnection>;
@@ -5836,6 +5854,8 @@ export type ExternalProduct = ContentNode & DatabaseIdentifier & MenuItemLinkabl
   productTags?: Maybe<ProductToProductTagConnection>;
   /** Connection between the Product type and the productType type */
   productTypes?: Maybe<ProductToProductTypeConnection>;
+  /** Fields of the Productsfields ACF Field Group */
+  productsfields?: Maybe<Productsfields>;
   /** Can product be purchased? */
   purchasable?: Maybe<Scalars['Boolean']['output']>;
   /** Purchase note */
@@ -6453,7 +6473,7 @@ export type GlobalProductAttributeToTermNodeConnectionWhereArgs = {
 };
 
 /** A group product object */
-export type GroupProduct = ContentNode & DatabaseIdentifier & MenuItemLinkable & Node & NodeWithComments & NodeWithContentEditor & NodeWithExcerpt & NodeWithFeaturedImage & NodeWithTemplate & NodeWithTitle & Previewable & Product & ProductUnion & ProductWithAttributes & ProductWithPricing & UniformResourceIdentifiable & {
+export type GroupProduct = ContentNode & DatabaseIdentifier & MenuItemLinkable & Node & NodeWithComments & NodeWithContentEditor & NodeWithExcerpt & NodeWithFeaturedImage & NodeWithTemplate & NodeWithTitle & Previewable & Product & ProductUnion & ProductWithAttributes & ProductWithPricing & UniformResourceIdentifiable & WithAcfProductsfields & {
   __typename?: 'GroupProduct';
   /** Product&#039;s add to cart button text description */
   addToCartDescription?: Maybe<Scalars['String']['output']>;
@@ -6580,6 +6600,8 @@ export type GroupProduct = ContentNode & DatabaseIdentifier & MenuItemLinkable &
   productTypes?: Maybe<ProductToProductTypeConnection>;
   /** Connection between the GroupProduct type and the ProductUnion type */
   products?: Maybe<GroupProductToProductUnionConnection>;
+  /** Fields of the Productsfields ACF Field Group */
+  productsfields?: Maybe<Productsfields>;
   /** Can product be purchased? */
   purchasable?: Maybe<Scalars['Boolean']['output']>;
   /** Purchase note */
@@ -11794,6 +11816,8 @@ export type Product = {
   productTags?: Maybe<ProductToProductTagConnection>;
   /** Connection between the Product type and the productType type */
   productTypes?: Maybe<ProductToProductTypeConnection>;
+  /** Fields of the Productsfields ACF Field Group */
+  productsfields?: Maybe<Productsfields>;
   /** Can product be purchased? */
   purchasable?: Maybe<Scalars['Boolean']['output']>;
   /** Purchase note */
@@ -16733,6 +16757,84 @@ export enum ProductsOrderByEnum {
 export type ProductsOrderbyInput = {
   field: ProductsOrderByEnum;
   order?: InputMaybe<OrderEnum>;
+};
+
+/** The &quot;Productsfields&quot; Field Group. Added to the Schema by &quot;WPGraphQL for ACF&quot;. */
+export type Productsfields = AcfFieldGroup & AcfFieldGroupFields & Productsfields_Fields & {
+  __typename?: 'Productsfields';
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  color?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;true_false&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  featured?: Maybe<Scalars['Boolean']['output']>;
+  /** Field of the &quot;group&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  features?: Maybe<ProductsfieldsFeatures>;
+  /**
+   * The name of the field group
+   * @deprecated Use __typename instead
+   */
+  fieldGroupName?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  fuel?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  mileage?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  model?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  transmission?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  version?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  yearmodel?: Maybe<Scalars['String']['output']>;
+};
+
+/** The &quot;ProductsfieldsFeatures&quot; Field Group. Added to the Schema by &quot;WPGraphQL for ACF&quot;. */
+export type ProductsfieldsFeatures = AcfFieldGroup & AcfFieldGroupFields & ProductsfieldsFeatures_Fields & {
+  __typename?: 'ProductsfieldsFeatures';
+  /**
+   * The name of the field group
+   * @deprecated Use __typename instead
+   */
+  fieldGroupName?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;ProductsfieldsFeatures&quot; Field Group */
+  name?: Maybe<Scalars['String']['output']>;
+};
+
+/** Interface representing fields of the ACF &quot;ProductsfieldsFeatures&quot; Field Group */
+export type ProductsfieldsFeatures_Fields = {
+  /**
+   * The name of the field group
+   * @deprecated Use __typename instead
+   */
+  fieldGroupName?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;ProductsfieldsFeatures&quot; Field Group */
+  name?: Maybe<Scalars['String']['output']>;
+};
+
+/** Interface representing fields of the ACF &quot;Productsfields&quot; Field Group */
+export type Productsfields_Fields = {
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  color?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;true_false&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  featured?: Maybe<Scalars['Boolean']['output']>;
+  /** Field of the &quot;group&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  features?: Maybe<ProductsfieldsFeatures>;
+  /**
+   * The name of the field group
+   * @deprecated Use __typename instead
+   */
+  fieldGroupName?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  fuel?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  mileage?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  model?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  transmission?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  version?: Maybe<Scalars['String']['output']>;
+  /** Field of the &quot;text&quot; Field Type added to the schema as part of the &quot;Productsfields&quot; Field Group */
+  yearmodel?: Maybe<Scalars['String']['output']>;
 };
 
 /** Single rating count */
@@ -22183,7 +22285,7 @@ export type SimpleCartItemTotalArgs = {
 };
 
 /** A simple product object */
-export type SimpleProduct = ContentNode & DatabaseIdentifier & DownloadableProduct & InventoriedProduct & MenuItemLinkable & Node & NodeWithComments & NodeWithContentEditor & NodeWithExcerpt & NodeWithFeaturedImage & NodeWithTemplate & NodeWithTitle & Previewable & Product & ProductUnion & ProductWithAttributes & ProductWithDimensions & ProductWithPricing & UniformResourceIdentifiable & {
+export type SimpleProduct = ContentNode & DatabaseIdentifier & DownloadableProduct & InventoriedProduct & MenuItemLinkable & Node & NodeWithComments & NodeWithContentEditor & NodeWithExcerpt & NodeWithFeaturedImage & NodeWithTemplate & NodeWithTitle & Previewable & Product & ProductUnion & ProductWithAttributes & ProductWithDimensions & ProductWithPricing & UniformResourceIdentifiable & WithAcfProductsfields & {
   __typename?: 'SimpleProduct';
   /** Connection between the ProductWithAttributes type and the ProductAttribute type */
   attributes?: Maybe<ProductWithAttributesToProductAttributeConnection>;
@@ -22326,6 +22428,8 @@ export type SimpleProduct = ContentNode & DatabaseIdentifier & DownloadableProdu
   productTags?: Maybe<ProductToProductTagConnection>;
   /** Connection between the Product type and the productType type */
   productTypes?: Maybe<ProductToProductTypeConnection>;
+  /** Fields of the Productsfields ACF Field Group */
+  productsfields?: Maybe<Productsfields>;
   /** Can product be purchased? */
   purchasable?: Maybe<Scalars['Boolean']['output']>;
   /** Purchase note */
@@ -26074,7 +26178,7 @@ export enum UsersConnectionSearchColumnEnum {
 }
 
 /** A variable product object */
-export type VariableProduct = ContentNode & DatabaseIdentifier & InventoriedProduct & MenuItemLinkable & Node & NodeWithComments & NodeWithContentEditor & NodeWithExcerpt & NodeWithFeaturedImage & NodeWithTemplate & NodeWithTitle & Previewable & Product & ProductUnion & ProductWithAttributes & ProductWithDimensions & ProductWithPricing & ProductWithVariations & UniformResourceIdentifiable & {
+export type VariableProduct = ContentNode & DatabaseIdentifier & InventoriedProduct & MenuItemLinkable & Node & NodeWithComments & NodeWithContentEditor & NodeWithExcerpt & NodeWithFeaturedImage & NodeWithTemplate & NodeWithTitle & Previewable & Product & ProductUnion & ProductWithAttributes & ProductWithDimensions & ProductWithPricing & ProductWithVariations & UniformResourceIdentifiable & WithAcfProductsfields & {
   __typename?: 'VariableProduct';
   /** Connection between the ProductWithAttributes type and the ProductAttribute type */
   attributes?: Maybe<ProductWithAttributesToProductAttributeConnection>;
@@ -26209,6 +26313,8 @@ export type VariableProduct = ContentNode & DatabaseIdentifier & InventoriedProd
   productTags?: Maybe<ProductToProductTagConnection>;
   /** Connection between the Product type and the productType type */
   productTypes?: Maybe<ProductToProductTypeConnection>;
+  /** Fields of the Productsfields ACF Field Group */
+  productsfields?: Maybe<Productsfields>;
   /** Can product be purchased? */
   purchasable?: Maybe<Scalars['Boolean']['output']>;
   /** Purchase note */
@@ -27354,6 +27460,12 @@ export type WpPageInfo = {
   startCursor?: Maybe<Scalars['String']['output']>;
 };
 
+/** Provides access to fields of the &quot;Productsfields&quot; ACF Field Group via the &quot;productsfields&quot; field */
+export type WithAcfProductsfields = {
+  /** Fields of the Productsfields ACF Field Group */
+  productsfields?: Maybe<Productsfields>;
+};
+
 /** Input for the writeReview mutation. */
 export type WriteReviewInput = {
   /** The name of the comment's author. */
@@ -27408,7 +27520,7 @@ export type _Service = {
 export type ProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProductsQuery = { __typename?: 'RootQuery', products?: { __typename?: 'RootQueryToProductConnection', edges: Array<{ __typename?: 'RootQueryToProductConnectionEdge', node: { __typename?: 'ExternalProduct', title?: string | null } | { __typename?: 'GroupProduct', title?: string | null } | { __typename?: 'SimpleProduct', title?: string | null } | { __typename?: 'VariableProduct', title?: string | null } }> } | null };
+export type ProductsQuery = { __typename?: 'RootQuery', products?: { __typename?: 'RootQueryToProductConnection', edges: Array<{ __typename?: 'RootQueryToProductConnectionEdge', node: { __typename?: 'ExternalProduct', id: string, title?: string | null, date?: string | null, productCategories?: { __typename?: 'ProductToProductCategoryConnection', edges: Array<{ __typename?: 'ProductToProductCategoryConnectionEdge', node: { __typename?: 'ProductCategory', name?: string | null } }> } | null, productTags?: { __typename?: 'ProductToProductTagConnection', edges: Array<{ __typename?: 'ProductToProductTagConnectionEdge', node: { __typename?: 'ProductTag', name?: string | null } }> } | null, productBrands?: { __typename?: 'ProductToProductBrandConnection', edges: Array<{ __typename?: 'ProductToProductBrandConnectionEdge', node: { __typename?: 'ProductBrand', name?: string | null } }> } | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null, galleryImages?: { __typename?: 'ProductToMediaItemConnection', nodes: Array<{ __typename?: 'MediaItem', sourceUrl?: string | null }> } | null } | { __typename?: 'GroupProduct', id: string, title?: string | null, date?: string | null, productCategories?: { __typename?: 'ProductToProductCategoryConnection', edges: Array<{ __typename?: 'ProductToProductCategoryConnectionEdge', node: { __typename?: 'ProductCategory', name?: string | null } }> } | null, productTags?: { __typename?: 'ProductToProductTagConnection', edges: Array<{ __typename?: 'ProductToProductTagConnectionEdge', node: { __typename?: 'ProductTag', name?: string | null } }> } | null, productBrands?: { __typename?: 'ProductToProductBrandConnection', edges: Array<{ __typename?: 'ProductToProductBrandConnectionEdge', node: { __typename?: 'ProductBrand', name?: string | null } }> } | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null, galleryImages?: { __typename?: 'ProductToMediaItemConnection', nodes: Array<{ __typename?: 'MediaItem', sourceUrl?: string | null }> } | null } | { __typename?: 'SimpleProduct', onSale?: boolean | null, stockStatus?: StockStatusEnum | null, price?: string | null, regularPrice?: string | null, salePrice?: string | null, stockQuantity?: number | null, soldIndividually?: boolean | null, id: string, title?: string | null, date?: string | null, rawPrice?: string | null, productCategories?: { __typename?: 'ProductToProductCategoryConnection', edges: Array<{ __typename?: 'ProductToProductCategoryConnectionEdge', node: { __typename?: 'ProductCategory', name?: string | null } }> } | null, productTags?: { __typename?: 'ProductToProductTagConnection', edges: Array<{ __typename?: 'ProductToProductTagConnectionEdge', node: { __typename?: 'ProductTag', name?: string | null } }> } | null, productBrands?: { __typename?: 'ProductToProductBrandConnection', edges: Array<{ __typename?: 'ProductToProductBrandConnectionEdge', node: { __typename?: 'ProductBrand', name?: string | null } }> } | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null, galleryImages?: { __typename?: 'ProductToMediaItemConnection', nodes: Array<{ __typename?: 'MediaItem', sourceUrl?: string | null }> } | null } | { __typename?: 'VariableProduct', id: string, title?: string | null, date?: string | null, productCategories?: { __typename?: 'ProductToProductCategoryConnection', edges: Array<{ __typename?: 'ProductToProductCategoryConnectionEdge', node: { __typename?: 'ProductCategory', name?: string | null } }> } | null, productTags?: { __typename?: 'ProductToProductTagConnection', edges: Array<{ __typename?: 'ProductToProductTagConnectionEdge', node: { __typename?: 'ProductTag', name?: string | null } }> } | null, productBrands?: { __typename?: 'ProductToProductBrandConnection', edges: Array<{ __typename?: 'ProductToProductBrandConnectionEdge', node: { __typename?: 'ProductBrand', name?: string | null } }> } | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null, galleryImages?: { __typename?: 'ProductToMediaItemConnection', nodes: Array<{ __typename?: 'MediaItem', sourceUrl?: string | null }> } | null } }> } | null };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -27434,7 +27546,62 @@ export const ProductsDocument = new TypedDocumentString(`
   products {
     edges {
       node {
+        id
         title
+        date
+        productCategories {
+          edges {
+            node {
+              name
+            }
+          }
+        }
+        productTags {
+          edges {
+            node {
+              name
+            }
+          }
+        }
+        productBrands {
+          edges {
+            node {
+              name
+            }
+          }
+        }
+        productsfields {
+          model
+          version
+          yearmodel
+          mileage
+          transmission
+          fuel
+          color
+          featured
+          features {
+            name
+          }
+        }
+        ... on SimpleProduct {
+          onSale
+          stockStatus
+          price
+          rawPrice: price(format: RAW)
+          regularPrice
+          salePrice
+          stockStatus
+          stockQuantity
+          soldIndividually
+        }
+        image {
+          sourceUrl
+        }
+        galleryImages {
+          nodes {
+            sourceUrl
+          }
+        }
       }
     }
   }
