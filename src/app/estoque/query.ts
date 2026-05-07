@@ -1,4 +1,4 @@
-import { graphql } from "../__gen__";
+import { graphql } from "@/graphql/__gen__";
 
 export const CarsListQuery = graphql(`
   query Products {

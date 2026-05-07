@@ -27517,6 +27517,13 @@ export type _Service = {
   sdl?: Maybe<Scalars['String']['output']>;
 };
 
+export type CarByIdQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type CarByIdQuery = { __typename?: 'RootQuery', product?: { __typename?: 'ExternalProduct', id: string, title?: string | null, date?: string | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } | { __typename?: 'GroupProduct', id: string, title?: string | null, date?: string | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } | { __typename?: 'SimpleProduct', onSale?: boolean | null, stockStatus?: StockStatusEnum | null, price?: string | null, regularPrice?: string | null, salePrice?: string | null, stockQuantity?: number | null, soldIndividually?: boolean | null, id: string, title?: string | null, date?: string | null, rawPrice?: string | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } | { __typename?: 'VariableProduct', id: string, title?: string | null, date?: string | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } | null };
+
 export type ProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -27541,6 +27548,42 @@ export class TypedDocumentString<TResult, TVariables>
   }
 }
 
+export const CarByIdDocument = new TypedDocumentString(`
+    query CarById($id: ID!) {
+  product(id: $id) {
+    id
+    title
+    date
+    productsfields {
+      model
+      version
+      yearmodel
+      mileage
+      transmission
+      fuel
+      color
+      featured
+      features {
+        name
+      }
+    }
+    ... on SimpleProduct {
+      onSale
+      stockStatus
+      price
+      rawPrice: price(format: RAW)
+      regularPrice
+      salePrice
+      stockStatus
+      stockQuantity
+      soldIndividually
+    }
+    image {
+      sourceUrl
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<CarByIdQuery, CarByIdQueryVariables>;
 export const ProductsDocument = new TypedDocumentString(`
     query Products {
   products {

@@ -5,7 +5,7 @@ function getHeaders(req: Request): HeadersInit {
   const headers: Record<string, string> = {
     Authorization: `Basic ${WORDPRESS_API_KEY}`,
     "Content-Type": "application/json",
-    Accept: "application/json", // safer than graphql-response+json
+    Accept: "application/json",
   };
 
   const accept = req.headers.get("accept");
