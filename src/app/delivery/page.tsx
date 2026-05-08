@@ -64,21 +64,19 @@ export default function DeliveryPage() {
         </div>
       </section>
 
-      <section className="py-24 mx-auto max-w-[1600px] px-6 lg:px-10 grid md:grid-cols-2 gap-16">
-        <div>
-          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
+      <section className="py-24 mx-auto max-w-[1200px] px-6 lg:px-10">
+        <div className="flex flex-col items-center text-center">
+          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-6">
             Como funciona
           </p>
-          <h2 className="text-3xl md:text-4xl font-light tracking-tight leading-[1.1]">
-            O Test Drive vai
-            <br />
+          <h2 className="text-4xl md:text-5xl font-light tracking-tight leading-[1.1] mb-8">
+            O Test Drive vai{" "}
             <span className="italic font-extralight text-muted-foreground">
               até você.
             </span>
           </h2>
-        </div>
-        <div className="text-muted-foreground leading-relaxed space-y-4">
-          <p>
+          <div className="w-16 h-px bg-foreground/30 mb-8" />
+          <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl">
             A Rodovia Veículos oferece o Delivery de test drive para otimizar seu tempo. Você
             escolhe o modelo, combinamos o horário e levamos o carro até você, no Distrito Federal.
           </p>
