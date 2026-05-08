@@ -11,7 +11,7 @@ export function BrandLogo({ className, size = "sm" }: BrandLogoProps) {
     <div className={cn("inline-flex flex-col leading-none text-foreground", className)}>
       <span
         className={cn(
-          "font-serif font-normal tracking-tight text-foreground",
+          "font-sans italic font-normal tracking-tight text-foreground",
           isLarge ? "text-4xl" : "text-[28px]",
         )}
       >
