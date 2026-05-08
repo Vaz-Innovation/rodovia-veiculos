@@ -22,7 +22,7 @@ const steps = [
   {
     icon: CalendarCheck,
     title: "Agende pelo WhatsApp",
-    text: "Combine dia, horário e endereço — em casa ou no trabalho, como preferir.",
+    text: "Combinamos dia, hora e local. Na sua casa ou no seu trabalho. Como você preferir.",
   },
   {
     icon: MapPin,
