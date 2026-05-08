@@ -17,7 +17,7 @@ const steps = [
   {
     icon: Car,
     title: "Escolha o modelo",
-    text: "Navegue pelo nosso estoque e selecione o veículo que deseja experimentar.",
+    text: "Selecione o veículo no estoque.",
   },
   {
     icon: CalendarCheck,
