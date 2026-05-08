@@ -158,9 +158,7 @@ export default function HomePage() {
               Solicite sua avaliação
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </a>
-            <p className="mt-4 text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
-              Atendimento direto no WhatsApp
-            </p>
+
           </div>
         </div>
       </section>
