@@ -17,14 +17,16 @@ export function BrandLogo({ className, size = "sm" }: BrandLogoProps) {
       >
         Rodovia
       </span>
-      <span
-        className={cn(
-          "font-sans font-bold uppercase text-black",
-          isLarge ? "text-sm tracking-[0.15em]" : "text-xs tracking-[0.12em]",
-        )}
-      >
-        Veículos
-      </span>
+      <div className="flex justify-end">
+        <span
+          className={cn(
+            "font-sans font-bold uppercase text-black",
+            isLarge ? "text-sm tracking-[0.15em]" : "text-xs tracking-[0.12em]",
+          )}
+        >
+          Veículos
+        </span>
+      </div>
     </div>
   );
 }
