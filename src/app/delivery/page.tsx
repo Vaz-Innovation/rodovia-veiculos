@@ -106,9 +106,6 @@ export default function DeliveryPage() {
 
       <section className="bg-card py-24">
         <div className="mx-auto max-w-[1200px] px-6 lg:px-10 text-center">
-          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-6">
-            Pronto para experimentar?
-          </p>
           <h2 className="text-4xl md:text-5xl font-light tracking-tight leading-[1.05]">
             Escolha seu próximo carro
             <br />
