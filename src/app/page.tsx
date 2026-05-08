@@ -141,9 +141,6 @@ export default function HomePage() {
             />
           </div>
           <div>
-            <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
-              Avaliação do seu veículo
-            </p>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.05]">
               Quer vender
               <br />
