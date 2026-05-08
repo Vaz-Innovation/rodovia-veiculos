@@ -27,7 +27,7 @@ const steps = [
   {
     icon: MapPin,
     title: "O veículo vai até você",
-    text: "Nossa equipe leva o carro até o local combinado, dentro do Distrito Federal.",
+    text: "Nossa equipe leva o carro até você, no Distrito Federal. E avalia o seu.",
   },
   {
     icon: ShieldCheck,
