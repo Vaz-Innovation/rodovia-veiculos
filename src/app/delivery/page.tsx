@@ -70,10 +70,10 @@ export default function DeliveryPage() {
             Como funciona
           </p>
           <h2 className="text-3xl md:text-4xl font-light tracking-tight leading-[1.1]">
-            O test-drive vai
+            O Test Drive vai
             <br />
             <span className="italic font-extralight text-muted-foreground">
-              até onde você estiver.
+              até você.
             </span>
           </h2>
         </div>
