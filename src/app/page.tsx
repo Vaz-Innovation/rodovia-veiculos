@@ -127,7 +127,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-24 lg:py-32 bg-card">
+      <section id="avaliacao" className="py-24 lg:py-32 bg-card">
         <div className="mx-auto max-w-[1600px] px-6 lg:px-10 grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="aspect-[4/3] overflow-hidden">
             <img

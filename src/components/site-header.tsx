@@ -10,6 +10,7 @@ import { BrandLogo } from "@/components/brand-logo";
 const navLinks = [
   { to: "/estoque", label: "Estoque" },
   { to: "/delivery", label: "Delivery" },
+  { to: "/#avaliacao", label: "Avaliação" },
   { to: "/localizacao", label: "Localização" },
   { to: "/contato", label: "Contato" },
 ] as const;
