@@ -102,7 +102,7 @@ export default function HomePage() {
           </h2>
 
 
-          <ul className="mt-16 grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-10 max-w-5xl">
+          <ul className="mt-16 grid grid-cols-2 md:grid-cols-5 gap-x-8 gap-y-10 max-w-5xl">
             {[
               { n: "01", label: "Respeito" },
               { n: "02", label: "Seriedade" },
@@ -112,14 +112,14 @@ export default function HomePage() {
             ].map((item, idx) => (
               <li
                 key={item.n}
-                className={`border-t border-border pt-5 ${
+                className={`border-t-2 border-foreground pt-6 ${
                   idx === 4 ? "col-span-2 md:col-span-1 text-center md:text-left" : ""
                 }`}
               >
-                <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">
+                <p className="text-xs font-medium uppercase tracking-[0.2em] text-foreground/60 mb-3">
                   {item.n}
                 </p>
-                <p className="text-base md:text-lg font-light text-foreground leading-snug">
+                <p className="text-lg md:text-xl font-semibold text-foreground leading-snug">
                   {item.label}
                 </p>
               </li>
