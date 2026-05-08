@@ -65,28 +65,8 @@ export function HeroCinematic() {
 
       {/* CONTENT */}
       <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 lg:px-10 flex flex-col items-center justify-end pb-24 md:pb-32 text-center">
-        {/* Kicker — letter-spacing reveal */}
-        <p className="animate-hero-kicker text-[10px] md:text-[11px] uppercase text-muted-foreground mb-4 md:mb-6">
-          Sem custo · Sem compromisso
-        </p>
-
-        {/* Headline — mask reveal (curtain down) */}
-        <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light tracking-tight leading-[1.15] text-foreground pb-4">
-          <span className="animate-hero-title inline-block italic font-extralight pb-2">
-            Delivery
-          </span>
-        </h1>
-
-        {/* Animated divider line — draws from center */}
-        <div className="animate-hero-divider mt-8 h-px w-16 bg-foreground/40" />
-
-        {/* Sub-text */}
-        <p className="animate-hero-copy mt-6 md:mt-8 max-w-xl text-sm md:text-lg text-foreground/75 leading-relaxed">
-          Gostou de um modelo? Nós levamos o carro até sua casa ou trabalho para um test-drive.
-        </p>
-
         {/* CTAs */}
-        <div className="animate-hero-actions mt-8 md:mt-12 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto">
+        <div className="animate-hero-actions flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full sm:w-auto">
           <Link
             href="/delivery"
             className="group inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-6 sm:px-8 py-4 text-[11px] sm:text-xs uppercase tracking-[0.2em] sm:tracking-[0.25em] hover:bg-primary/90 transition-colors"
