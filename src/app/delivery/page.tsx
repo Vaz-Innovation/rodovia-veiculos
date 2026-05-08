@@ -58,8 +58,8 @@ export default function DeliveryPage() {
             Delivery de <span className="italic font-extralight">test-drive</span>
           </h1>
           <p className="mt-6 max-w-xl text-base md:text-lg text-foreground/75 leading-relaxed">
-            Gostou de um modelo no nosso estoque? Levamos o carro até a sua casa ou trabalho para
-            você experimentar com tranquilidade.
+            Gostou de um modelo? Nós levamos o carro até a sua casa ou trabalho para você conhecer,
+            com tranquilidade.
           </p>
         </div>
       </section>
