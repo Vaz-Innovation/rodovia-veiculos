@@ -1,8 +1,7 @@
 import { useMemo } from "react";
-import { VehicleWithPhoto } from "./vehicle-card";
-import { TransmissionType, FuelType } from "@/lib/vehicles";
+import { TransmissionType, FuelType, VehicleWithPhoto } from "@/lib/vehicles";
 
-export function useEstoqueHelpers(
+export function useVehicleFilters(
   all: VehicleWithPhoto[],
   search: any,
   PAGE_SIZE: number,
@@ -25,7 +24,7 @@ export function useEstoqueHelpers(
   return { brandOptions, modelOptions, filtered, sorted, totalPages, page, pageItems };
 }
 
-function filterVehicles(list: VehicleWithPhoto[], s: any): VehicleWithPhoto[] {
+export function filterVehicles(list: VehicleWithPhoto[], s: any): VehicleWithPhoto[] {
   const q = s.q.trim().toLowerCase();
   return list.filter((v) => {
     if (q) {
@@ -53,7 +52,7 @@ function filterVehicles(list: VehicleWithPhoto[], s: any): VehicleWithPhoto[] {
   });
 }
 
-function sortVehicles(list: VehicleWithPhoto[], sort: string): VehicleWithPhoto[] {
+export function sortVehicles(list: VehicleWithPhoto[], sort: string): VehicleWithPhoto[] {
   const copy = [...list];
   switch (sort) {
     case "price_asc":

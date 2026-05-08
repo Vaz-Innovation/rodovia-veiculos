@@ -27,11 +27,6 @@ import {
   formatPrice,
   vehicleTitle,
   whatsappLink,
-  type Vehicle,
-  type VehiclePhoto,
-  type TransmissionType,
-  type FuelType,
-  type VehicleStatus,
 } from "@/lib/vehicles";
 import { cn } from "@/lib/utils";
 import { NotFoundView } from "./_components/not-found-view";
@@ -40,82 +35,19 @@ import { ContactCard } from "./_components/contact-card";
 
 import { CarByIdQuery } from "./query";
 import { gqlQueryOptions } from "@/graphql/gqlpc";
-import { CarByIdQuery as CarByIdQueryType } from "@/graphql/__gen__/graphql";
-
-type VehicleWithPhoto = Vehicle & { vehicle_photos: VehiclePhoto[] };
-
-type DetailedCarNode = NonNullable<CarByIdQueryType["product"]>;
-
-function mapProductToVehicle(node: DetailedCarNode): VehicleWithPhoto {
-  const pf = node.productsfields;
-  const rawPrice = "rawPrice" in node ? node.rawPrice : null;
-
-  return {
-    id: node.id,
-    brand: "", // Add logic to extract brand if needed
-    model: pf?.model ?? "",
-    version: pf?.version ?? "",
-    year_model: Number(pf?.yearmodel ?? 0),
-    mileage: Number(pf?.mileage ?? 0),
-    transmission: pf?.transmission as TransmissionType,
-    fuel: pf?.fuel as FuelType,
-    color: pf?.color ?? "",
-    features: Array.isArray(pf?.features)
-      ? pf.features.map((f) => f.name).filter((name): name is string => !!name)
-      : pf?.features?.name
-        ? [pf.features.name]
-        : [],
-    price: Number(rawPrice ?? 0),
-    featured: Boolean(pf?.featured),
-    created_at: node.date ?? "",
-    vehicle_photos: [
-      ...(node.image?.sourceUrl
-        ? [
-            {
-              id: `${node.id}-main`,
-              url: node.image.sourceUrl,
-              is_cover: true,
-              position: 0,
-              created_at: node.date ?? "",
-              storage_path: null,
-              vehicle_id: node.id,
-            },
-          ]
-        : []),
-    ],
-    description: null,
-    doors: null,
-    plate_end: null,
-    status: "disponivel",
-    updated_at: node.date ?? "",
-    year_manufacture: Number(pf?.yearmodel ?? 0),
-  };
-}
+import { useVehicleMapper } from "@/hooks/useVehicleMapper";
 
 export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
   const [photoIndex, setPhotoIndex] = useState(0);
   const [lightbox, setLightbox] = useState(false);
 
-  // const { data, isLoading, error } = useQuery({
-  //   queryKey: ["vehicle", vehicleId],
-  //   queryFn: async (): Promise<VehicleWithPhotos | null> => {
-  //     const { data, error } = await supabase
-  //       .from("vehicles")
-  //       .select("*, vehicle_photos(*)")
-  //       .eq("id", vehicleId)
-  //       .maybeSingle();
-  //     if (error) throw error;
-  //     return data as VehicleWithPhotos | null;
-  //   },
-  // });
-
+  const mapProductToVehicle = useVehicleMapper();
   const {
     data: queryData,
     isLoading,
     error,
   } = useQuery(gqlQueryOptions(CarByIdQuery, { input: { id: vehicleId } }));
 
-  // Defensive: if queryData?.product is null, treat as not found
   const data = queryData?.product ? mapProductToVehicle(queryData.product) : null;
 
   if (isLoading) {
@@ -178,6 +110,9 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
           <span className="text-border">/</span>
           <span className="text-foreground">{data.model}</span>
         </nav>
+        <div className="py-4">
+          <span className="text-3xl ">{data.name}</span>
+        </div>
       </section>
 
       <section className="mx-auto max-w-350 w-full md:px-4 lg:px-8">

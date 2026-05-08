@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { FilterGroup } from "./_components/filter-group";
 import { NumberInput } from "./_components/number-input";
 import { Pagination } from "./_components/pagination";
@@ -16,19 +15,15 @@ import {
   COMMON_FEATURES,
   FUEL_LABELS,
   TRANSMISSION_LABELS,
-  formatMileage,
-  formatPrice,
-  vehicleTitle,
-  type FuelType,
-  type TransmissionType,
   type Vehicle,
   type VehiclePhoto,
 } from "@/lib/vehicles";
 import { cn } from "@/lib/utils";
 import { gqlQueryOptions } from "@/graphql/gqlpc";
 import { VehicleCard } from "./_components/vehicle-card";
-import { useEstoqueHelpers } from "./_components/useEstoqueHelpers";
+import { useEstoqueHelpers } from "../../hooks/useEstoqueHelpers";
 import { CarsListQuery } from "./query";
+import { useVehicleMapper } from "@/hooks/useVehicleMapper";
 
 const PAGE_SIZE = 12;
 const SORT_OPTIONS = ["recent", "price_asc", "price_desc", "year_desc", "km_asc"] as const;
@@ -69,72 +64,6 @@ const DEFAULT_SEARCH: SearchParams = {
   page: 1,
 };
 
-import { CarByIdQuery, ProductsQuery } from "@/graphql/__gen__/graphql";
-
-type CarNode = NonNullable<NonNullable<ProductsQuery["products"]>["edges"][0]>["node"];
-type DetailedCarNode = NonNullable<CarByIdQuery["product"]>;
-
-function mapProductToVehicle(node: CarNode | DetailedCarNode): VehicleWithPhoto {
-  const pf = node.productsfields;
-  const brands = "productBrands" in node ? node.productBrands?.edges?.map((e) => e.node.name) : [];
-  const brand = brands?.[0] ?? "";
-
-  const rawPrice = "rawPrice" in node ? node.rawPrice : null;
-
-  return {
-    id: node.id,
-    brand: brand || "",
-    model: pf?.model ?? "",
-    version: pf?.version ?? "",
-    year_model: Number(pf?.yearmodel ?? 0),
-    mileage: Number(pf?.mileage ?? 0),
-    transmission: pf?.transmission as TransmissionType,
-    fuel: pf?.fuel as FuelType,
-    color: pf?.color ?? "",
-    features: Array.isArray(pf?.features)
-      ? pf.features.map((f) => f.name).filter((name): name is string => !!name)
-      : pf?.features?.name
-        ? [pf.features.name]
-        : [],
-    price: Number(rawPrice ?? 0),
-    featured: Boolean(pf?.featured),
-    created_at: node.date ?? "",
-    vehicle_photos: [
-      ...(node.image?.sourceUrl
-        ? [
-            {
-              id: `${node.id}-main`,
-              url: node.image.sourceUrl,
-              is_cover: true,
-              position: 0,
-              created_at: node.date ?? "",
-              storage_path: null,
-              vehicle_id: node.id,
-            },
-          ]
-        : []),
-      ...("galleryImages" in node && node.galleryImages?.nodes
-        ? node.galleryImages.nodes
-            .map((img, i) => ({
-              id: `${node.id}-gallery-${i}`,
-              url: img.sourceUrl ?? "",
-              is_cover: false,
-              position: i + 1,
-              created_at: node.date ?? "",
-              storage_path: null,
-              vehicle_id: node.id,
-            }))
-            .filter((p) => !!p.url)
-        : []),
-    ],
-    description: null,
-    doors: null,
-    plate_end: null,
-    status: "disponivel",
-    updated_at: node.date ?? "",
-    year_manufacture: Number(pf?.yearmodel ?? 0),
-  };
-}
 const toNumber = (value: string | null) => {
   if (value == null || value === "") return undefined;
   const number = Number(value);
@@ -198,6 +127,7 @@ type VehicleWithPhoto = Vehicle & { vehicle_photos: VehiclePhoto[] };
 export function EstoqueClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const mapProductToVehicle = useVehicleMapper();
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const search = useMemo(
@@ -210,7 +140,7 @@ export function EstoqueClient() {
   const all: VehicleWithPhoto[] = useMemo(() => {
     const edges = data?.products?.edges ?? [];
     return edges.map((e) => mapProductToVehicle(e.node));
-  }, [data]);
+  }, [data, mapProductToVehicle]);
 
   const { brandOptions, modelOptions, filtered, sorted, totalPages, page, pageItems } =
     useEstoqueHelpers(all, search, PAGE_SIZE, search.sort);
@@ -279,7 +209,7 @@ export function EstoqueClient() {
         </div>
       </section>
 
-      <section className="flex-1 mx-auto max-w-[1600px] w-full px-6 lg:px-10 pb-24">
+      <section className="flex-1 mx-auto max-w-400 w-full px-6 lg:px-10 pb-24">
         <div className="grid lg:grid-cols-[280px_1fr] gap-8">
           <aside
             className={cn(

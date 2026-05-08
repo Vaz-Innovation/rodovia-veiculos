@@ -9,8 +9,6 @@ import {
   type VehiclePhoto,
 } from "@/lib/vehicles";
 
-export type VehicleWithPhoto = Vehicle & { vehicle_photos: VehiclePhoto[] };
-
 export function VehicleCard({ vehicle }: { vehicle: VehicleWithPhoto }) {
   const cover =
     vehicle.vehicle_photos.find((p) => p.is_cover) ??
@@ -50,6 +48,7 @@ export function VehicleCard({ vehicle }: { vehicle: VehicleWithPhoto }) {
             <span className="text-muted-foreground text-sm"> {vehicle.version}</span>
           )}
         </h3>
+        <span className="font-medium text-lg">{vehicle.name}</span>
         <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
           <span>{vehicle.year_model}</span>
           <span>·</span>

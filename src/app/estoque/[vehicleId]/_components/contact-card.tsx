@@ -8,14 +8,22 @@ type VehicleWithPhotos = Vehicle & { vehicle_photos: VehiclePhoto[] };
 export function ContactCard({ vehicle }: { vehicle: VehicleWithPhotos }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState(
-    `Olá! Tenho interesse no ${vehicle.brand} ${vehicle.model} ${vehicle.year_model}. Aguardo retorno.`,
-  );
+  const [complement, setComplement] = useState("");
+
+  function maskPhone(value: string) {
+    return value
+      .replace(/\D/g, "")
+      .replace(/^([0-9]{2})([0-9])/, "($1) $2")
+      .replace(/(\d{5})(\d)/, "$1-$2")
+      .replace(/(-\d{4})\d+?$/, "$1");
+  }
+
+  const fixedMessage = `Olá! Tenho interesse no veículo ${vehicle.name} #${vehicle.id}. Aguardo retorno.`;
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
     const text = encodeURIComponent(
-      `${message}\n\nNome: ${name}${phone ? `\nTelefone: ${phone}` : ""}`,
+      `${fixedMessage}${complement ? "\n" + complement : ""}\n\nNome: ${name}${phone ? `\nTelefone: ${phone}` : ""}`,
     );
     window.open(`https://wa.me/556199719187?text=${text}`, "_blank", "noopener");
   };
@@ -28,25 +36,31 @@ export function ContactCard({ vehicle }: { vehicle: VehicleWithPhotos }) {
         <input
           type="text"
           required
-          placeholder="Nome*"
+          placeholder="Seu nome *"
           value={name}
           onChange={(e) => setName(e.target.value)}
           className="w-full bg-background border border-border px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground/40"
         />
         <input
           type="tel"
-          placeholder="Telefone (opcional)"
+          placeholder="Seu telefone (opcional)"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          maxLength={15}
+          onChange={(e) => setPhone(maskPhone(e.target.value))}
           className="w-full bg-background border border-border px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground/40"
         />
-        <textarea
-          required
-          rows={4}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="w-full bg-background border border-border px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-foreground/40 resize-none"
-        />
+        <div>
+          <div className="w-full bg-muted border border-border px-3 py-2.5 text-sm text-muted-foreground/70 rounded mb-2 select-text">
+            {fixedMessage}
+          </div>
+          <textarea
+            rows={3}
+            placeholder="Mensagem adicional (opcional)"
+            value={complement}
+            onChange={(e) => setComplement(e.target.value)}
+            className="w-full bg-background border border-border px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground/40"
+          />
+        </div>
         <button
           type="submit"
           className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-5 py-3 text-sm font-medium hover:bg-primary/90"

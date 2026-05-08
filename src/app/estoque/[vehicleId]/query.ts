@@ -4,7 +4,7 @@ export const CarByIdQuery = graphql(`
   query CarById($id: ID!) {
     product(id: $id) {
       id
-      title
+      name
       date
       productsfields {
         model

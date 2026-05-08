@@ -1,10 +1,41 @@
-import type { Database } from "@/integrations/supabase/types";
+export type TransmissionType = "manual" | "automatico" | "cvt" | "automatizado";
+export type FuelType = "flex" | "gasolina" | "diesel" | "hibrido" | "eletrico" | "gnv";
+export type VehicleStatus = "disponivel" | "vendido" | "reservado";
 
-export type Vehicle = Database["public"]["Tables"]["vehicles"]["Row"];
-export type VehiclePhoto = Database["public"]["Tables"]["vehicle_photos"]["Row"];
-export type TransmissionType = Database["public"]["Enums"]["transmission_type"];
-export type FuelType = Database["public"]["Enums"]["fuel_type"];
-export type VehicleStatus = Database["public"]["Enums"]["vehicle_status"];
+export interface Vehicle {
+  id: string;
+  brand: string;
+  model: string;
+  version: string | null;
+  year_model: number;
+  year_manufacture: number;
+  price: number;
+  mileage: number;
+  transmission: TransmissionType;
+  fuel: FuelType;
+  color: string;
+  doors: number | null;
+  plate_end: string | null;
+  description: string | null;
+  features: string[];
+  featured: boolean;
+  status: VehicleStatus;
+  created_at: string;
+  updated_at: string;
+  name?: string | null;
+}
+
+export interface VehiclePhoto {
+  id: string;
+  vehicle_id: string;
+  url: string;
+  storage_path: string | null;
+  position: number;
+  is_cover: boolean;
+  created_at: string;
+}
+
+export type VehicleWithPhoto = Vehicle & { vehicle_photos: VehiclePhoto[] };
 
 export const TRANSMISSION_LABELS: Record<TransmissionType, string> = {
   manual: "Manual",
