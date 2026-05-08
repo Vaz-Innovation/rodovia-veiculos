@@ -86,8 +86,19 @@ export default function HomePage() {
           <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-6">
             Nós. Inclui você.
           </p>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight max-w-3xl leading-[1.05]">
-            Trabalhamos em equipe, para entrega do melhor produto e serviço ao cliente. Há 26 anos.
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight max-w-3xl leading-[1.15]">
+            Trabalhamos em equipe,
+            <br />
+            para entrega do{" "}
+            <span className="italic font-extralight text-muted-foreground">
+              melhor produto
+            </span>
+            <br />
+            e serviço ao cliente.
+            <br />
+            <span className="font-medium">
+              Há 26 anos.
+            </span>
           </h2>
 
 
