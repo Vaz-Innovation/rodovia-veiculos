@@ -145,10 +145,6 @@ export default function HomePage() {
               Quer vender
               <br />
               ou trocar?
-              <br />
-              <span className="italic font-extralight text-muted-foreground">
-                Avaliamos para você.
-              </span>
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed max-w-lg">
               Receba uma proposta justa e transparente pelo seu veículo. Nossa equipe analisa
