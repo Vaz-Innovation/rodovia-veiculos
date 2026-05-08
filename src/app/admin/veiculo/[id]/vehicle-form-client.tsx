@@ -8,7 +8,6 @@ import { ArrowLeft, Trash2, Star, StarOff, Upload } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/lib/use-auth";
 import {
   COMMON_COLORS,
   COMMON_FEATURES,
@@ -23,6 +22,7 @@ import {
 } from "@/lib/vehicles";
 import { BrandLogo } from "@/components/brand-logo";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/use-auth";
 
 type VehicleWithPhotos = Vehicle & { vehicle_photos: VehiclePhoto[] };
 

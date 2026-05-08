@@ -8,17 +8,10 @@ import { Plus, Pencil, Trash2, LogOut, Eye } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/lib/use-auth";
-import {
-  STATUS_LABELS,
-  formatPrice,
-  vehicleTitle,
-  type Vehicle,
-  type VehiclePhoto,
-} from "@/lib/vehicles";
-import { BrandLogo } from "@/components/brand-logo";
 
-type VehicleWithPhotos = Vehicle & { vehicle_photos: VehiclePhoto[] };
+import { STATUS_LABELS, VehicleWithPhoto, formatPrice, vehicleTitle } from "@/lib/vehicles";
+import { BrandLogo } from "@/components/brand-logo";
+import { useAuth } from "@/lib/use-auth";
 
 export function AdminClient() {
   const { user, isAdmin, loading } = useAuth();
@@ -218,13 +211,13 @@ function AdminDashboard() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "vehicles"],
-    queryFn: async (): Promise<VehicleWithPhotos[]> => {
+    queryFn: async (): Promise<VehicleWithPhoto[]> => {
       const { data, error } = await supabase
         .from("vehicles")
         .select("*, vehicle_photos(*)")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data ?? []) as VehicleWithPhotos[];
+      return (data ?? []) as VehicleWithPhoto[];
     },
   });
 

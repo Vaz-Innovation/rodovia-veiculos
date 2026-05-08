@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from "react";
 import { MessageCircle, Phone } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { Vehicle, VehiclePhoto } from "@/lib/vehicles";
 
 type VehicleWithPhotos = Vehicle & { vehicle_photos: VehiclePhoto[] };

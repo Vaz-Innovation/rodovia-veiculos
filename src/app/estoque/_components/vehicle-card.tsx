@@ -5,8 +5,7 @@ import {
   formatMileage,
   formatPrice,
   TRANSMISSION_LABELS,
-  type Vehicle,
-  type VehiclePhoto,
+  VehicleWithPhoto,
 } from "@/lib/vehicles";
 
 export function VehicleCard({ vehicle }: { vehicle: VehicleWithPhoto }) {
