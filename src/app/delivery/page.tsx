@@ -51,9 +51,6 @@ export default function DeliveryPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/30" />
         <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 lg:px-10 flex flex-col justify-end pb-16">
-          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
-            Sem custo · Sem compromisso
-          </p>
           <h1 className="text-5xl md:text-7xl font-light tracking-tight">
             Delivery de <span className="italic font-extralight">test-drive</span>
           </h1>
