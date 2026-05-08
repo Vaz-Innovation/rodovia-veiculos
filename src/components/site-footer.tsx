@@ -8,8 +8,7 @@ export function SiteFooter() {
         <div className="md:col-span-6">
           <BrandLogo size="lg" />
           <p className="mt-8 text-sm text-muted-foreground leading-relaxed max-w-sm">
-            Trabalho em equipe e dedicação ao cliente: transformando qualidade em tradição há 26
-            anos.
+            Trabalhamos em equipe, para entrega do melhor produto e serviço ao cliente. Há 26 anos.
           </p>
         </div>
         <div className="md:col-span-3 md:pt-3">

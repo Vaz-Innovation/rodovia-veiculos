@@ -17,22 +17,22 @@ const steps = [
   {
     icon: Car,
     title: "Escolha o modelo",
-    text: "Navegue pelo nosso estoque e selecione o veículo que deseja experimentar.",
+    text: "Selecione o veículo no estoque.",
   },
   {
     icon: CalendarCheck,
     title: "Agende pelo WhatsApp",
-    text: "Combine dia, horário e endereço — em casa ou no trabalho, como preferir.",
+    text: "Combinamos dia, hora e local. Na sua casa ou no seu trabalho. Como você preferir.",
   },
   {
     icon: MapPin,
-    title: "Levamos até você",
-    text: "Nossa equipe leva o carro até o local combinado, dentro do Distrito Federal.",
+    title: "O veículo vai até você",
+    text: "Nossa equipe leva o carro até você, no Distrito Federal. E avalia o seu.",
   },
   {
     icon: ShieldCheck,
-    title: "Test-drive sem compromisso",
-    text: "Experimente o veículo com calma. Sem custo, sem pressão e sem compromisso de compra.",
+    title: "Test drive",
+    text: "Sem custo. Sem compromisso.",
   },
 ];
 
@@ -58,34 +58,27 @@ export default function DeliveryPage() {
             Delivery de <span className="italic font-extralight">test-drive</span>
           </h1>
           <p className="mt-6 max-w-xl text-base md:text-lg text-foreground/75 leading-relaxed">
-            Gostou de um modelo no nosso estoque? Levamos o carro até a sua casa ou trabalho para
-            você experimentar com tranquilidade.
+            Gostou de um modelo? Nós levamos o carro até a sua casa ou trabalho para você conhecer,
+            com tranquilidade.
           </p>
         </div>
       </section>
 
-      <section className="py-24 mx-auto max-w-[1600px] px-6 lg:px-10 grid md:grid-cols-2 gap-16">
-        <div>
-          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
+      <section className="py-24 mx-auto max-w-[1200px] px-6 lg:px-10">
+        <div className="flex flex-col items-center text-center">
+          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-6">
             Como funciona
           </p>
-          <h2 className="text-3xl md:text-4xl font-light tracking-tight leading-[1.1]">
-            O test-drive vai
-            <br />
+          <h2 className="text-4xl md:text-5xl font-light tracking-tight leading-[1.1] mb-8">
+            O Test Drive vai{" "}
             <span className="italic font-extralight text-muted-foreground">
-              até onde você estiver.
+              até você.
             </span>
           </h2>
-        </div>
-        <div className="text-muted-foreground leading-relaxed space-y-4">
-          <p>
-            Sabemos que seu tempo é valioso. Por isso a Rodovia Veículos oferece o serviço de
-            delivery de test-drive: você escolhe o modelo, define o local e o horário, e nós levamos
-            o carro até você no Distrito Federal.
-          </p>
-          <p>
-            É a forma mais cômoda e segura de avaliar o veículo antes da compra — sem deslocamentos,
-            sem filas e, principalmente, sem nenhum compromisso.
+          <div className="w-16 h-px bg-foreground/30 mb-8" />
+          <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl">
+            A Rodovia Veículos oferece o Delivery de test drive para otimizar seu tempo. Você
+            escolhe o modelo, combinamos o horário e levamos o carro até você, no Distrito Federal.
           </p>
         </div>
       </section>
@@ -113,13 +106,11 @@ export default function DeliveryPage() {
 
       <section className="bg-card py-24">
         <div className="mx-auto max-w-[1200px] px-6 lg:px-10 text-center">
-          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-6">
-            Pronto para experimentar?
-          </p>
           <h2 className="text-4xl md:text-5xl font-light tracking-tight leading-[1.05]">
-            Escolha seu próximo carro
+            Escolha agora o veículo.
             <br />
-            <span className="italic font-extralight text-muted-foreground">sem sair de casa.</span>
+            E o conheça.{" "}
+            <span className="italic font-extralight text-muted-foreground">Sem sair de casa.</span>
           </h2>
           <div className="mt-12 flex flex-wrap gap-4 justify-center">
             <Link

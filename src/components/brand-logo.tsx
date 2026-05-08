@@ -8,23 +8,25 @@ interface BrandLogoProps {
 export function BrandLogo({ className, size = "sm" }: BrandLogoProps) {
   const isLarge = size === "lg";
   return (
-    <div className={cn("inline-flex flex-col leading-none text-foreground", className)}>
+    <div className={cn("inline-flex flex-col leading-none", className)}>
       <span
         className={cn(
-          "font-serif font-normal tracking-tight text-foreground",
-          isLarge ? "text-4xl" : "text-[28px]",
+          "font-sans font-bold uppercase tracking-tight text-black",
+          isLarge ? "text-5xl" : "text-3xl",
         )}
       >
         Rodovia
       </span>
-      <span
-        className={cn(
-          "uppercase font-light text-foreground/95 mt-1.5 self-end",
-          isLarge ? "text-[11px] tracking-[0.28em] pr-0" : "text-[9px] tracking-[0.26em] pr-0",
-        )}
-      >
-        Veículos
-      </span>
+      <div className="flex justify-end">
+        <span
+          className={cn(
+            "font-sans font-bold uppercase text-black",
+            isLarge ? "text-sm tracking-[0.15em]" : "text-xs tracking-[0.12em]",
+          )}
+        >
+          Veículos
+        </span>
+      </div>
     </div>
   );
 }

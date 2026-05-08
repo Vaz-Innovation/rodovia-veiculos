@@ -10,6 +10,7 @@ import { BrandLogo } from "@/components/brand-logo";
 const navLinks = [
   { to: "/estoque", label: "Estoque" },
   { to: "/delivery", label: "Delivery" },
+  { to: "/#avaliacao", label: "Avaliação" },
   { to: "/localizacao", label: "Localização" },
   { to: "/contato", label: "Contato" },
 ] as const;
@@ -50,7 +51,7 @@ export function SiteHeader() {
               key={l.to}
               href={l.to}
               className={cn(
-                "text-[11px] uppercase tracking-[0.3em] text-foreground/75 hover:text-foreground transition-colors",
+                "text-[11px] uppercase tracking-[0.3em] font-bold text-foreground/75 hover:text-foreground transition-colors",
                 pathname === l.to && "text-foreground",
               )}
             >
@@ -78,7 +79,7 @@ export function SiteHeader() {
                 key={l.to}
                 href={l.to}
                 onClick={() => setOpen(false)}
-                className="text-sm uppercase tracking-[0.2em] text-foreground/80 hover:text-foreground"
+                className="text-sm uppercase tracking-[0.2em] font-bold text-foreground/80 hover:text-foreground"
               >
                 {l.label}
               </Link>
