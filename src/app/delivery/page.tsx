@@ -79,13 +79,8 @@ export default function DeliveryPage() {
         </div>
         <div className="text-muted-foreground leading-relaxed space-y-4">
           <p>
-            Sabemos que seu tempo é valioso. Por isso a Rodovia Veículos oferece o serviço de
-            delivery de test-drive: você escolhe o modelo, define o local e o horário, e nós levamos
-            o carro até você no Distrito Federal.
-          </p>
-          <p>
-            É a forma mais cômoda e segura de avaliar o veículo antes da compra — sem deslocamentos,
-            sem filas e, principalmente, sem nenhum compromisso.
+            A Rodovia Veículos oferece o Delivery de test drive para otimizar seu tempo. Você
+            escolhe o modelo, combinamos o horário e levamos o carro até você, no Distrito Federal.
           </p>
         </div>
       </section>
