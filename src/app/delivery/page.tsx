@@ -107,9 +107,10 @@ export default function DeliveryPage() {
       <section className="bg-card py-24">
         <div className="mx-auto max-w-[1200px] px-6 lg:px-10 text-center">
           <h2 className="text-4xl md:text-5xl font-light tracking-tight leading-[1.05]">
-            Escolha seu próximo carro
+            Escolha agora o veículo.
             <br />
-            <span className="italic font-extralight text-muted-foreground">sem sair de casa.</span>
+            E o conheça.{" "}
+            <span className="italic font-extralight text-muted-foreground">Sem sair de casa.</span>
           </h2>
           <div className="mt-12 flex flex-wrap gap-4 justify-center">
             <Link
