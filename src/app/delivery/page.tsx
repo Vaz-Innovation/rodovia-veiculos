@@ -26,7 +26,7 @@ const steps = [
   },
   {
     icon: MapPin,
-    title: "Levamos até você",
+    title: "O veículo vai até você",
     text: "Nossa equipe leva o carro até o local combinado, dentro do Distrito Federal.",
   },
   {
