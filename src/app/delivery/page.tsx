@@ -31,7 +31,7 @@ const steps = [
   },
   {
     icon: ShieldCheck,
-    title: "Test-drive sem compromisso",
+    title: "Test drive",
     text: "Experimente o veículo com calma. Sem custo, sem pressão e sem compromisso de compra.",
   },
 ];
