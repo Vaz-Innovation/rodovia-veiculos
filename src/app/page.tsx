@@ -147,8 +147,7 @@ export default function HomePage() {
               ou trocar?
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed max-w-lg">
-              Receba uma proposta justa e transparente pelo seu veículo. Nossa equipe analisa
-              modelo, ano e estado de conservação para oferecer o melhor valor de mercado.
+              Nossa equipe analisa seu veículo para fazer a melhor proposta do mercado.
             </p>
             <a
               href="https://wa.me/556199719187?text=Ol%C3%A1%21%20Gostaria%20de%20solicitar%20a%20avalia%C3%A7%C3%A3o%20do%20meu%20ve%C3%ADculo."
