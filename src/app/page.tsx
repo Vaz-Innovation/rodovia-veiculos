@@ -87,16 +87,9 @@ export default function HomePage() {
             Nós. Inclui você.
           </p>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight max-w-3xl leading-[1.05]">
-            Tradição construída sobre
-            <br />
-            <span className="italic font-extralight text-muted-foreground">
-              princípios sólidos.
-            </span>
+            Trabalhamos em equipe, para entrega do melhor produto e serviço ao cliente. Há 26 anos.
           </h2>
-          <p className="mt-8 max-w-xl text-muted-foreground leading-relaxed">
-            Há 26 anos, a Rodovia Veículos cultiva relações duradouras com seus clientes — guiada
-            por valores que definem cada negociação e cada entrega.
-          </p>
+
 
           <ul className="mt-16 grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-10 max-w-5xl">
             {[
