@@ -28,11 +28,8 @@ export default function HomePage() {
         <div className="mx-auto max-w-400 px-6 lg:px-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
             <div>
-              <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
-                Estoque
-              </p>
               <h2 className="text-4xl md:text-5xl font-light tracking-tight">
-                Modelos em destaque
+                Estoque
               </h2>
             </div>
             <Link
@@ -87,21 +84,25 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/50" />
         <div className="relative z-10 mx-auto max-w-[1600px] px-6 lg:px-10 py-24 lg:py-32">
           <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-6">
-            Nossa essência
+            Nós. Inclui você.
           </p>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight max-w-3xl leading-[1.05]">
-            Tradição construída sobre
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight max-w-3xl leading-[1.15]">
+            Trabalhamos em equipe,
             <br />
+            para entrega do{" "}
             <span className="italic font-extralight text-muted-foreground">
-              princípios sólidos.
+              melhor produto
+            </span>
+            <br />
+            e serviço ao cliente.
+            <br />
+            <span className="font-medium">
+              Há 26 anos.
             </span>
           </h2>
-          <p className="mt-8 max-w-xl text-muted-foreground leading-relaxed">
-            Há 26 anos, a Rodovia Veículos cultiva relações duradouras com seus clientes — guiada
-            por valores que definem cada negociação e cada entrega.
-          </p>
 
-          <ul className="mt-16 grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-10 max-w-5xl">
+
+          <ul className="mt-16 grid grid-cols-2 md:grid-cols-5 gap-x-8 gap-y-10 max-w-5xl">
             {[
               { n: "01", label: "Respeito" },
               { n: "02", label: "Seriedade" },
@@ -111,14 +112,14 @@ export default function HomePage() {
             ].map((item, idx) => (
               <li
                 key={item.n}
-                className={`border-t border-border pt-5 ${
+                className={`border-t-2 border-foreground pt-6 ${
                   idx === 4 ? "col-span-2 md:col-span-1 text-center md:text-left" : ""
                 }`}
               >
-                <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">
+                <p className="text-xs font-medium uppercase tracking-[0.2em] text-foreground/60 mb-3">
                   {item.n}
                 </p>
-                <p className="text-base md:text-lg font-light text-foreground leading-snug">
+                <p className="text-lg md:text-xl font-semibold text-foreground leading-snug">
                   {item.label}
                 </p>
               </li>
@@ -127,7 +128,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="py-24 lg:py-32 bg-card">
+      <section id="avaliacao" className="py-24 lg:py-32 bg-card">
         <div className="mx-auto max-w-[1600px] px-6 lg:px-10 grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="aspect-[4/3] overflow-hidden">
             <img
@@ -140,21 +141,13 @@ export default function HomePage() {
             />
           </div>
           <div>
-            <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
-              Avaliação do seu veículo
-            </p>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[1.05]">
               Quer vender
               <br />
               ou trocar?
-              <br />
-              <span className="italic font-extralight text-muted-foreground">
-                Avaliamos para você.
-              </span>
             </h2>
             <p className="mt-6 text-muted-foreground leading-relaxed max-w-lg">
-              Receba uma proposta justa e transparente pelo seu veículo. Nossa equipe analisa
-              modelo, ano e estado de conservação para oferecer o melhor valor de mercado.
+              Nossa equipe analisa seu veículo para fazer a melhor proposta do mercado.
             </p>
             <a
               href="https://wa.me/556199719187?text=Ol%C3%A1%21%20Gostaria%20de%20solicitar%20a%20avalia%C3%A7%C3%A3o%20do%20meu%20ve%C3%ADculo."
@@ -165,9 +158,7 @@ export default function HomePage() {
               Solicite sua avaliação
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </a>
-            <p className="mt-4 text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
-              Atendimento direto no WhatsApp
-            </p>
+
           </div>
         </div>
       </section>

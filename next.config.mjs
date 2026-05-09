@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // App Router (SSR/SPA hybrid). Keeping defaults so dynamic routes work.
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;

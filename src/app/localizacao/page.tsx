@@ -28,7 +28,7 @@ export default function LocalizacaoPage() {
         </p>
         <h1 className="text-5xl md:text-7xl font-light tracking-tight">Localização</h1>
         <p className="mt-6 max-w-xl text-muted-foreground">
-          Estamos prontos para te receber. Conheça nosso showroom e nosso estoque pessoalmente.
+          Venha nos visitar.
         </p>
       </section>
 

@@ -179,9 +179,7 @@ export function EstoqueClient() {
         <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
           Estoque atual
         </p>
-        <h1 className="text-4xl md:text-5xl font-light tracking-tight">
-          Encontre seu próximo carro
-        </h1>
+        <h1 className="text-4xl md:text-5xl font-light tracking-tight">Estoque</h1>
 
         <div className="mt-8 flex flex-col md:flex-row gap-3">
           <div className="relative flex-1">
