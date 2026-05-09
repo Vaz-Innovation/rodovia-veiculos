@@ -14,7 +14,7 @@ export function useVehicleMapper() {
     const rawPrice = "rawPrice" in node ? node.rawPrice : null;
 
     return {
-      id: node.id,
+      id: String(node.databaseId),
       name: node.name ?? "",
       brand: brand || "",
       model: pf?.model ?? "",

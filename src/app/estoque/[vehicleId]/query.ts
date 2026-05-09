@@ -2,8 +2,9 @@ import { graphql } from "@/graphql/__gen__";
 
 export const CarByIdQuery = graphql(`
   query CarById($id: ID!) {
-    product(id: $id) {
+    product(id: $id, idType: DATABASE_ID) {
       id
+      databaseId
       name
       date
       productsfields {

@@ -6,6 +6,7 @@ export const CarsListQuery = graphql(`
       edges {
         node {
           id
+          databaseId
           name
           date
           productCategories {
