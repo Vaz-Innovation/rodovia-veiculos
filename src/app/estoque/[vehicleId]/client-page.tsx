@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
-import { useState, type FormEvent } from "react";
+import { useState } from "react";
 import {
   ArrowLeft,
   ChevronLeft,
@@ -27,54 +27,37 @@ import {
   formatPrice,
   vehicleTitle,
   whatsappLink,
-  type Vehicle,
-  type VehiclePhoto,
 } from "@/lib/vehicles";
 import { cn } from "@/lib/utils";
+import { NotFoundView } from "./_components/not-found-view";
+import { SpecItem } from "./_components/spec-item";
+import { ContactCard } from "./_components/contact-card";
 
-type VehicleWithPhotos = Vehicle & { vehicle_photos: VehiclePhoto[] };
-
-function NotFoundView() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
-      <div className="text-center">
-        <h1 className="text-3xl font-light">Veículo não encontrado</h1>
-        <Link
-          href="/estoque"
-          className="mt-6 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> Voltar ao estoque
-        </Link>
-      </div>
-    </div>
-  );
-}
+import { CarByIdQuery } from "./query";
+import { gqlQueryOptions } from "@/graphql/gqlpc";
+import { useVehicleMapper } from "@/hooks/useVehicleMapper";
 
 export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
   const [photoIndex, setPhotoIndex] = useState(0);
   const [lightbox, setLightbox] = useState(false);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["vehicle", vehicleId],
-    queryFn: async (): Promise<VehicleWithPhotos | null> => {
-      const { data, error } = await supabase
-        .from("vehicles")
-        .select("*, vehicle_photos(*)")
-        .eq("id", vehicleId)
-        .maybeSingle();
-      if (error) throw error;
-      return data as VehicleWithPhotos | null;
-    },
-  });
+  const mapProductToVehicle = useVehicleMapper();
+  const {
+    data: queryData,
+    isLoading,
+    error,
+  } = useQuery(gqlQueryOptions(CarByIdQuery, { input: { id: vehicleId } }));
+
+  const data = queryData?.product ? mapProductToVehicle(queryData.product) : null;
 
   if (isLoading) {
     return (
       <div className="bg-background min-h-screen">
         <SiteHeader />
-        <div className="pt-32 mx-auto max-w-[1400px] px-6 lg:px-10">
+        <div className="pt-32 mx-auto max-w-350 px-6 lg:px-10">
           <div className="grid grid-cols-3 gap-2">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="aspect-[4/3] bg-card animate-pulse" />
+              <div key={i} className="aspect-4/3 bg-card animate-pulse" />
             ))}
           </div>
         </div>
@@ -85,7 +68,7 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
   if (error || !data) return <NotFoundView />;
 
   const photos = [...data.vehicle_photos].sort(
-    (a, b) => Number(b.is_cover) - Number(a.is_cover) || a.position - b.position,
+    (a, b) => Number(b.is_cover) - Number(a.is_cover) || (a.position ?? 0) - (b.position ?? 0),
   );
 
   const total = Math.max(photos.length, 1);
@@ -117,7 +100,7 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
     <div className="bg-background text-foreground min-h-screen flex flex-col">
       <SiteHeader />
 
-      <section className="pt-28 pb-3 mx-auto max-w-[1400px] w-full px-4 lg:px-8">
+      <section className="pt-28 pb-3 mx-auto max-w-350 w-full px-4 lg:px-8">
         <nav className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
           <Link href="/estoque" className="hover:text-foreground inline-flex items-center gap-2">
             <ArrowLeft className="h-3.5 w-3.5" /> Estoque
@@ -127,11 +110,14 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
           <span className="text-border">/</span>
           <span className="text-foreground">{data.model}</span>
         </nav>
+        <div className="py-4">
+          <span className="text-3xl ">{data.name}</span>
+        </div>
       </section>
 
-      <section className="mx-auto max-w-[1400px] w-full md:px-4 lg:px-8">
+      <section className="mx-auto max-w-350 w-full md:px-4 lg:px-8">
         <div className="relative">
-          <div className="md:hidden -mx-0">
+          <div className="md:hidden mx-0">
             {photos.length > 0 ? (
               <div
                 className="flex overflow-x-auto snap-x snap-mandatory scroll-smooth gap-1 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
@@ -148,7 +134,7 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
                       setPhotoIndex(photos.indexOf(p));
                       setLightbox(true);
                     }}
-                    className="relative shrink-0 w-full snap-center bg-card overflow-hidden aspect-[4/3]"
+                    className="relative shrink-0 w-full snap-center bg-card overflow-hidden aspect-4/3"
                     aria-label="Ampliar foto"
                   >
                     <img
@@ -161,7 +147,7 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
                 ))}
               </div>
             ) : (
-              <div className="aspect-[16/9] bg-card flex items-center justify-center text-muted-foreground text-xs uppercase tracking-[0.2em]">
+              <div className="aspect-video bg-card flex items-center justify-center text-muted-foreground text-xs uppercase tracking-[0.2em]">
                 Sem fotos
               </div>
             )}
@@ -176,7 +162,7 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
                     setPhotoIndex(photos.indexOf(p));
                     setLightbox(true);
                   }}
-                  className="relative block bg-card overflow-hidden aspect-[4/3] rounded-sm group"
+                  className="relative block bg-card overflow-hidden aspect-4/3 rounded-sm group"
                   aria-label="Ampliar foto"
                 >
                   <img
@@ -187,7 +173,7 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
                 </button>
               ))
             ) : (
-              <div className="col-span-3 aspect-[16/6] bg-card flex items-center justify-center text-muted-foreground text-xs uppercase tracking-[0.2em]">
+              <div className="col-span-3 aspect-16/6 bg-card flex items-center justify-center text-muted-foreground text-xs uppercase tracking-[0.2em]">
                 Sem fotos
               </div>
             )}
@@ -255,7 +241,7 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
         )}
       </section>
 
-      <section className="mx-auto max-w-[1400px] w-full px-4 lg:px-8 pb-12 mt-6 grid lg:grid-cols-[1fr_380px] gap-6">
+      <section className="mx-auto max-w-350 w-full px-4 lg:px-8 pb-12 mt-6 grid lg:grid-cols-[1fr_380px] gap-6">
         <div className="bg-card border border-border p-6 lg:p-8">
           <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
@@ -404,75 +390,6 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-function SpecItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <dt className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-1">{label}</dt>
-      <dd className="text-base font-medium text-foreground">{value}</dd>
-    </div>
-  );
-}
-
-function ContactCard({ vehicle }: { vehicle: VehicleWithPhotos }) {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState(
-    `Olá! Tenho interesse no ${vehicle.brand} ${vehicle.model} ${vehicle.year_model}. Aguardo retorno.`,
-  );
-
-  const submit = (e: FormEvent) => {
-    e.preventDefault();
-    const text = encodeURIComponent(
-      `${message}\n\nNome: ${name}${phone ? `\nTelefone: ${phone}` : ""}`,
-    );
-    window.open(`https://wa.me/556199719187?text=${text}`, "_blank", "noopener");
-  };
-
-  return (
-    <div className="bg-card border border-border p-6">
-      <h3 className="text-sm font-medium text-foreground mb-1">Envie uma mensagem ao vendedor</h3>
-      <p className="text-xs text-muted-foreground mb-5">Resposta direta pelo WhatsApp.</p>
-      <form onSubmit={submit} className="space-y-3">
-        <input
-          type="text"
-          required
-          placeholder="Nome*"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full bg-background border border-border px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground/40"
-        />
-        <input
-          type="tel"
-          placeholder="Telefone (opcional)"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="w-full bg-background border border-border px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-foreground/40"
-        />
-        <textarea
-          required
-          rows={4}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          className="w-full bg-background border border-border px-3 py-2.5 text-sm text-foreground focus:outline-none focus:border-foreground/40 resize-none"
-        />
-        <button
-          type="submit"
-          className="w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground px-5 py-3 text-sm font-medium hover:bg-primary/90"
-        >
-          <MessageCircle className="h-4 w-4" />
-          Enviar via WhatsApp
-        </button>
-      </form>
-      <a
-        href="tel:+556199719187"
-        className="mt-3 w-full inline-flex items-center justify-center gap-2 border border-border text-foreground px-5 py-3 text-sm font-medium hover:bg-card"
-      >
-        <Phone className="h-4 w-4" /> (61) 99971-9187
-      </a>
     </div>
   );
 }

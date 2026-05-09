@@ -1,50 +1,51 @@
 "use client";
 
-import Link from "next/link";
+import { FilterGroup } from "./_components/filter-group";
+import { NumberInput } from "./_components/number-input";
+import { Pagination } from "./_components/pagination";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Search, SlidersHorizontal, X, ArrowRight } from "lucide-react";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { supabase } from "@/integrations/supabase/client";
 import {
   COMMON_COLORS,
   COMMON_FEATURES,
   FUEL_LABELS,
   TRANSMISSION_LABELS,
-  formatMileage,
-  formatPrice,
-  vehicleTitle,
-  type FuelType,
-  type TransmissionType,
   type Vehicle,
   type VehiclePhoto,
 } from "@/lib/vehicles";
 import { cn } from "@/lib/utils";
+import { gqlQueryOptions } from "@/graphql/gqlpc";
+import { VehicleCard } from "./_components/vehicle-card";
+import { useEstoqueHelpers } from "../../hooks/useEstoqueHelpers";
+import { CarsListQuery } from "./query";
+import { useVehicleMapper } from "@/hooks/useVehicleMapper";
 
 const PAGE_SIZE = 12;
 const SORT_OPTIONS = ["recent", "price_asc", "price_desc", "year_desc", "km_asc"] as const;
 
 type SearchSort = (typeof SORT_OPTIONS)[number];
 
-type SearchParams = {
+interface SearchParams {
   q: string;
   brand: string;
   model: string;
-  priceMin?: number;
-  priceMax?: number;
-  yearMin?: number;
-  yearMax?: number;
-  kmMax?: number;
+  priceMin: number | undefined;
+  priceMax: number | undefined;
+  yearMin: number | undefined;
+  yearMax: number | undefined;
+  kmMax: number | undefined;
   transmission: string;
   fuel: string;
   color: string;
   features: string[];
   sort: SearchSort;
   page: number;
-};
+}
 
 const DEFAULT_SEARCH: SearchParams = {
   q: "",
@@ -126,42 +127,23 @@ type VehicleWithPhoto = Vehicle & { vehicle_photos: VehiclePhoto[] };
 export function EstoqueClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const mapProductToVehicle = useVehicleMapper();
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const search = useMemo(
     () => parseSearchParams(new URLSearchParams(searchParams.toString())),
     [searchParams],
   );
-  const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const { data: vehicles, isLoading } = useQuery({
-    queryKey: ["vehicles", "list"],
-    queryFn: async (): Promise<VehicleWithPhoto[]> => {
-      const { data, error } = await supabase
-        .from("vehicles")
-        .select("*, vehicle_photos(*)")
-        .eq("status", "disponivel")
-        .order("featured", { ascending: false })
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return (data ?? []) as VehicleWithPhoto[];
-    },
-  });
+  const { data, isLoading } = useQuery(gqlQueryOptions(CarsListQuery));
 
-  const all = vehicles ?? [];
+  const all: VehicleWithPhoto[] = useMemo(() => {
+    const edges = data?.products?.edges ?? [];
+    return edges.map((e) => mapProductToVehicle(e.node));
+  }, [data, mapProductToVehicle]);
 
-  const brandOptions = useMemo(() => Array.from(new Set(all.map((v) => v.brand))).sort(), [all]);
-  const modelOptions = useMemo(() => {
-    return Array.from(
-      new Set(all.filter((v) => !search.brand || v.brand === search.brand).map((v) => v.model)),
-    ).sort();
-  }, [all, search.brand]);
-
-  const filtered = useMemo(() => filterVehicles(all, search), [all, search]);
-  const sorted = useMemo(() => sortVehicles(filtered, search.sort), [filtered, search.sort]);
-
-  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE_SIZE));
-  const page = Math.min(search.page, totalPages);
-  const pageItems = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const { brandOptions, modelOptions, filtered, sorted, totalPages, page, pageItems } =
+    useEstoqueHelpers(all, search, PAGE_SIZE, search.sort);
 
   const replaceSearch = (next: SearchParams) => {
     const qs = buildQueryString(next);
@@ -193,10 +175,11 @@ export function EstoqueClient() {
     <div className="bg-background text-foreground min-h-screen flex flex-col">
       <SiteHeader />
 
-      <section className="pt-32 pb-8 mx-auto max-w-[1600px] w-full px-6 lg:px-10">
-        <h1 className="text-4xl md:text-5xl font-light tracking-tight">
-          Estoque
-        </h1>
+      <section className="pt-32 pb-8 mx-auto max-w-400 w-full px-6 lg:px-10">
+        <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
+          Estoque atual
+        </p>
+        <h1 className="text-4xl md:text-5xl font-light tracking-tight">Estoque</h1>
 
         <div className="mt-8 flex flex-col md:flex-row gap-3">
           <div className="relative flex-1">
@@ -224,7 +207,7 @@ export function EstoqueClient() {
         </div>
       </section>
 
-      <section className="flex-1 mx-auto max-w-[1600px] w-full px-6 lg:px-10 pb-24">
+      <section className="flex-1 mx-auto max-w-400 w-full px-6 lg:px-10 pb-24">
         <div className="grid lg:grid-cols-[280px_1fr] gap-8">
           <aside
             className={cn(
@@ -280,12 +263,12 @@ export function EstoqueClient() {
                 <NumberInput
                   placeholder="Mín."
                   value={search.priceMin}
-                  onChange={(v) => update({ priceMin: v })}
+                  onChange={(v: number | undefined) => update({ priceMin: v })}
                 />
                 <NumberInput
                   placeholder="Máx."
                   value={search.priceMax}
-                  onChange={(v) => update({ priceMax: v })}
+                  onChange={(v: number | undefined) => update({ priceMax: v })}
                 />
               </div>
             </FilterGroup>
@@ -295,12 +278,12 @@ export function EstoqueClient() {
                 <NumberInput
                   placeholder="De"
                   value={search.yearMin}
-                  onChange={(v) => update({ yearMin: v })}
+                  onChange={(v: number | undefined) => update({ yearMin: v })}
                 />
                 <NumberInput
                   placeholder="Até"
                   value={search.yearMax}
-                  onChange={(v) => update({ yearMax: v })}
+                  onChange={(v: number | undefined) => update({ yearMax: v })}
                 />
               </div>
             </FilterGroup>
@@ -309,7 +292,7 @@ export function EstoqueClient() {
               <NumberInput
                 placeholder="Ex.: 80000"
                 value={search.kmMax}
-                onChange={(v) => update({ kmMax: v })}
+                onChange={(v: number | undefined) => update({ kmMax: v })}
               />
             </FilterGroup>
 
@@ -443,7 +426,7 @@ export function EstoqueClient() {
                   <Pagination
                     page={page}
                     totalPages={totalPages}
-                    onPage={(p) => update({ page: p })}
+                    onPage={(p: number) => update({ page: p })}
                   />
                 )}
               </>
@@ -455,196 +438,4 @@ export function EstoqueClient() {
       <SiteFooter />
     </div>
   );
-}
-
-function FilterGroup({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="mb-6 pb-6 border-b border-border last:border-0">
-      <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">{label}</p>
-      {children}
-    </div>
-  );
-}
-
-function NumberInput({
-  value,
-  onChange,
-  placeholder,
-}: {
-  value: number | undefined;
-  onChange: (v: number | undefined) => void;
-  placeholder?: string;
-}) {
-  return (
-    <input
-      type="number"
-      inputMode="numeric"
-      placeholder={placeholder}
-      value={value ?? ""}
-      onChange={(e) => {
-        const v = e.target.value;
-        onChange(v === "" ? undefined : Number(v));
-      }}
-      className="w-full bg-card border border-border px-3 py-2 text-sm"
-    />
-  );
-}
-
-function VehicleCard({ vehicle }: { vehicle: VehicleWithPhoto }) {
-  const cover =
-    vehicle.vehicle_photos.find((p) => p.is_cover) ??
-    [...vehicle.vehicle_photos].sort((a, b) => a.position - b.position)[0];
-
-  return (
-    <Link
-      href={`/estoque/${vehicle.id}`}
-      className="group block bg-card border border-border hover:border-foreground/30 transition-colors"
-    >
-      <div className="aspect-[4/3] overflow-hidden bg-muted relative">
-        {cover ? (
-          <img
-            src={cover.url}
-            alt={vehicleTitle(vehicle)}
-            loading="lazy"
-            className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex items-center justify-center h-full text-muted-foreground text-xs uppercase tracking-[0.2em]">
-            Sem foto
-          </div>
-        )}
-        {vehicle.featured && (
-          <span className="absolute top-3 left-3 bg-foreground text-background text-[10px] uppercase tracking-[0.2em] px-2 py-1">
-            Destaque
-          </span>
-        )}
-      </div>
-      <div className="p-5">
-        <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-          {vehicle.brand}
-        </p>
-        <h3 className="mt-1 text-lg font-light leading-tight">
-          {vehicle.model}
-          {vehicle.version && (
-            <span className="text-muted-foreground text-sm"> {vehicle.version}</span>
-          )}
-        </h3>
-        <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
-          <span>{vehicle.year_model}</span>
-          <span>·</span>
-          <span>{formatMileage(vehicle.mileage)}</span>
-          <span>·</span>
-          <span>{TRANSMISSION_LABELS[vehicle.transmission]}</span>
-        </div>
-        <div className="mt-5 pt-4 border-t border-border flex items-center justify-between">
-          <p className="text-xl font-light">{formatPrice(Number(vehicle.price))}</p>
-          <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-foreground" />
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-function Pagination({
-  page,
-  totalPages,
-  onPage,
-}: {
-  page: number;
-  totalPages: number;
-  onPage: (p: number) => void;
-}) {
-  const pages: (number | "...")[] = [];
-  for (let i = 1; i <= totalPages; i++) {
-    if (i === 1 || i === totalPages || (i >= page - 1 && i <= page + 1)) {
-      pages.push(i);
-    } else if (pages[pages.length - 1] !== "...") {
-      pages.push("...");
-    }
-  }
-
-  return (
-    <div className="mt-12 flex items-center justify-center gap-2">
-      <button
-        onClick={() => onPage(Math.max(1, page - 1))}
-        disabled={page === 1}
-        className="px-4 py-2 border border-border text-xs uppercase tracking-[0.2em] disabled:opacity-30 hover:bg-card"
-      >
-        Anterior
-      </button>
-      {pages.map((p, i) =>
-        p === "..." ? (
-          <span key={`e${i}`} className="px-2 text-muted-foreground">
-            …
-          </span>
-        ) : (
-          <button
-            key={p}
-            onClick={() => onPage(p)}
-            className={cn(
-              "min-w-10 h-10 text-sm border border-border",
-              p === page ? "bg-foreground text-background" : "hover:bg-card",
-            )}
-          >
-            {p}
-          </button>
-        ),
-      )}
-      <button
-        onClick={() => onPage(Math.min(totalPages, page + 1))}
-        disabled={page === totalPages}
-        className="px-4 py-2 border border-border text-xs uppercase tracking-[0.2em] disabled:opacity-30 hover:bg-card"
-      >
-        Próxima
-      </button>
-    </div>
-  );
-}
-
-function filterVehicles(list: VehicleWithPhoto[], s: SearchParams): VehicleWithPhoto[] {
-  const q = s.q.trim().toLowerCase();
-  return list.filter((v) => {
-    if (q) {
-      const text = `${v.brand} ${v.model} ${v.version ?? ""}`.toLowerCase();
-      if (!text.includes(q)) return false;
-    }
-    if (s.brand && v.brand !== s.brand) return false;
-    if (s.model && v.model !== s.model) return false;
-    const price = Number(v.price);
-    if (s.priceMin !== undefined && price < s.priceMin) return false;
-    if (s.priceMax !== undefined && price > s.priceMax) return false;
-    if (s.yearMin !== undefined && v.year_model < s.yearMin) return false;
-    if (s.yearMax !== undefined && v.year_model > s.yearMax) return false;
-    if (s.kmMax !== undefined && v.mileage > s.kmMax) return false;
-    if (s.transmission && v.transmission !== (s.transmission as TransmissionType)) return false;
-    if (s.fuel && v.fuel !== (s.fuel as FuelType)) return false;
-    if (s.color && v.color.toLowerCase() !== s.color.toLowerCase()) return false;
-    if (s.features.length > 0) {
-      const has = s.features.every((f) =>
-        v.features.some((vf) => vf.toLowerCase() === f.toLowerCase()),
-      );
-      if (!has) return false;
-    }
-    return true;
-  });
-}
-
-function sortVehicles(list: VehicleWithPhoto[], sort: SearchParams["sort"]): VehicleWithPhoto[] {
-  const copy = [...list];
-  switch (sort) {
-    case "price_asc":
-      return copy.sort((a, b) => Number(a.price) - Number(b.price));
-    case "price_desc":
-      return copy.sort((a, b) => Number(b.price) - Number(a.price));
-    case "year_desc":
-      return copy.sort((a, b) => b.year_model - a.year_model);
-    case "km_asc":
-      return copy.sort((a, b) => a.mileage - b.mileage);
-    default:
-      return copy.sort(
-        (a, b) =>
-          Number(b.featured) - Number(a.featured) ||
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
-      );
-  }
 }
