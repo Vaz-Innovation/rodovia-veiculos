@@ -27522,7 +27522,7 @@ export type CarByIdQueryVariables = Exact<{
 }>;
 
 
-export type CarByIdQuery = { __typename?: 'RootQuery', product?: { __typename?: 'ExternalProduct', id: string, databaseId: number, name?: string | null, date?: string | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } | { __typename?: 'GroupProduct', id: string, databaseId: number, name?: string | null, date?: string | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } | { __typename?: 'SimpleProduct', onSale?: boolean | null, stockStatus?: StockStatusEnum | null, price?: string | null, regularPrice?: string | null, salePrice?: string | null, stockQuantity?: number | null, soldIndividually?: boolean | null, id: string, databaseId: number, name?: string | null, date?: string | null, rawPrice?: string | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } | { __typename?: 'VariableProduct', id: string, databaseId: number, name?: string | null, date?: string | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } | null };
+export type CarByIdQuery = { __typename?: 'RootQuery', product?: { __typename?: 'ExternalProduct', id: string, databaseId: number, name?: string | null, date?: string | null, productCategories?: { __typename?: 'ProductToProductCategoryConnection', edges: Array<{ __typename?: 'ProductToProductCategoryConnectionEdge', node: { __typename?: 'ProductCategory', name?: string | null } }> } | null, productTags?: { __typename?: 'ProductToProductTagConnection', edges: Array<{ __typename?: 'ProductToProductTagConnectionEdge', node: { __typename?: 'ProductTag', name?: string | null } }> } | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null, galleryImages?: { __typename?: 'ProductToMediaItemConnection', nodes: Array<{ __typename?: 'MediaItem', sourceUrl?: string | null }> } | null } | { __typename?: 'GroupProduct', id: string, databaseId: number, name?: string | null, date?: string | null, productCategories?: { __typename?: 'ProductToProductCategoryConnection', edges: Array<{ __typename?: 'ProductToProductCategoryConnectionEdge', node: { __typename?: 'ProductCategory', name?: string | null } }> } | null, productTags?: { __typename?: 'ProductToProductTagConnection', edges: Array<{ __typename?: 'ProductToProductTagConnectionEdge', node: { __typename?: 'ProductTag', name?: string | null } }> } | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null, galleryImages?: { __typename?: 'ProductToMediaItemConnection', nodes: Array<{ __typename?: 'MediaItem', sourceUrl?: string | null }> } | null } | { __typename?: 'SimpleProduct', onSale?: boolean | null, stockStatus?: StockStatusEnum | null, price?: string | null, regularPrice?: string | null, salePrice?: string | null, stockQuantity?: number | null, soldIndividually?: boolean | null, id: string, databaseId: number, name?: string | null, date?: string | null, rawPrice?: string | null, productCategories?: { __typename?: 'ProductToProductCategoryConnection', edges: Array<{ __typename?: 'ProductToProductCategoryConnectionEdge', node: { __typename?: 'ProductCategory', name?: string | null } }> } | null, productTags?: { __typename?: 'ProductToProductTagConnection', edges: Array<{ __typename?: 'ProductToProductTagConnectionEdge', node: { __typename?: 'ProductTag', name?: string | null } }> } | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null, galleryImages?: { __typename?: 'ProductToMediaItemConnection', nodes: Array<{ __typename?: 'MediaItem', sourceUrl?: string | null }> } | null } | { __typename?: 'VariableProduct', id: string, databaseId: number, name?: string | null, date?: string | null, productCategories?: { __typename?: 'ProductToProductCategoryConnection', edges: Array<{ __typename?: 'ProductToProductCategoryConnectionEdge', node: { __typename?: 'ProductCategory', name?: string | null } }> } | null, productTags?: { __typename?: 'ProductToProductTagConnection', edges: Array<{ __typename?: 'ProductToProductTagConnectionEdge', node: { __typename?: 'ProductTag', name?: string | null } }> } | null, productsfields?: { __typename?: 'Productsfields', model?: string | null, version?: string | null, yearmodel?: string | null, mileage?: string | null, transmission?: string | null, fuel?: string | null, color?: string | null, featured?: boolean | null, features?: { __typename?: 'ProductsfieldsFeatures', name?: string | null } | null } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null, galleryImages?: { __typename?: 'ProductToMediaItemConnection', nodes: Array<{ __typename?: 'MediaItem', sourceUrl?: string | null }> } | null } | null };
 
 export type ProductsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -27555,6 +27555,20 @@ export const CarByIdDocument = new TypedDocumentString(`
     databaseId
     name
     date
+    productCategories {
+      edges {
+        node {
+          name
+        }
+      }
+    }
+    productTags {
+      edges {
+        node {
+          name
+        }
+      }
+    }
     productsfields {
       model
       version
@@ -27581,6 +27595,11 @@ export const CarByIdDocument = new TypedDocumentString(`
     }
     image {
       sourceUrl
+    }
+    galleryImages {
+      nodes {
+        sourceUrl
+      }
     }
   }
 }
