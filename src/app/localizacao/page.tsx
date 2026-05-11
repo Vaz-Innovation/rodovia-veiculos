@@ -27,9 +27,6 @@ export default function LocalizacaoPage() {
           Venha nos visitar
         </p>
         <h1 className="text-5xl md:text-7xl font-light tracking-tight">Localização</h1>
-        <p className="mt-6 max-w-xl text-muted-foreground">
-          Venha nos visitar.
-        </p>
       </section>
 
       <section className="pb-24 mx-auto max-w-[1600px] px-6 lg:px-10 grid lg:grid-cols-2 gap-8 lg:gap-12 items-stretch">

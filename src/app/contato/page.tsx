@@ -36,7 +36,7 @@ export default function ContatoPage() {
             Contato
           </h1>
           <p className="mt-6 max-w-xl text-foreground/80 animate-hero-copy">
-            Estamos prontos para te atender. Escolha o canal que preferir e fale com nossa equipe.
+            Escolha o canal para falar direto com a gente.
           </p>
         </div>
 
