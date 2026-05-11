@@ -103,7 +103,6 @@ export function HeroCinematic() {
           autoPlay
           loop
           playsInline
-          // @ts-expect-error - Atributos webkit/x5 não tipados mas necessários para iOS/Android
           webkit-playsinline=""
           x5-playsinline=""
           preload="auto"
