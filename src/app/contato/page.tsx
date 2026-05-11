@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { HeroVideoBackground } from "@/components/hero-video-background";
 
 export const metadata: Metadata = {
   title: "Contato — Rodovia Veículos",
@@ -25,17 +26,64 @@ export default function ContatoPage() {
     <div className="bg-background text-foreground min-h-screen">
       <SiteHeader />
 
-      <section className="pt-32 pb-12 mx-auto max-w-[1600px] px-6 lg:px-10">
-        <p className="text-[11px] uppercase tracking-[0.5em] text-foreground/70 mb-6 pl-[0.5em]">
-          Fale conosco
-        </p>
-        <h1 className="text-5xl md:text-7xl font-light tracking-tight">Contato</h1>
-        <p className="mt-6 max-w-xl text-muted-foreground">
-          Estamos prontos para te atender. Escolha o canal que preferir e fale com nossa equipe.
-        </p>
-      </section>
+      {/* Hero com vídeo de fundo */}
+      <HeroVideoBackground videoSrc="/videos/hero-background.mp4">
+        <div className="flex flex-col items-center text-center">
+          <p className="text-[11px] uppercase tracking-[0.5em] text-foreground/70 mb-6 pl-[0.5em] animate-hero-kicker">
+            Fale conosco
+          </p>
+          <h1 className="text-5xl md:text-7xl font-light tracking-tight animate-hero-title">
+            Contato
+          </h1>
+          <p className="mt-6 max-w-xl text-foreground/80 animate-hero-copy">
+            Estamos prontos para te atender. Escolha o canal que preferir e fale com nossa equipe.
+          </p>
+        </div>
 
-      <section className="pb-24 mx-auto max-w-[1600px] px-6 lg:px-10 grid lg:grid-cols-2 gap-8">
+        {/* Estilos de animação do hero */}
+        <style>{`
+          @keyframes heroKicker {
+            0% { opacity: 0; letter-spacing: 0.2em; transform: translateY(10px); }
+            100% { opacity: 1; letter-spacing: 0.5em; transform: translateY(0); }
+          }
+
+          @keyframes heroTitle {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+          }
+
+          @keyframes heroCopy {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+          }
+
+          .animate-hero-kicker {
+            animation: heroKicker 500ms ease-out 100ms both;
+          }
+
+          .animate-hero-title {
+            animation: heroTitle 600ms cubic-bezier(0.16, 1, 0.3, 1) 200ms both;
+          }
+
+          .animate-hero-copy {
+            animation: heroCopy 500ms ease-out 400ms both;
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .animate-hero-kicker,
+            .animate-hero-title,
+            .animate-hero-copy {
+              animation: none;
+              opacity: 1;
+              transform: none;
+              letter-spacing: 0.5em;
+            }
+          }
+        `}</style>
+      </HeroVideoBackground>
+
+      {/* Cards de contato */}
+      <section className="py-24 mx-auto max-w-[1600px] px-6 lg:px-10 grid lg:grid-cols-2 gap-8">
         <div className="flex flex-col gap-6">
           <a
             href={WHATSAPP_URL}
