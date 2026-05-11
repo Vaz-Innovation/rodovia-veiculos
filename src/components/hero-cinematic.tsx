@@ -12,47 +12,87 @@ export function HeroCinematic() {
     const video = videoRef.current;
     if (!video) return;
 
+    // Força os atributos necessários para autoplay em mobile
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("x5-playsinline", "");
+
     // Configura o vídeo para autoplay
     const playVideo = async () => {
       try {
+        // Garante que está mudo antes de tentar reproduzir
+        video.muted = true;
         await video.play();
-      } catch (err) {
-        // Autoplay pode falhar em alguns navegadores - silenciosamente ignora
-        console.log("[v0] Video autoplay blocked:", err);
+        setIsVideoLoaded(true);
+      } catch {
+        // Em caso de falha, tenta novamente após interação do usuário
+        const playOnInteraction = () => {
+          video.muted = true;
+          video.play().then(() => {
+            setIsVideoLoaded(true);
+          }).catch(() => {});
+          document.removeEventListener("touchstart", playOnInteraction);
+          document.removeEventListener("click", playOnInteraction);
+        };
+        
+        document.addEventListener("touchstart", playOnInteraction, { once: true });
+        document.addEventListener("click", playOnInteraction, { once: true });
       }
     };
 
     // Quando o vídeo pode reproduzir, inicia
     const handleCanPlay = () => {
-      setIsVideoLoaded(true);
+      playVideo();
+    };
+
+    // Quando os metadados carregam, também tenta reproduzir
+    const handleLoadedMetadata = () => {
       playVideo();
     };
 
     video.addEventListener("canplay", handleCanPlay);
+    video.addEventListener("loadedmetadata", handleLoadedMetadata);
+
+    // Força o carregamento do vídeo
+    video.load();
 
     // Se já pode reproduzir (cached), inicia imediatamente
-    if (video.readyState >= 3) {
-      handleCanPlay();
+    if (video.readyState >= 2) {
+      playVideo();
     }
 
     return () => {
       video.removeEventListener("canplay", handleCanPlay);
+      video.removeEventListener("loadedmetadata", handleLoadedMetadata);
     };
   }, []);
 
   return (
     <section className="relative h-[100svh] min-h-[560px] md:min-h-[700px] w-full overflow-hidden bg-background">
       {/* VIDEO BACKGROUND */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 bg-neutral-900">
+        {/* 
+          Atributos críticos para autoplay em mobile:
+          - muted: Obrigatório para autoplay em todos os navegadores
+          - playsInline + webkit-playsinline: Evita fullscreen forçado no iOS
+          - autoPlay: Tenta iniciar automaticamente
+          - poster: Imagem de fallback enquanto carrega
+        */}
         <video
           ref={videoRef}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ${
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
             isVideoLoaded ? "opacity-100" : "opacity-0"
           }`}
           src="/videos/hero-background.mp4"
           muted
+          autoPlay
           loop
           playsInline
+          // @ts-expect-error - Atributos webkit/x5 não tipados mas necessários para iOS/Android
+          webkit-playsinline=""
+          x5-playsinline=""
           preload="auto"
           disablePictureInPicture
           aria-hidden="true"
