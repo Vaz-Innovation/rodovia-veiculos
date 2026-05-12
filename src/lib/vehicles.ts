@@ -23,6 +23,10 @@ export interface Vehicle {
   created_at: string;
   updated_at: string;
   name?: string | null;
+  city?: string | null;
+  district?: string | null;
+  engine?: string | null;
+  condition?: string | null;
 }
 
 export interface VehiclePhoto {
