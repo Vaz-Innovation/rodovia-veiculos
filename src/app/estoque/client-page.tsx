@@ -2,10 +2,10 @@
 
 import { FilterGroup } from "./_components/filter-group";
 import { NumberInput } from "./_components/number-input";
-import { Pagination } from "./_components/pagination";
+import { VirtualizedVehicleList } from "./_components/virtualized-vehicle-list";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
-import { useMemo, useState } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useMemo, useState, useCallback } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
@@ -15,17 +15,15 @@ import {
   COMMON_FEATURES,
   FUEL_LABELS,
   TRANSMISSION_LABELS,
-  type Vehicle,
-  type VehiclePhoto,
+  type VehicleWithPhoto,
 } from "@/lib/vehicles";
 import { cn } from "@/lib/utils";
-import { gqlQueryOptions } from "@/graphql/gqlpc";
-import { VehicleCard } from "./_components/vehicle-card";
-import { useEstoqueHelpers } from "../../hooks/useEstoqueHelpers";
-import { CarsListQuery } from "./query";
+import { execute } from "@/graphql/execute";
+import { filterVehicles, sortVehicles } from "@/hooks/useVehicleFilters";
+import { CarsListPaginatedQuery } from "./query";
 import { useVehicleMapper } from "@/hooks/useVehicleMapper";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 24;
 const SORT_OPTIONS = ["recent", "price_asc", "price_desc", "year_desc", "km_asc"] as const;
 
 type SearchSort = (typeof SORT_OPTIONS)[number];
@@ -44,7 +42,6 @@ interface SearchParams {
   color: string;
   features: string[];
   sort: SearchSort;
-  page: number;
 }
 
 const DEFAULT_SEARCH: SearchParams = {
@@ -61,7 +58,6 @@ const DEFAULT_SEARCH: SearchParams = {
   color: "",
   features: [],
   sort: "recent",
-  page: 1,
 };
 
 const toNumber = (value: string | null) => {
@@ -73,7 +69,6 @@ const toNumber = (value: string | null) => {
 function parseSearchParams(params: URLSearchParams): SearchParams {
   const sortRaw = params.get("sort") ?? "recent";
   const sort = SORT_OPTIONS.includes(sortRaw as SearchSort) ? (sortRaw as SearchSort) : "recent";
-  const page = Math.max(1, Math.floor(toNumber(params.get("page")) ?? 1));
 
   return {
     ...DEFAULT_SEARCH,
@@ -90,7 +85,6 @@ function parseSearchParams(params: URLSearchParams): SearchParams {
     color: params.get("color") ?? "",
     features: params.getAll("features").filter(Boolean),
     sort,
-    page,
   };
 }
 
@@ -117,12 +111,9 @@ function buildQueryString(next: SearchParams): string {
   for (const feature of next.features) params.append("features", feature);
 
   if (next.sort !== DEFAULT_SEARCH.sort) set("sort", next.sort);
-  if (next.page !== DEFAULT_SEARCH.page) set("page", next.page);
 
   return params.toString();
 }
-
-type VehicleWithPhoto = Vehicle & { vehicle_photos: VehiclePhoto[] };
 
 export function EstoqueClient() {
   const router = useRouter();
@@ -135,15 +126,59 @@ export function EstoqueClient() {
     [searchParams],
   );
 
-  const { data, isLoading } = useQuery(gqlQueryOptions(CarsListQuery));
+  // Infinite query com paginação GraphQL
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ["vehicles-infinite"],
+    queryFn: async ({ pageParam }) => {
+      const result = await execute(CarsListPaginatedQuery, {
+        first: PAGE_SIZE,
+        after: pageParam ?? null,
+      });
+      return result;
+    },
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => {
+      const pageInfo = lastPage?.products?.pageInfo;
+      if (pageInfo?.hasNextPage && pageInfo?.endCursor) {
+        return pageInfo.endCursor;
+      }
+      return undefined;
+    },
+  });
 
-  const all: VehicleWithPhoto[] = useMemo(() => {
-    const edges = data?.products?.edges ?? [];
-    return edges.map((e) => mapProductToVehicle(e.node));
+  // Flatten all pages into a single array of vehicles
+  const allVehicles: VehicleWithPhoto[] = useMemo(() => {
+    if (!data?.pages) return [];
+    
+    return data.pages.flatMap((page) => {
+      const edges = page?.products?.edges ?? [];
+      return edges.map((e) => mapProductToVehicle(e.node));
+    });
   }, [data, mapProductToVehicle]);
 
-  const { brandOptions, modelOptions, filtered, sorted, totalPages, page, pageItems } =
-    useEstoqueHelpers(all, search, PAGE_SIZE, search.sort);
+  // Apply client-side filtering and sorting
+  const { brandOptions, modelOptions, filtered, sorted } = useMemo(() => {
+    const brandOpts = Array.from(new Set(allVehicles.map((v) => v.brand))).sort();
+    const modelOpts = Array.from(
+      new Set(allVehicles.filter((v) => !search.brand || v.brand === search.brand).map((v) => v.model)),
+    ).sort();
+    
+    const filteredList = filterVehicles(allVehicles, search);
+    const sortedList = sortVehicles(filteredList, search.sort);
+    
+    return {
+      brandOptions: brandOpts,
+      modelOptions: modelOpts,
+      filtered: filteredList,
+      sorted: sortedList,
+    };
+  }, [allVehicles, search]);
 
   const replaceSearch = (next: SearchParams) => {
     const qs = buildQueryString(next);
@@ -154,11 +189,14 @@ export function EstoqueClient() {
     replaceSearch({
       ...search,
       ...patch,
-      page: patch.page ?? 1,
     });
   };
 
   const clearFilters = () => replaceSearch(DEFAULT_SEARCH);
+
+  const handleFetchNextPage = useCallback(() => {
+    fetchNextPage();
+  }, [fetchNextPage]);
 
   const activeFiltersCount =
     (search.brand ? 1 : 0) +
@@ -400,7 +438,7 @@ export function EstoqueClient() {
                   <div key={i} className="bg-card aspect-[4/3] animate-pulse" />
                 ))}
               </div>
-            ) : pageItems.length === 0 ? (
+            ) : sorted.length === 0 ? (
               <div className="bg-card border border-border p-12 text-center">
                 <p className="text-muted-foreground">
                   Nenhum veículo encontrado com os filtros aplicados.
@@ -415,21 +453,13 @@ export function EstoqueClient() {
                 )}
               </div>
             ) : (
-              <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-                  {pageItems.map((v) => (
-                    <VehicleCard key={v.id} vehicle={v} />
-                  ))}
-                </div>
-
-                {totalPages > 1 && (
-                  <Pagination
-                    page={page}
-                    totalPages={totalPages}
-                    onPage={(p: number) => update({ page: p })}
-                  />
-                )}
-              </>
+              <VirtualizedVehicleList
+                vehicles={sorted}
+                hasNextPage={hasNextPage ?? false}
+                isFetchingNextPage={isFetchingNextPage}
+                fetchNextPage={handleFetchNextPage}
+                isLoading={isLoading}
+              />
             )}
           </div>
         </div>
