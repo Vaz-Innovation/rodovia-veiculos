@@ -21,19 +21,6 @@ export const CarByIdQuery = graphql(`
           }
         }
       }
-      productsfields {
-        model
-        version
-        yearmodel
-        mileage
-        transmission
-        fuel
-        color
-        featured
-        features {
-          name
-        }
-      }
       ... on SimpleProduct {
         onSale
         stockStatus
@@ -44,6 +31,12 @@ export const CarByIdQuery = graphql(`
         stockStatus
         stockQuantity
         soldIndividually
+        attributes {
+          nodes {
+            name
+            options
+          }
+        }
       }
       image {
         sourceUrl

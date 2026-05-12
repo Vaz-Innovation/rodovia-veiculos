@@ -5,32 +5,53 @@ import { ProductsPaginatedQuery, CarByIdQuery } from "@/graphql/__gen__/graphql"
 export type CarNode = NonNullable<NonNullable<ProductsPaginatedQuery["products"]>["edges"][0]>["node"];
 export type DetailedCarNode = NonNullable<CarByIdQuery["product"]>;
 
+type AttributeNode = {
+  name: string;
+  options?: (string | null)[] | null;
+};
+
+function getAttributeValue(attributes: AttributeNode[] | undefined | null, name: string): string {
+  const attr = attributes?.find((a) => a.name.toLowerCase() === name.toLowerCase());
+  return attr?.options?.[0] ?? "";
+}
+
+function getAttributeValues(attributes: AttributeNode[] | undefined | null, name: string): string[] {
+  const attr = attributes?.find((a) => a.name.toLowerCase() === name.toLowerCase());
+  return attr?.options?.filter((o): o is string => !!o) ?? [];
+}
+
 export function useVehicleMapper() {
   return useCallback((node: CarNode | DetailedCarNode): VehicleWithPhoto => {
-    const pf = node.productsfields;
+    const attributes = "attributes" in node ? node.attributes?.nodes : undefined;
     const brands =
       "productBrands" in node ? node.productBrands?.edges?.map((e) => e.node.name) : [];
     const brand = brands?.[0] ?? "";
     const rawPrice = "rawPrice" in node ? node.rawPrice : null;
 
+    const model = getAttributeValue(attributes, "model");
+    const version = getAttributeValue(attributes, "version");
+    const yearModel = getAttributeValue(attributes, "yearmodel");
+    const mileage = getAttributeValue(attributes, "mileage");
+    const transmission = getAttributeValue(attributes, "transmission");
+    const fuel = getAttributeValue(attributes, "fuel");
+    const color = getAttributeValue(attributes, "color");
+    const featured = getAttributeValue(attributes, "featured");
+    const features = getAttributeValues(attributes, "features");
+
     return {
       id: String(node.databaseId),
       name: node.name ?? "",
       brand: brand || "",
-      model: pf?.model ?? "",
-      version: pf?.version ?? "",
-      year_model: Number(pf?.yearmodel ?? 0),
-      mileage: Number(pf?.mileage ?? 0),
-      transmission: pf?.transmission as TransmissionType,
-      fuel: pf?.fuel as FuelType,
-      color: pf?.color ?? "",
-      features: Array.isArray(pf?.features)
-        ? pf.features.map((f) => f.name).filter((name): name is string => !!name)
-        : pf?.features?.name
-          ? [pf.features.name]
-          : [],
+      model: model,
+      version: version,
+      year_model: Number(yearModel) || 0,
+      mileage: Number(mileage) || 0,
+      transmission: transmission as TransmissionType,
+      fuel: fuel as FuelType,
+      color: color,
+      features: features,
       price: Number(rawPrice ?? 0),
-      featured: Boolean(pf?.featured),
+      featured: featured === "true" || featured === "1" || featured === "sim",
       created_at: node.date ?? "",
       vehicle_photos: [
         ...(node.image?.sourceUrl
@@ -65,7 +86,7 @@ export function useVehicleMapper() {
       plate_end: null,
       status: "disponivel",
       updated_at: node.date ?? "",
-      year_manufacture: Number(pf?.yearmodel ?? 0),
+      year_manufacture: Number(yearModel) || 0,
     };
   }, []);
 }

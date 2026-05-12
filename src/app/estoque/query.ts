@@ -35,19 +35,6 @@ export const CarsListPaginatedQuery = graphql(`
               }
             }
           }
-          productsfields {
-            model
-            version
-            yearmodel
-            mileage
-            transmission
-            fuel
-            color
-            featured
-            features {
-              name
-            }
-          }
           ... on SimpleProduct {
             onSale
             stockStatus
@@ -58,6 +45,12 @@ export const CarsListPaginatedQuery = graphql(`
             stockStatus
             stockQuantity
             soldIndividually
+            attributes {
+              nodes {
+                name
+                options
+              }
+            }
           }
           image {
             sourceUrl
