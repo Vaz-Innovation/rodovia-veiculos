@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 import { TransmissionType, FuelType, VehicleWithPhoto } from "@/lib/vehicles";
-import { ProductsQuery, CarByIdQuery } from "@/graphql/__gen__/graphql";
+import { ProductsPaginatedQuery, CarByIdQuery } from "@/graphql/__gen__/graphql";
 
-export type CarNode = NonNullable<NonNullable<ProductsQuery["products"]>["edges"][0]>["node"];
+export type CarNode = NonNullable<NonNullable<ProductsPaginatedQuery["products"]>["edges"][0]>["node"];
 export type DetailedCarNode = NonNullable<CarByIdQuery["product"]>;
 
 export function useVehicleMapper() {

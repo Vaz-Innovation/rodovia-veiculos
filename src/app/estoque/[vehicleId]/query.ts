@@ -7,6 +7,20 @@ export const CarByIdQuery = graphql(`
       databaseId
       name
       date
+      productCategories {
+        edges {
+          node {
+            name
+          }
+        }
+      }
+      productTags {
+        edges {
+          node {
+            name
+          }
+        }
+      }
       productsfields {
         model
         version
@@ -33,6 +47,11 @@ export const CarByIdQuery = graphql(`
       }
       image {
         sourceUrl
+      }
+      galleryImages {
+        nodes {
+          sourceUrl
+        }
       }
     }
   }
