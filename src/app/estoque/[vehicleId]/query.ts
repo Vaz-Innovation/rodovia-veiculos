@@ -30,9 +30,6 @@ export const CarByIdQuery = graphql(`
         fuel
         color
         featured
-        features {
-          name
-        }
       }
       ... on SimpleProduct {
         onSale

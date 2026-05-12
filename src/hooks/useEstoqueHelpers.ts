@@ -23,12 +23,6 @@ function mapProductToVehicle(node: DetailedCarNode): VehicleWithPhoto {
     transmission: pf?.transmission as TransmissionType,
     fuel: pf?.fuel as FuelType,
     color: pf?.color ?? "",
-    features: pf?.features?.name
-      ? pf.features.name
-          .split("|")
-          .map((f) => f.trim())
-          .filter(Boolean)
-      : [],
     categories: [],
     tags: [],
     price: Number(rawPrice ?? 0),

@@ -21,9 +21,8 @@ export interface SearchParams {
   transmission: string;
   fuel: string;
   color: string;
-  features: string[];
+  tags: string[];
   category: string;
-  tag: string;
   sort: SearchSort;
 }
 
@@ -61,10 +60,6 @@ export function buildWhereArgs(s: SearchParams): RootQueryToProductConnectionWhe
     where.category = s.category;
   }
 
-  if (s.tag) {
-    where.tag = s.tag;
-  }
-
   if (s.priceMin !== undefined) {
     where.minPrice = s.priceMin;
   }
@@ -97,12 +92,7 @@ function filterVehicles(list: VehicleWithPhoto[], s: SearchParams): VehicleWithP
     if (s.transmission && v.transmission !== (s.transmission as TransmissionType)) return false;
     if (s.fuel && v.fuel !== (s.fuel as FuelType)) return false;
     if (s.color && v.color.toLowerCase() !== s.color.toLowerCase()) return false;
-    if (s.features.length > 0) {
-      const has = s.features.every((f) =>
-        v.features.some((vf) => vf.toLowerCase().includes(f.toLowerCase())),
-      );
-      if (!has) return false;
-    }
+    if (s.tags.length > 0 && !s.tags.some((t) => v.tags.includes(t))) return false;
     return true;
   });
 }

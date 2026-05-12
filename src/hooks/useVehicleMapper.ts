@@ -15,15 +15,6 @@ export function useVehicleMapper() {
     const brand = brands?.[0] ?? "";
     const rawPrice = "rawPrice" in node ? node.rawPrice : null;
 
-    let features: string[] = [];
-
-    if (pf?.features?.name) {
-      features = pf.features.name
-        .split("|")
-        .map((f) => f.trim())
-        .filter(Boolean);
-    }
-
     return {
       id: String(node.databaseId),
       name: node.name ?? "",
@@ -35,7 +26,6 @@ export function useVehicleMapper() {
       transmission: pf?.transmission as TransmissionType,
       fuel: pf?.fuel as FuelType,
       color: pf?.color ?? "",
-      features,
       categories:
         "productCategories" in node
           ? (node.productCategories?.edges ?? [])

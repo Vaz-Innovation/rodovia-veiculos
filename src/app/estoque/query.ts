@@ -48,9 +48,6 @@ export const CarsListPaginatedQuery = graphql(`
             fuel
             color
             featured
-            features {
-              name
-            }
           }
           ... on SimpleProduct {
             onSale

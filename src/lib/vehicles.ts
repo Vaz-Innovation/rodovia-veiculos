@@ -17,7 +17,6 @@ export interface Vehicle {
   doors: number | null;
   plate_end: string | null;
   description: string | null;
-  features: string[];
   categories: string[];
   tags: string[];
   featured: boolean;
@@ -60,25 +59,6 @@ export const STATUS_LABELS: Record<VehicleStatus, string> = {
   vendido: "Vendido",
   reservado: "Reservado",
 };
-
-export const COMMON_FEATURES = [
-  "Ar-condicionado",
-  "Direção elétrica",
-  "Vidros elétricos",
-  "Travas elétricas",
-  "Airbag",
-  "ABS",
-  "Multimídia",
-  "Câmera de ré",
-  "Sensor de estacionamento",
-  "Computador de bordo",
-  "Bancos em couro",
-  "Rodas de liga leve",
-  "Faróis de LED",
-  "Piloto automático",
-  "Start/Stop",
-  "Teto solar",
-] as const;
 
 export const COMMON_COLORS = [
   "Branco",

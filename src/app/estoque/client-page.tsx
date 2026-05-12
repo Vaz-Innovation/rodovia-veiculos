@@ -12,7 +12,6 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import {
   COMMON_COLORS,
-  COMMON_FEATURES,
   FUEL_LABELS,
   TRANSMISSION_LABELS,
   type VehicleWithPhoto,
@@ -45,9 +44,8 @@ const DEFAULT_SEARCH: SearchParams = {
   transmission: "",
   fuel: "",
   color: "",
-  features: [],
+  tags: [],
   category: "",
-  tag: "",
   sort: "recent",
 };
 
@@ -74,9 +72,8 @@ function parseSearchParams(params: URLSearchParams): SearchParams {
     transmission: params.get("transmission") ?? "",
     fuel: params.get("fuel") ?? "",
     color: params.get("color") ?? "",
-    features: params.getAll("features").filter(Boolean),
+    tags: params.getAll("tags").filter(Boolean),
     category: params.get("category") ?? "",
-    tag: params.get("tag") ?? "",
     sort,
   };
 }
@@ -101,9 +98,8 @@ function buildQueryString(next: SearchParams): string {
   set("fuel", next.fuel);
   set("color", next.color);
   set("category", next.category);
-  set("tag", next.tag);
 
-  for (const feature of next.features) params.append("features", feature);
+  for (const tag of next.tags) params.append("tags", tag);
 
   if (next.sort !== DEFAULT_SEARCH.sort) set("sort", next.sort);
 
@@ -128,7 +124,6 @@ export function EstoqueClient() {
       search.q,
       search.brand,
       search.category,
-      search.tag,
       search.priceMin,
       search.priceMax,
       search.sort,
@@ -195,9 +190,8 @@ export function EstoqueClient() {
     (search.transmission ? 1 : 0) +
     (search.fuel ? 1 : 0) +
     (search.color ? 1 : 0) +
-    search.features.length +
-    (search.category ? 1 : 0) +
-    (search.tag ? 1 : 0);
+    search.tags.length +
+    (search.category ? 1 : 0);
 
   return (
     <div className="bg-background text-foreground min-h-screen flex flex-col">
@@ -301,19 +295,31 @@ export function EstoqueClient() {
               </select>
             </FilterGroup>
 
-            <FilterGroup label="Tag">
-              <select
-                value={search.tag}
-                onChange={(e) => update({ tag: e.target.value })}
-                className="w-full bg-card border border-border px-3 py-2 text-sm"
-              >
-                <option value="">Todas</option>
-                {tagOptions.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
+            <FilterGroup label="Tags">
+              <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                {tagOptions.map((t) => {
+                  const checked = search.tags.includes(t);
+                  return (
+                    <label
+                      key={t}
+                      className="flex items-center gap-2 text-sm cursor-pointer hover:text-foreground/80"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => {
+                          const next = checked
+                            ? search.tags.filter((x) => x !== t)
+                            : [...search.tags, t];
+                          update({ tags: next });
+                        }}
+                        className="accent-foreground"
+                      />
+                      <span>{t}</span>
+                    </label>
+                  );
+                })}
+              </div>
             </FilterGroup>
 
             <FilterGroup label="Preço">
@@ -398,33 +404,6 @@ export function EstoqueClient() {
                 ))}
               </select>
             </FilterGroup>
-
-            <FilterGroup label="Opcionais">
-              <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-                {COMMON_FEATURES.map((f) => {
-                  const checked = search.features.includes(f);
-                  return (
-                    <label
-                      key={f}
-                      className="flex items-center gap-2 text-sm cursor-pointer hover:text-foreground/80"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => {
-                          const next = checked
-                            ? search.features.filter((x) => x !== f)
-                            : [...search.features, f];
-                          update({ features: next });
-                        }}
-                        className="accent-foreground"
-                      />
-                      <span>{f}</span>
-                    </label>
-                  );
-                })}
-              </div>
-            </FilterGroup>
           </aside>
 
           <div className="flex flex-col min-h-0">
@@ -455,7 +434,7 @@ export function EstoqueClient() {
             {isLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="bg-card aspect-[4/3] animate-pulse" />
+                  <div key={i} className="bg-card aspect-4/3 animate-pulse" />
                 ))}
               </div>
             ) : sorted.length === 0 ? (
