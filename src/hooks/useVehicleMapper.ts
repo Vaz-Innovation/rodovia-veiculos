@@ -30,22 +30,29 @@ export function useVehicleMapper() {
     const attributes = "attributes" in node ? node.attributes?.nodes : undefined;
     const brands =
       "productBrands" in node ? node.productBrands?.edges?.map((e) => e.node.name) : [];
-    const brand = brands?.[0] ?? "";
     const rawPrice = "rawPrice" in node ? node.rawPrice : null;
     const description = "description" in node ? stripHtml(node.description) : null;
 
-    const model = getAttributeValue(attributes, "model");
-    const version = getAttributeValue(attributes, "version");
-    const yearModel = getAttributeValue(attributes, "yearmodel");
-    const yearManufacture = getAttributeValue(attributes, "yearmanufacture");
-    const mileage = getAttributeValue(attributes, "mileage");
-    const transmission = getAttributeValue(attributes, "transmission");
-    const fuel = getAttributeValue(attributes, "fuel");
-    const color = getAttributeValue(attributes, "color");
-    const featured = getAttributeValue(attributes, "featured");
-    const features = getAttributeValues(attributes, "features");
-    const doors = getAttributeValue(attributes, "doors");
-    const plateEnd = getAttributeValue(attributes, "plate_end");
+    // WooCommerce attributes use "pa_" prefix (product attribute)
+    const model = getAttributeValue(attributes, "pa_model");
+    const version = getAttributeValue(attributes, "pa_version");
+    const yearModel = getAttributeValue(attributes, "pa_yearmodel");
+    const yearManufacture = getAttributeValue(attributes, "pa_yearassembly");
+    const mileage = getAttributeValue(attributes, "pa_mileage");
+    const transmission = getAttributeValue(attributes, "pa_transmission");
+    const fuel = getAttributeValue(attributes, "pa_fuel");
+    const color = getAttributeValue(attributes, "pa_color");
+    const featured = getAttributeValue(attributes, "pa_featured");
+    const features = getAttributeValues(attributes, "pa_features");
+    const doors = getAttributeValue(attributes, "pa_doors");
+    const plateEnd = getAttributeValue(attributes, "pa_plate_end");
+    const city = getAttributeValue(attributes, "pa_city");
+    const district = getAttributeValue(attributes, "pa_district");
+    const engine = getAttributeValue(attributes, "pa_engine");
+    const condition = getAttributeValue(attributes, "pa_condition");
+    // Brand can come from productBrands taxonomy or rm_marca attribute
+    const brandFromAttr = getAttributeValue(attributes, "rm_marca");
+    const brand = brands?.[0] ?? brandFromAttr ?? "";
 
     return {
       id: String(node.databaseId),
@@ -96,6 +103,10 @@ export function useVehicleMapper() {
       status: "disponivel",
       updated_at: node.date ?? "",
       year_manufacture: Number(yearManufacture) || Number(yearModel) || 0,
+      city: city || null,
+      district: district || null,
+      engine: engine || null,
+      condition: condition || null,
     };
   }, []);
 }
