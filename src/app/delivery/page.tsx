@@ -7,10 +7,14 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import heroCar from "@/assets/hero-rodovia.jpg";
 
+const description =
+  "Levamos o veículo até você para um test-drive sem custo e sem compromisso. Escolha o modelo no estoque e agende pelo WhatsApp.";
+
 export const metadata: Metadata = {
-  title: "Delivery de Test-Drive — Rodovia Veículos",
-  description:
-    "Levamos o veículo até você para um test-drive sem custo e sem compromisso. Escolha o modelo no estoque e agende pelo WhatsApp.",
+  title: "Delivery de Test-Drive",
+  description,
+  openGraph: { title: "Delivery de Test-Drive | Rodovia Veículos", description, url: "/delivery" },
+  twitter: { title: "Delivery de Test-Drive | Rodovia Veículos", description },
 };
 
 const steps = [
@@ -71,9 +75,7 @@ export default function DeliveryPage() {
           </p>
           <h2 className="text-4xl md:text-5xl font-light tracking-tight leading-[1.1] mb-8">
             O Test Drive vai{" "}
-            <span className="italic font-extralight text-muted-foreground">
-              até você.
-            </span>
+            <span className="italic font-extralight text-muted-foreground">até você.</span>
           </h2>
           <div className="w-16 h-px bg-foreground/30 mb-8" />
           <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl">
@@ -108,8 +110,7 @@ export default function DeliveryPage() {
         <div className="mx-auto max-w-[1200px] px-6 lg:px-10 text-center">
           <h2 className="text-4xl md:text-5xl font-light tracking-tight leading-[1.05]">
             Escolha agora o veículo.
-            <br />
-            E o conheça.{" "}
+            <br />E o conheça.{" "}
             <span className="italic font-extralight text-muted-foreground">Sem sair de casa.</span>
           </h2>
           <div className="mt-12 flex flex-wrap gap-4 justify-center">

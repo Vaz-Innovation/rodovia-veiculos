@@ -5,10 +5,14 @@ import { MapPin, Phone, Clock, ArrowUpRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 
+const description =
+  "Visite a Rodovia Veículos. Veja nosso endereço, horário de atendimento e como chegar.";
+
 export const metadata: Metadata = {
-  title: "Localização — Rodovia Veículos",
-  description:
-    "Visite a Rodovia Veículos. Veja nosso endereço, horário de atendimento e como chegar.",
+  title: "Localização",
+  description,
+  openGraph: { title: "Localização | Rodovia Veículos", description, url: "/localizacao" },
+  twitter: { title: "Localização | Rodovia Veículos", description },
 };
 
 const MAPS_URL =

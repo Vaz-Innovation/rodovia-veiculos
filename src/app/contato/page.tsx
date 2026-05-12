@@ -4,10 +4,14 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { HeroVideoBackground } from "@/components/hero-video-background";
 
+const description =
+  "Fale com a Rodovia Veículos. WhatsApp, telefone, endereço em Sobradinho — Brasília e horário de atendimento.";
+
 export const metadata: Metadata = {
-  title: "Contato — Rodovia Veículos",
-  description:
-    "Fale com a Rodovia Veículos. WhatsApp, telefone, endereço em Sobradinho — Brasília e horário de atendimento.",
+  title: "Contato",
+  description,
+  openGraph: { title: "Contato | Rodovia Veículos", description, url: "/contato" },
+  twitter: { title: "Contato | Rodovia Veículos", description },
 };
 
 const PHONE_DISPLAY = "(61) 3387-2700";

@@ -3,10 +3,14 @@ import { Suspense } from "react";
 
 import { EstoqueClient } from "./client-page";
 
+const description =
+  "Confira nosso estoque de carros semi-novos. Filtre por marca, modelo, preço, ano e mais.";
+
 export const metadata: Metadata = {
-  title: "Estoque — Rodovia Veículos",
-  description:
-    "Confira nosso estoque de carros semi-novos. Filtre por marca, modelo, preço, ano e mais.",
+  title: "Estoque",
+  description,
+  openGraph: { title: "Estoque | Rodovia Veículos", description, url: "/estoque" },
+  twitter: { title: "Estoque | Rodovia Veículos", description },
 };
 
 export default function EstoquePage() {
