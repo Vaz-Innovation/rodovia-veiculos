@@ -60,8 +60,9 @@ export function VirtualizedVehicleList({
   const virtualizer = useVirtualizer({
     count: hasNextPage ? rows.length + 1 : rows.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 420, // Altura estimada de cada linha (card + gap)
-    overscan: 3,
+    estimateSize: () => 500, // Altura estimada do card + espaçamento
+    overscan: 2,
+    gap: 24, // gap-6 = 24px entre as linhas
   });
 
   const virtualItems = virtualizer.getVirtualItems();
@@ -84,7 +85,7 @@ export function VirtualizedVehicleList({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="bg-card aspect-[4/3] animate-pulse" />
+          <div key={i} className="bg-card aspect-[4/3] animate-pulse rounded" />
         ))}
       </div>
     );
@@ -97,8 +98,7 @@ export function VirtualizedVehicleList({
   return (
     <div
       ref={parentRef}
-      className="h-[calc(100vh-300px)] overflow-auto"
-      style={{ contain: "strict" }}
+      className="h-[calc(100vh-280px)] overflow-y-auto overflow-x-hidden"
     >
       <div
         style={{
@@ -124,7 +124,7 @@ export function VirtualizedVehicleList({
               }}
             >
               {isLoaderRow ? (
-                <div className="flex items-center justify-center h-full">
+                <div className="flex items-center justify-center py-8">
                   {hasNextPage && (
                     <div className="flex items-center gap-2 text-muted-foreground">
                       <Loader2 className="h-5 w-5 animate-spin" />
@@ -133,7 +133,7 @@ export function VirtualizedVehicleList({
                   )}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 pb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 h-full">
                   {row?.map((vehicle) => (
                     <VehicleCard key={vehicle.id} vehicle={vehicle} />
                   ))}

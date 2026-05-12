@@ -407,7 +407,7 @@ export function EstoqueClient() {
             </FilterGroup>
           </aside>
 
-          <div>
+          <div className="flex flex-col min-h-0">
             <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-4 border-b border-border">
               <p className="text-sm text-muted-foreground">
                 {isLoading
