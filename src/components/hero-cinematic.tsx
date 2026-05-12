@@ -1,24 +1,57 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export function HeroCinematic() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [autoplayFailed, setAutoplayFailed] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Tenta reproduzir o vídeo
+    const tryPlay = async () => {
+      try {
+        await video.play();
+      } catch {
+        // Se autoplay falhar, esconde o vídeo para não mostrar botão de play
+        setAutoplayFailed(true);
+      }
+    };
+
+    // Verifica se já está tocando ou tenta reproduzir
+    if (video.paused) {
+      tryPlay();
+    }
+  }, []);
+
   return (
     <section className="relative h-[100svh] min-h-[560px] md:min-h-[700px] w-full overflow-hidden bg-background">
-      {/* VIDEO BACKGROUND */}
+      {/* BACKGROUND */}
       <div className="absolute inset-0 bg-neutral-900">
-        {/* 
-          Atributos obrigatórios para autoplay:
-          - muted: SEM ISSO O AUTOPLAY É BLOQUEADO (obrigatório)
-          - autoPlay: inicia automaticamente
-          - playsInline: evita fullscreen no iOS/Safari
-          - loop: repete continuamente
-        */}
+        {/* Imagem fallback - mostrada quando autoplay falha */}
+        <img
+          src="/images/hero-fallback.jpg"
+          alt=""
+          className={`absolute inset-0 h-full w-full object-cover ${
+            autoplayFailed ? "block" : "hidden"
+          }`}
+          aria-hidden="true"
+        />
+
+        {/* Vídeo - escondido se autoplay falhar */}
         <video
+          ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
-          className="h-full w-full object-cover"
+          className={`h-full w-full object-cover ${
+            autoplayFailed ? "hidden" : "block"
+          }`}
         >
           <source src="/videos/hero-background.mp4" type="video/mp4" />
         </video>
