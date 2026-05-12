@@ -46,7 +46,7 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
     data: queryData,
     isLoading,
     error,
-  } = useQuery(gqlQueryOptions(CarByIdQuery, { input: { id: vehicleId } }));
+  } = useQuery(gqlQueryOptions(CarByIdQuery, { input: { id: vehicleId } as { id: string } }));
 
   const data = queryData?.product ? mapProductToVehicle(queryData.product) : null;
 
