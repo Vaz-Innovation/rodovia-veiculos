@@ -9,8 +9,6 @@ const description =
 export const metadata: Metadata = {
   title: "Estoque",
   description,
-  openGraph: { title: "Estoque | Rodovia Veículos", description, url: "/estoque" },
-  twitter: { title: "Estoque | Rodovia Veículos", description },
 };
 
 export default function EstoquePage() {

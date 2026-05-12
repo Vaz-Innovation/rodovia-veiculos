@@ -1,14 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 
 import { execute } from "@/graphql/execute";
 import { VehicleDetailClient } from "./client-page";
 import { CarByIdQuery } from "./query";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ vehicleId: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: { params: Promise<{ vehicleId: string }> },
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
   const { vehicleId } = await params;
 
   try {
@@ -33,22 +32,19 @@ export async function generateMetadata({
       : `Confira os detalhes do ${name} no estoque da Rodovia Veículos.`;
 
     const imageUrl = product.image?.sourceUrl;
+    const parentImages = (await parent).openGraph?.images ?? [];
 
     return {
       title: name,
       description,
-      openGraph: {
-        title: name,
-        description,
-        type: "website",
-        images: imageUrl ? [{ url: imageUrl, alt: name }] : [],
-      },
-      twitter: {
-        card: "summary_large_image",
-        title: name,
-        description,
-        images: imageUrl ? [imageUrl] : [],
-      },
+      ...(imageUrl && {
+        openGraph: {
+          images: [{ url: imageUrl, alt: name }, ...parentImages],
+        },
+        twitter: {
+          images: [imageUrl],
+        },
+      }),
     };
   } catch {
     return { title: "Veículo não encontrado" };

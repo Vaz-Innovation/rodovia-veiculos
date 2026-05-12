@@ -10,8 +10,6 @@ const description =
 export const metadata: Metadata = {
   title: "Contato",
   description,
-  openGraph: { title: "Contato | Rodovia Veículos", description, url: "/contato" },
-  twitter: { title: "Contato | Rodovia Veículos", description },
 };
 
 const PHONE_DISPLAY = "(61) 3387-2700";

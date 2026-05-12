@@ -11,8 +11,6 @@ const description =
 export const metadata: Metadata = {
   title: "Localização",
   description,
-  openGraph: { title: "Localização | Rodovia Veículos", description, url: "/localizacao" },
-  twitter: { title: "Localização | Rodovia Veículos", description },
 };
 
 const MAPS_URL =

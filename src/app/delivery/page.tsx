@@ -13,8 +13,6 @@ const description =
 export const metadata: Metadata = {
   title: "Delivery de Test-Drive",
   description,
-  openGraph: { title: "Delivery de Test-Drive | Rodovia Veículos", description, url: "/delivery" },
-  twitter: { title: "Delivery de Test-Drive | Rodovia Veículos", description },
 };
 
 const steps = [
