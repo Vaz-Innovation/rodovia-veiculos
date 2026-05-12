@@ -1,4 +1,4 @@
-import { CarByIdQuery, ProductsQuery } from "@/graphql/__gen__/graphql";
+import { CarByIdQuery, ProductsPaginatedQuery } from "@/graphql/__gen__/graphql";
 import { useVehicleFilters } from "@/hooks/useVehicleFilters";
 import { FuelType, TransmissionType, VehicleWithPhoto } from "@/lib/vehicles";
 
@@ -11,7 +11,7 @@ export function useEstoqueHelpers(
   return useVehicleFilters(all, search, PAGE_SIZE, sortKey);
 }
 
-type CarNode = NonNullable<NonNullable<ProductsQuery["products"]>["edges"][0]>["node"];
+type CarNode = NonNullable<NonNullable<ProductsPaginatedQuery["products"]>["edges"][0]>["node"];
 type DetailedCarNode = NonNullable<CarByIdQuery["product"]>;
 
 function mapProductToVehicle(node: DetailedCarNode): VehicleWithPhoto {
