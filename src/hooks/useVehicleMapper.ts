@@ -6,17 +6,17 @@ export type CarNode = NonNullable<NonNullable<ProductsPaginatedQuery["products"]
 export type DetailedCarNode = NonNullable<CarByIdQuery["product"]>;
 
 type AttributeNode = {
-  name: string;
+  name?: string | null;
   options?: (string | null)[] | null;
 };
 
 function getAttributeValue(attributes: AttributeNode[] | undefined | null, name: string): string {
-  const attr = attributes?.find((a) => a.name.toLowerCase() === name.toLowerCase());
+  const attr = attributes?.find((a) => a.name?.toLowerCase() === name.toLowerCase());
   return attr?.options?.[0] ?? "";
 }
 
 function getAttributeValues(attributes: AttributeNode[] | undefined | null, name: string): string[] {
-  const attr = attributes?.find((a) => a.name.toLowerCase() === name.toLowerCase());
+  const attr = attributes?.find((a) => a.name?.toLowerCase() === name.toLowerCase());
   return attr?.options?.filter((o): o is string => !!o) ?? [];
 }
 
