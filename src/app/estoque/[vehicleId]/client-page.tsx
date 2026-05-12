@@ -284,16 +284,16 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
             </div>
           )}
 
-          {data.features.length > 0 && (
+          {data.tags.length > 0 && (
             <div className="mt-10 pt-8 border-t border-border">
               <h2 className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
                 Itens e opcionais
               </h2>
               <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-3">
-                {data.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2 text-sm text-foreground/80">
+                {data.tags.map((t) => (
+                  <li key={t} className="flex items-start gap-2 text-sm text-foreground/80">
                     <Check className="h-4 w-4 mt-0.5 text-foreground shrink-0" />
-                    <span>{f}</span>
+                    <span>{t}</span>
                   </li>
                 ))}
               </ul>
