@@ -13,6 +13,15 @@ export function useVehicleMapper() {
     const brand = brands?.[0] ?? "";
     const rawPrice = "rawPrice" in node ? node.rawPrice : null;
 
+    let features: string[] = [];
+
+    if (pf?.features?.name) {
+      features = pf.features.name
+        .split("|")
+        .map((f) => f.trim())
+        .filter(Boolean);
+    }
+
     return {
       id: String(node.databaseId),
       name: node.name ?? "",
@@ -24,11 +33,7 @@ export function useVehicleMapper() {
       transmission: pf?.transmission as TransmissionType,
       fuel: pf?.fuel as FuelType,
       color: pf?.color ?? "",
-      features: Array.isArray(pf?.features)
-        ? pf.features.map((f) => f.name).filter((name): name is string => !!name)
-        : pf?.features?.name
-          ? [pf.features.name]
-          : [],
+      features,
       price: Number(rawPrice ?? 0),
       featured: Boolean(pf?.featured),
       created_at: node.date ?? "",

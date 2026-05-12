@@ -19,7 +19,6 @@ import { toast } from "sonner";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { supabase } from "@/integrations/supabase/client";
 import {
   FUEL_LABELS,
   TRANSMISSION_LABELS,
