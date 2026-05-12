@@ -1,18 +1,86 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export function HeroCinematic() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [showVideo, setShowVideo] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Força atributos para autoplay mobile
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+
+    const attemptPlay = async () => {
+      if (!video || !video.paused) return;
+      
+      try {
+        video.muted = true;
+        await video.play();
+        setIsPlaying(true);
+      } catch {
+        // Autoplay bloqueado - esconde vídeo para não mostrar botão de play
+        setShowVideo(false);
+      }
+    };
+
+    // Tenta reproduzir quando dados carregarem
+    video.addEventListener("canplay", attemptPlay);
+    video.addEventListener("loadeddata", attemptPlay);
+    
+    // Detecta quando começou a tocar
+    video.addEventListener("playing", () => setIsPlaying(true));
+
+    // Tenta imediatamente
+    if (video.readyState >= 3) {
+      attemptPlay();
+    }
+
+    return () => {
+      video.removeEventListener("canplay", attemptPlay);
+      video.removeEventListener("loadeddata", attemptPlay);
+    };
+  }, []);
 
   return (
     <section className="relative h-[100svh] min-h-[560px] md:min-h-[700px] w-full overflow-hidden bg-background">
-      {/* GIF BACKGROUND - funciona em todos os dispositivos sem restrições */}
+      {/* BACKGROUND */}
       <div className="absolute inset-0 bg-neutral-900">
+        {/* Imagem fallback - sempre visível como base */}
         <img
-          src="/images/hero-background.gif"
+          src="/images/hero-fallback.jpg"
           alt=""
-          className="absolute inset-0 h-full w-full object-cover"
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+            isPlaying ? "opacity-0" : "opacity-100"
+          }`}
           aria-hidden="true"
         />
+        
+        {/* Vídeo - só renderiza se autoplay não foi bloqueado */}
+        {showVideo && (
+          <video
+            ref={videoRef}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+              isPlaying ? "opacity-100" : "opacity-0"
+            }`}
+            src="/videos/hero-background.mp4"
+            muted
+            autoPlay
+            loop
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            aria-hidden="true"
+          />
+        )}
 
         {/* Overlays for legibility */}
         {/* Base gradient — bottom heavy */}
