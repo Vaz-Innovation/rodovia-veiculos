@@ -1,86 +1,77 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export function HeroCinematic() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
-  const hasTriedPlay = useRef(false);
-
-  const playVideo = useCallback(async () => {
-    const video = videoRef.current;
-    if (!video || hasTriedPlay.current) return;
-    
-    hasTriedPlay.current = true;
-    
-    try {
-      video.muted = true;
-      await video.play();
-      setIsVideoLoaded(true);
-    } catch {
-      // Em caso de falha, tenta novamente após interação do usuário
-      hasTriedPlay.current = false;
-      const playOnInteraction = () => {
-        const v = videoRef.current;
-        if (!v) return;
-        v.muted = true;
-        v.play().then(() => {
-          setIsVideoLoaded(true);
-        }).catch(() => {});
-      };
-      
-      document.addEventListener("touchstart", playOnInteraction, { once: true });
-      document.addEventListener("click", playOnInteraction, { once: true });
-    }
-  }, []);
-
-  // Callback ref para lidar com o vídeo assim que o elemento for montado
-  const setVideoRef = useCallback((node: HTMLVideoElement | null) => {
-    if (node) {
-      videoRef.current = node;
-      
-      // Força os atributos necessários para autoplay em mobile
-      node.muted = true;
-      node.playsInline = true;
-      node.setAttribute("playsinline", "");
-      node.setAttribute("webkit-playsinline", "");
-      node.setAttribute("x5-playsinline", "");
-      
-      // Se o vídeo já está pronto (cache do navegador), reproduz imediatamente
-      if (node.readyState >= 3) {
-        playVideo();
-      }
-    }
-  }, [playVideo]);
+  const playAttempts = useRef(0);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    const handleCanPlayThrough = () => {
-      playVideo();
+    // Força os atributos necessários para autoplay em mobile
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+    video.setAttribute("x5-playsinline", "");
+
+    const attemptPlay = async () => {
+      if (!video || video.paused === false) return;
+      
+      try {
+        video.muted = true;
+        await video.play();
+      } catch {
+        // Tenta novamente com delay (até 5 tentativas)
+        if (playAttempts.current < 5) {
+          playAttempts.current++;
+          setTimeout(attemptPlay, 500);
+        }
+      }
     };
 
-    const handleLoadedData = () => {
-      playVideo();
+    // Múltiplos eventos para garantir reprodução
+    const events = ["loadedmetadata", "loadeddata", "canplay", "canplaythrough"];
+    events.forEach(event => {
+      video.addEventListener(event, attemptPlay);
+    });
+
+    // Tenta reproduzir imediatamente
+    attemptPlay();
+
+    // Fallback: tenta após um pequeno delay (para hidratação do React)
+    const timeoutId = setTimeout(attemptPlay, 100);
+    const timeoutId2 = setTimeout(attemptPlay, 500);
+    const timeoutId3 = setTimeout(attemptPlay, 1000);
+
+    // Fallback final: reproduz na primeira interação do usuário
+    const playOnInteraction = () => {
+      if (video && video.paused) {
+        video.muted = true;
+        video.play().catch(() => {});
+      }
     };
 
-    // Eventos para quando o vídeo está pronto
-    video.addEventListener("canplaythrough", handleCanPlayThrough);
-    video.addEventListener("loadeddata", handleLoadedData);
-
-    // Tenta reproduzir imediatamente se já está pronto
-    if (video.readyState >= 3) {
-      playVideo();
-    }
+    document.addEventListener("touchstart", playOnInteraction, { once: true, passive: true });
+    document.addEventListener("scroll", playOnInteraction, { once: true, passive: true });
+    document.addEventListener("click", playOnInteraction, { once: true });
 
     return () => {
-      video.removeEventListener("canplaythrough", handleCanPlayThrough);
-      video.removeEventListener("loadeddata", handleLoadedData);
+      events.forEach(event => {
+        video.removeEventListener(event, attemptPlay);
+      });
+      clearTimeout(timeoutId);
+      clearTimeout(timeoutId2);
+      clearTimeout(timeoutId3);
+      document.removeEventListener("touchstart", playOnInteraction);
+      document.removeEventListener("scroll", playOnInteraction);
+      document.removeEventListener("click", playOnInteraction);
     };
-  }, [playVideo]);
+  }, []);
 
   return (
     <section className="relative h-[100svh] min-h-[560px] md:min-h-[700px] w-full overflow-hidden bg-background">
@@ -94,10 +85,8 @@ export function HeroCinematic() {
           - poster: Imagem de fallback enquanto carrega
         */}
         <video
-          ref={setVideoRef}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
-            isVideoLoaded ? "opacity-100" : "opacity-0"
-          }`}
+          ref={videoRef}
+          className="absolute inset-0 h-full w-full object-cover"
           src="/videos/hero-background.mp4"
           muted
           autoPlay
