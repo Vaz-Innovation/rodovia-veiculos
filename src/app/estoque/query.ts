@@ -1,8 +1,12 @@
 import { graphql } from "@/graphql/__gen__";
 
 export const CarsListPaginatedQuery = graphql(`
-  query ProductsPaginated($first: Int!, $after: String) {
-    products(first: $first, after: $after) {
+  query ProductsPaginated(
+    $first: Int!
+    $after: String
+    $where: RootQueryToProductConnectionWhereArgs
+  ) {
+    products(first: $first, after: $after, where: $where) {
       pageInfo {
         hasNextPage
         endCursor

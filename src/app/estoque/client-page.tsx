@@ -19,30 +19,19 @@ import {
 } from "@/lib/vehicles";
 import { cn } from "@/lib/utils";
 import { execute } from "@/graphql/execute";
-import { filterVehicles, sortVehicles } from "@/hooks/useVehicleFilters";
+
 import { CarsListPaginatedQuery } from "./query";
 import { useVehicleMapper } from "@/hooks/useVehicleMapper";
 
+import {
+  buildWhereArgs,
+  useVehicleFilters,
+  SearchParams,
+  SearchSort,
+  SORT_OPTIONS,
+} from "@/hooks/useVehicleFilters";
+
 const PAGE_SIZE = 24;
-const SORT_OPTIONS = ["recent", "price_asc", "price_desc", "year_desc", "km_asc"] as const;
-
-type SearchSort = (typeof SORT_OPTIONS)[number];
-
-interface SearchParams {
-  q: string;
-  brand: string;
-  model: string;
-  priceMin: number | undefined;
-  priceMax: number | undefined;
-  yearMin: number | undefined;
-  yearMax: number | undefined;
-  kmMax: number | undefined;
-  transmission: string;
-  fuel: string;
-  color: string;
-  features: string[];
-  sort: SearchSort;
-}
 
 const DEFAULT_SEARCH: SearchParams = {
   q: "",
@@ -57,6 +46,8 @@ const DEFAULT_SEARCH: SearchParams = {
   fuel: "",
   color: "",
   features: [],
+  category: "",
+  tag: "",
   sort: "recent",
 };
 
@@ -84,6 +75,8 @@ function parseSearchParams(params: URLSearchParams): SearchParams {
     fuel: params.get("fuel") ?? "",
     color: params.get("color") ?? "",
     features: params.getAll("features").filter(Boolean),
+    category: params.get("category") ?? "",
+    tag: params.get("tag") ?? "",
     sort,
   };
 }
@@ -107,6 +100,8 @@ function buildQueryString(next: SearchParams): string {
   set("transmission", next.transmission);
   set("fuel", next.fuel);
   set("color", next.color);
+  set("category", next.category);
+  set("tag", next.tag);
 
   for (const feature of next.features) params.append("features", feature);
 
@@ -127,18 +122,23 @@ export function EstoqueClient() {
   );
 
   // Infinite query com paginação GraphQL
-  const {
-    data,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["vehicles-infinite"],
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    queryKey: [
+      "vehicles-infinite",
+      search.q,
+      search.brand,
+      search.category,
+      search.tag,
+      search.priceMin,
+      search.priceMax,
+      search.sort,
+    ],
     queryFn: async ({ pageParam }) => {
+      const where = buildWhereArgs(search);
       const result = await execute(CarsListPaginatedQuery, {
         first: PAGE_SIZE,
         after: pageParam ?? null,
+        where,
       });
       return result;
     },
@@ -155,30 +155,18 @@ export function EstoqueClient() {
   // Flatten all pages into a single array of vehicles
   const allVehicles: VehicleWithPhoto[] = useMemo(() => {
     if (!data?.pages) return [];
-    
+
     return data.pages.flatMap((page) => {
       const edges = page?.products?.edges ?? [];
       return edges.map((e) => mapProductToVehicle(e.node));
     });
   }, [data, mapProductToVehicle]);
 
-  // Apply client-side filtering and sorting
-  const { brandOptions, modelOptions, filtered, sorted } = useMemo(() => {
-    const brandOpts = Array.from(new Set(allVehicles.map((v) => v.brand))).sort();
-    const modelOpts = Array.from(
-      new Set(allVehicles.filter((v) => !search.brand || v.brand === search.brand).map((v) => v.model)),
-    ).sort();
-    
-    const filteredList = filterVehicles(allVehicles, search);
-    const sortedList = sortVehicles(filteredList, search.sort);
-    
-    return {
-      brandOptions: brandOpts,
-      modelOptions: modelOpts,
-      filtered: filteredList,
-      sorted: sortedList,
-    };
-  }, [allVehicles, search]);
+  const { brandOptions, modelOptions, categoryOptions, tagOptions, sorted } = useVehicleFilters(
+    allVehicles,
+    search,
+    search.sort,
+  );
 
   const replaceSearch = (next: SearchParams) => {
     const qs = buildQueryString(next);
@@ -207,7 +195,9 @@ export function EstoqueClient() {
     (search.transmission ? 1 : 0) +
     (search.fuel ? 1 : 0) +
     (search.color ? 1 : 0) +
-    search.features.length;
+    search.features.length +
+    (search.category ? 1 : 0) +
+    (search.tag ? 1 : 0);
 
   return (
     <div className="bg-background text-foreground min-h-screen flex flex-col">
@@ -291,6 +281,36 @@ export function EstoqueClient() {
                 {modelOptions.map((m) => (
                   <option key={m} value={m}>
                     {m}
+                  </option>
+                ))}
+              </select>
+            </FilterGroup>
+
+            <FilterGroup label="Categoria">
+              <select
+                value={search.category}
+                onChange={(e) => update({ category: e.target.value })}
+                className="w-full bg-card border border-border px-3 py-2 text-sm"
+              >
+                <option value="">Todas</option>
+                {categoryOptions.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </FilterGroup>
+
+            <FilterGroup label="Tag">
+              <select
+                value={search.tag}
+                onChange={(e) => update({ tag: e.target.value })}
+                className="w-full bg-card border border-border px-3 py-2 text-sm"
+              >
+                <option value="">Todas</option>
+                {tagOptions.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
                   </option>
                 ))}
               </select>

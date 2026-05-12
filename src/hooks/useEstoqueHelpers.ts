@@ -1,17 +1,11 @@
 import { CarByIdQuery, ProductsPaginatedQuery } from "@/graphql/__gen__/graphql";
-import { useVehicleFilters } from "@/hooks/useVehicleFilters";
+import { useVehicleFilters, SearchParams } from "@/hooks/useVehicleFilters";
 import { FuelType, TransmissionType, VehicleWithPhoto } from "@/lib/vehicles";
 
-export function useEstoqueHelpers(
-  all: VehicleWithPhoto[],
-  search: any,
-  PAGE_SIZE: number,
-  sortKey: string,
-) {
-  return useVehicleFilters(all, search, PAGE_SIZE, sortKey);
+export function useEstoqueHelpers(all: VehicleWithPhoto[], search: SearchParams, sortKey: string) {
+  return useVehicleFilters(all, search, sortKey);
 }
 
-type CarNode = NonNullable<NonNullable<ProductsPaginatedQuery["products"]>["edges"][0]>["node"];
 type DetailedCarNode = NonNullable<CarByIdQuery["product"]>;
 
 function mapProductToVehicle(node: DetailedCarNode): VehicleWithPhoto {
@@ -29,11 +23,14 @@ function mapProductToVehicle(node: DetailedCarNode): VehicleWithPhoto {
     transmission: pf?.transmission as TransmissionType,
     fuel: pf?.fuel as FuelType,
     color: pf?.color ?? "",
-    features: Array.isArray(pf?.features)
-      ? pf.features.map((f) => f.name).filter((name): name is string => !!name)
-      : pf?.features?.name
-        ? [pf.features.name]
-        : [],
+    features: pf?.features?.name
+      ? pf.features.name
+          .split("|")
+          .map((f) => f.trim())
+          .filter(Boolean)
+      : [],
+    categories: [],
+    tags: [],
     price: Number(rawPrice ?? 0),
     featured: Boolean(pf?.featured),
     created_at: node.date ?? "",

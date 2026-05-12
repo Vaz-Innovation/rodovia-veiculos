@@ -2,7 +2,9 @@ import { useCallback } from "react";
 import { TransmissionType, FuelType, VehicleWithPhoto } from "@/lib/vehicles";
 import { ProductsPaginatedQuery, CarByIdQuery } from "@/graphql/__gen__/graphql";
 
-export type CarNode = NonNullable<NonNullable<ProductsPaginatedQuery["products"]>["edges"][0]>["node"];
+export type CarNode = NonNullable<
+  NonNullable<ProductsPaginatedQuery["products"]>["edges"][0]
+>["node"];
 export type DetailedCarNode = NonNullable<CarByIdQuery["product"]>;
 
 export function useVehicleMapper() {
@@ -34,6 +36,18 @@ export function useVehicleMapper() {
       fuel: pf?.fuel as FuelType,
       color: pf?.color ?? "",
       features,
+      categories:
+        "productCategories" in node
+          ? (node.productCategories?.edges ?? [])
+              .map((e) => e.node.name)
+              .filter((n): n is string => Boolean(n))
+          : [],
+      tags:
+        "productTags" in node
+          ? (node.productTags?.edges ?? [])
+              .map((e) => e.node.name)
+              .filter((n): n is string => Boolean(n))
+          : [],
       price: Number(rawPrice ?? 0),
       featured: Boolean(pf?.featured),
       created_at: node.date ?? "",

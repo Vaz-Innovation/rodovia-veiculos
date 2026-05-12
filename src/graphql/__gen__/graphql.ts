@@ -27527,6 +27527,7 @@ export type CarByIdQuery = { __typename?: 'RootQuery', product?: { __typename?: 
 export type ProductsPaginatedQueryVariables = Exact<{
   first: Scalars['Int']['input'];
   after?: InputMaybe<Scalars['String']['input']>;
+  where?: InputMaybe<RootQueryToProductConnectionWhereArgs>;
 }>;
 
 
@@ -27608,8 +27609,8 @@ export const CarByIdDocument = new TypedDocumentString(`
 }
     `) as unknown as TypedDocumentString<CarByIdQuery, CarByIdQueryVariables>;
 export const ProductsPaginatedDocument = new TypedDocumentString(`
-    query ProductsPaginated($first: Int!, $after: String) {
-  products(first: $first, after: $after) {
+    query ProductsPaginated($first: Int!, $after: String, $where: RootQueryToProductConnectionWhereArgs) {
+  products(first: $first, after: $after, where: $where) {
     pageInfo {
       hasNextPage
       endCursor

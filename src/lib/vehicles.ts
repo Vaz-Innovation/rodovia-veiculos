@@ -18,6 +18,8 @@ export interface Vehicle {
   plate_end: string | null;
   description: string | null;
   features: string[];
+  categories: string[];
+  tags: string[];
   featured: boolean;
   status: VehicleStatus;
   created_at: string;
