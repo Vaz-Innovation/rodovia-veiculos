@@ -1,9 +1,14 @@
 import { graphql } from "@/graphql/__gen__";
 
-export const CarsListQuery = graphql(`
-  query Products {
-    products {
+export const CarsListPaginatedQuery = graphql(`
+  query ProductsPaginated($first: Int!, $after: String) {
+    products(first: $first, after: $after) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
       edges {
+        cursor
         node {
           id
           databaseId
@@ -68,3 +73,6 @@ export const CarsListQuery = graphql(`
     }
   }
 `);
+
+// Keep the old query for backwards compatibility if needed
+export const CarsListQuery = CarsListPaginatedQuery;
