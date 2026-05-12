@@ -1,103 +1,86 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export function HeroCinematic() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const playAttempts = useRef(0);
+  const [showVideo, setShowVideo] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    // Força os atributos necessários para autoplay em mobile
+    // Força atributos para autoplay mobile
     video.muted = true;
     video.playsInline = true;
     video.setAttribute("playsinline", "");
     video.setAttribute("webkit-playsinline", "");
-    video.setAttribute("x5-playsinline", "");
 
     const attemptPlay = async () => {
-      if (!video || video.paused === false) return;
+      if (!video || !video.paused) return;
       
       try {
         video.muted = true;
         await video.play();
+        setIsPlaying(true);
       } catch {
-        // Tenta novamente com delay (até 5 tentativas)
-        if (playAttempts.current < 5) {
-          playAttempts.current++;
-          setTimeout(attemptPlay, 500);
-        }
+        // Autoplay bloqueado - esconde vídeo para não mostrar botão de play
+        setShowVideo(false);
       }
     };
 
-    // Múltiplos eventos para garantir reprodução
-    const events = ["loadedmetadata", "loadeddata", "canplay", "canplaythrough"];
-    events.forEach(event => {
-      video.addEventListener(event, attemptPlay);
-    });
+    // Tenta reproduzir quando dados carregarem
+    video.addEventListener("canplay", attemptPlay);
+    video.addEventListener("loadeddata", attemptPlay);
+    
+    // Detecta quando começou a tocar
+    video.addEventListener("playing", () => setIsPlaying(true));
 
-    // Tenta reproduzir imediatamente
-    attemptPlay();
-
-    // Fallback: tenta após um pequeno delay (para hidratação do React)
-    const timeoutId = setTimeout(attemptPlay, 100);
-    const timeoutId2 = setTimeout(attemptPlay, 500);
-    const timeoutId3 = setTimeout(attemptPlay, 1000);
-
-    // Fallback final: reproduz na primeira interação do usuário
-    const playOnInteraction = () => {
-      if (video && video.paused) {
-        video.muted = true;
-        video.play().catch(() => {});
-      }
-    };
-
-    document.addEventListener("touchstart", playOnInteraction, { once: true, passive: true });
-    document.addEventListener("scroll", playOnInteraction, { once: true, passive: true });
-    document.addEventListener("click", playOnInteraction, { once: true });
+    // Tenta imediatamente
+    if (video.readyState >= 3) {
+      attemptPlay();
+    }
 
     return () => {
-      events.forEach(event => {
-        video.removeEventListener(event, attemptPlay);
-      });
-      clearTimeout(timeoutId);
-      clearTimeout(timeoutId2);
-      clearTimeout(timeoutId3);
-      document.removeEventListener("touchstart", playOnInteraction);
-      document.removeEventListener("scroll", playOnInteraction);
-      document.removeEventListener("click", playOnInteraction);
+      video.removeEventListener("canplay", attemptPlay);
+      video.removeEventListener("loadeddata", attemptPlay);
     };
   }, []);
 
   return (
     <section className="relative h-[100svh] min-h-[560px] md:min-h-[700px] w-full overflow-hidden bg-background">
-      {/* VIDEO BACKGROUND */}
+      {/* BACKGROUND */}
       <div className="absolute inset-0 bg-neutral-900">
-        {/* 
-          Atributos críticos para autoplay em mobile:
-          - muted: Obrigatório para autoplay em todos os navegadores
-          - playsInline + webkit-playsinline: Evita fullscreen forçado no iOS
-          - autoPlay: Tenta iniciar automaticamente
-          - poster: Imagem de fallback enquanto carrega
-        */}
-        <video
-          ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover"
-          src="/videos/hero-background.mp4"
-          muted
-          autoPlay
-          loop
-          playsInline
-          webkit-playsinline=""
-          x5-playsinline=""
-          preload="auto"
-          disablePictureInPicture
+        {/* Imagem fallback - sempre visível como base */}
+        <img
+          src="/images/hero-fallback.jpg"
+          alt=""
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+            isPlaying ? "opacity-0" : "opacity-100"
+          }`}
           aria-hidden="true"
         />
+        
+        {/* Vídeo - só renderiza se autoplay não foi bloqueado */}
+        {showVideo && (
+          <video
+            ref={videoRef}
+            className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
+              isPlaying ? "opacity-100" : "opacity-0"
+            }`}
+            src="/videos/hero-background.mp4"
+            muted
+            autoPlay
+            loop
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            aria-hidden="true"
+          />
+        )}
 
         {/* Overlays for legibility */}
         {/* Base gradient — bottom heavy */}
