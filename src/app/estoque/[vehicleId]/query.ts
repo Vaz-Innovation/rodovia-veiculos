@@ -7,6 +7,8 @@ export const CarByIdQuery = graphql(`
       databaseId
       name
       date
+      description
+      shortDescription
       productCategories {
         edges {
           node {
@@ -15,6 +17,13 @@ export const CarByIdQuery = graphql(`
         }
       }
       productTags {
+        edges {
+          node {
+            name
+          }
+        }
+      }
+      productBrands {
         edges {
           node {
             name

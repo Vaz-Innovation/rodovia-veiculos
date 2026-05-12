@@ -20,6 +20,11 @@ function getAttributeValues(attributes: AttributeNode[] | undefined | null, name
   return attr?.options?.filter((o): o is string => !!o) ?? [];
 }
 
+function stripHtml(html: string | null | undefined): string | null {
+  if (!html) return null;
+  return html.replace(/<[^>]*>/g, "").trim() || null;
+}
+
 export function useVehicleMapper() {
   return useCallback((node: CarNode | DetailedCarNode): VehicleWithPhoto => {
     const attributes = "attributes" in node ? node.attributes?.nodes : undefined;
@@ -27,16 +32,20 @@ export function useVehicleMapper() {
       "productBrands" in node ? node.productBrands?.edges?.map((e) => e.node.name) : [];
     const brand = brands?.[0] ?? "";
     const rawPrice = "rawPrice" in node ? node.rawPrice : null;
+    const description = "description" in node ? stripHtml(node.description) : null;
 
     const model = getAttributeValue(attributes, "model");
     const version = getAttributeValue(attributes, "version");
     const yearModel = getAttributeValue(attributes, "yearmodel");
+    const yearManufacture = getAttributeValue(attributes, "yearmanufacture");
     const mileage = getAttributeValue(attributes, "mileage");
     const transmission = getAttributeValue(attributes, "transmission");
     const fuel = getAttributeValue(attributes, "fuel");
     const color = getAttributeValue(attributes, "color");
     const featured = getAttributeValue(attributes, "featured");
     const features = getAttributeValues(attributes, "features");
+    const doors = getAttributeValue(attributes, "doors");
+    const plateEnd = getAttributeValue(attributes, "plate_end");
 
     return {
       id: String(node.databaseId),
@@ -81,12 +90,12 @@ export function useVehicleMapper() {
               .filter((p) => !!p.url)
           : []),
       ],
-      description: null,
-      doors: null,
-      plate_end: null,
+      description: description,
+      doors: doors ? Number(doors) : null,
+      plate_end: plateEnd || null,
       status: "disponivel",
       updated_at: node.date ?? "",
-      year_manufacture: Number(yearModel) || 0,
+      year_manufacture: Number(yearManufacture) || Number(yearModel) || 0,
     };
   }, []);
 }
