@@ -265,7 +265,7 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
             {(data.city || data.district) && (
               <SpecItem 
                 label="Cidade" 
-                value={[data.city, data.district].filter(Boolean).map(s => s?.charAt(0).toUpperCase() + s?.slice(1).toLowerCase()).join(" - ")} 
+                value={[data.city, data.district].filter((s): s is string => Boolean(s)).map(s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()).join(" - ")} 
               />
             )}
             <SpecItem label="Ano" value={`${data.year_manufacture}/${data.year_model}`} />
