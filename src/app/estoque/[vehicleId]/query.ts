@@ -1,6 +1,7 @@
 import { graphql } from "@/graphql/__gen__";
+import { gqlQueryOptions } from "@/graphql/gqlpc";
 
-export const CarByIdQuery = graphql(`
+export const CarById_Query = graphql(`
   query CarById($id: ID!) {
     product(id: $id, idType: DATABASE_ID) {
       id
@@ -8,13 +9,7 @@ export const CarByIdQuery = graphql(`
       name
       date
       shortDescription
-      productCategories {
-        edges {
-          node {
-            name
-          }
-        }
-      }
+      featured
       productTags {
         nodes {
           name
@@ -48,3 +43,7 @@ export const CarByIdQuery = graphql(`
     }
   }
 `);
+
+export function getCarByIdQueryOptions(id: string) {
+  return gqlQueryOptions(CarById_Query, { input: { id } });
+}

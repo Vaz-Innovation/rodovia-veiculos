@@ -5,10 +5,10 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { Loader2 } from "lucide-react";
 
 import { VehicleCard } from "./vehicle-card";
-import { VehicleWithPhoto } from "@/lib/vehicles";
+import { Vehicle } from "@/lib/vehicles";
 
 interface VirtualizedVehicleListProps {
-  vehicles: VehicleWithPhoto[];
+  vehicles: Vehicle[];
   hasNextPage: boolean;
   isFetchingNextPage: boolean;
   fetchNextPage: () => void;
@@ -50,7 +50,7 @@ export function VirtualizedVehicleList({
 
   // Agrupa os veículos em linhas baseado no número de colunas
   const rows = useMemo(() => {
-    const result: VehicleWithPhoto[][] = [];
+    const result: Vehicle[][] = [];
     for (let i = 0; i < vehicles.length; i += columns) {
       result.push(vehicles.slice(i, i + columns));
     }
@@ -72,11 +72,7 @@ export function VirtualizedVehicleList({
     const lastItem = virtualItems[virtualItems.length - 1];
     if (!lastItem) return;
 
-    if (
-      lastItem.index >= rows.length - 1 &&
-      hasNextPage &&
-      !isFetchingNextPage
-    ) {
+    if (lastItem.index >= rows.length - 1 && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
   }, [virtualItems, hasNextPage, isFetchingNextPage, fetchNextPage, rows.length]);
@@ -85,7 +81,7 @@ export function VirtualizedVehicleList({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="bg-card aspect-[4/3] animate-pulse rounded" />
+          <div key={i} className="bg-card aspect-4/3 animate-pulse rounded" />
         ))}
       </div>
     );
@@ -96,10 +92,7 @@ export function VirtualizedVehicleList({
   }
 
   return (
-    <div
-      ref={parentRef}
-      className="h-[calc(100vh-280px)] overflow-y-auto overflow-x-hidden"
-    >
+    <div ref={parentRef} className="h-[calc(100vh-280px)] overflow-y-auto overflow-x-hidden">
       <div
         style={{
           height: `${virtualizer.getTotalSize()}px`,

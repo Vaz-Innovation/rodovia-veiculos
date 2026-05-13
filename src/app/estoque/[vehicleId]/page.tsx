@@ -2,39 +2,14 @@ import type { Metadata, ResolvingMetadata } from "next";
 
 import { execute } from "@/graphql/execute";
 import { VehicleDetailClient } from "./client-page";
-import { CarByIdQuery } from "./query";
+import { getCarByIdQueryOptions } from "./query";
+import { prefetch } from "@/orpc/orpc.server";
 
-export async function generateMetadata(
-  { params }: { params: Promise<{ vehicleId: string }> },
-  parent: ResolvingMetadata,
-): Promise<Metadata> {
-  const { vehicleId } = await params;
-
-  try {
-    const data = await execute(CarByIdQuery, { id: vehicleId });
-    const product = data?.product;
-    if (!product) return { title: "Veículo não encontrado" };
-
-    const name = product.name ?? "Veículo";
-
-    const imageUrl = product.image?.sourceUrl;
-    const parentImages = (await parent).openGraph?.images ?? [];
-
-    return {
-      title: name,
-      ...(imageUrl && {
-        openGraph: {
-          images: [{ url: imageUrl, alt: name }, ...parentImages],
-        },
-        twitter: {
-          images: [imageUrl],
-        },
-      }),
-    };
-  } catch {
-    return { title: "Veículo não encontrado" };
-  }
-}
+// export async function generateMetadata(
+//   { params }: { params: Promise<{ vehicleId: string }> },
+//   parent: ResolvingMetadata,
+// ): Promise<Metadata> {
+//   const { vehicleId } = await params;
 
 export default async function VehicleDetailPage({
   params,
@@ -42,5 +17,8 @@ export default async function VehicleDetailPage({
   params: Promise<{ vehicleId: string }>;
 }) {
   const { vehicleId } = await params;
+
+  prefetch(getCarByIdQueryOptions(vehicleId));
+
   return <VehicleDetailClient vehicleId={vehicleId} />;
 }

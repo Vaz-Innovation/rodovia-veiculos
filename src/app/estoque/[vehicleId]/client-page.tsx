@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useState, useMemo } from "react";
 import {
   ArrowLeft,
   ChevronLeft,
@@ -18,35 +18,30 @@ import { toast } from "sonner";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import {
-  FUEL_LABELS,
-  TRANSMISSION_LABELS,
-  formatMileage,
-  formatPrice,
-  vehicleTitle,
-  whatsappLink,
-} from "@/lib/vehicles";
+import { formatMileage, formatPrice, vehicleTitle, whatsappLink } from "@/lib/vehicles";
 import { cn } from "@/lib/utils";
 import { NotFoundView } from "./_components/not-found-view";
 import { SpecItem } from "./_components/spec-item";
 import { ContactCard } from "./_components/contact-card";
 
-import { CarByIdQuery } from "./query";
-import { gqlQueryOptions } from "@/graphql/gqlpc";
+import { getCarByIdQueryOptions } from "./query";
 import { useVehicleMapper } from "@/hooks/useVehicleMapper";
 
 export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
+  const mapVehicle = useVehicleMapper();
   const [photoIndex, setPhotoIndex] = useState(0);
   const [lightbox, setLightbox] = useState(false);
 
-  const mapProductToVehicle = useVehicleMapper();
-  const {
-    data: queryData,
-    isLoading,
-    error,
-  } = useQuery(gqlQueryOptions(CarByIdQuery, { input: { id: vehicleId } }));
+  const { data: rawData, isLoading } = useSuspenseQuery(getCarByIdQueryOptions(vehicleId));
 
-  const data = queryData?.product ? mapProductToVehicle(queryData.product) : null;
+  const data = useMemo(
+    () => (rawData?.product ? mapVehicle(rawData.product) : null),
+    [rawData, mapVehicle],
+  );
+
+  if (!data) {
+    return <NotFoundView />;
+  }
 
   if (isLoading) {
     return (
@@ -63,11 +58,7 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
     );
   }
 
-  if (error || !data) return <NotFoundView />;
-
-  const photos = [...data.vehicle_photos].sort(
-    (a, b) => Number(b.is_cover) - Number(a.is_cover) || (a.position ?? 0) - (b.position ?? 0),
-  );
+  const photos = data.photos ?? [];
 
   const total = Math.max(photos.length, 1);
   const next = () => setPhotoIndex((i) => (i + 1) % total);
@@ -122,18 +113,18 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
                   if (idx !== photoIndex) setPhotoIndex(idx);
                 }}
               >
-                {photos.map((p) => (
+                {photos.map((url, i) => (
                   <button
-                    key={p.id}
+                    key={url}
                     onClick={() => {
-                      setPhotoIndex(photos.indexOf(p));
+                      setPhotoIndex(i);
                       setLightbox(true);
                     }}
                     className="relative shrink-0 w-full snap-center bg-card overflow-hidden aspect-4/3"
                     aria-label="Ampliar foto"
                   >
                     <img
-                      src={p.url}
+                      src={url}
                       alt={vehicleTitle(data)}
                       className="h-full w-full object-cover"
                       loading="lazy"
@@ -150,18 +141,18 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
 
           <div className="hidden md:grid grid-cols-3 gap-2">
             {visiblePhotos.length > 0 ? (
-              visiblePhotos.map((p, i) => (
+              visiblePhotos.map((url, i) => (
                 <button
-                  key={`${p.id}-${i}`}
+                  key={`${url}-${i}`}
                   onClick={() => {
-                    setPhotoIndex(photos.indexOf(p));
+                    setPhotoIndex(photos.indexOf(url));
                     setLightbox(true);
                   }}
                   className="relative block bg-card overflow-hidden aspect-4/3 rounded-sm group"
                   aria-label="Ampliar foto"
                 >
                   <img
-                    src={p.url}
+                    src={url}
                     alt={vehicleTitle(data)}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                   />
@@ -218,9 +209,9 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
 
         {photos.length > 1 && (
           <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
-            {photos.map((p, i) => (
+            {photos.map((url, i) => (
               <button
-                key={p.id}
+                key={url}
                 onClick={() => setPhotoIndex(i)}
                 className={cn(
                   "shrink-0 w-20 h-16 overflow-hidden bg-card rounded-sm border-2 transition-all",
@@ -229,7 +220,7 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
                     : "border-transparent opacity-70 hover:opacity-100",
                 )}
               >
-                <img src={p.url} alt="" className="h-full w-full object-cover" />
+                <img src={url} alt="" className="h-full w-full object-cover" />
               </button>
             ))}
           </div>
@@ -268,11 +259,8 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
             )}
             <SpecItem label="Ano" value={`${data.year_manufacture}/${data.year_model}`} />
             <SpecItem label="KM" value={formatMileage(data.mileage)} />
-            <SpecItem
-              label="Câmbio"
-              value={TRANSMISSION_LABELS[data.transmission] || data.transmission}
-            />
-            <SpecItem label="Combustível" value={FUEL_LABELS[data.fuel] || data.fuel} />
+            <SpecItem label="Câmbio" value={data.transmission} />
+            <SpecItem label="Combustível" value={data.fuel} />
             {data.color && <SpecItem label="Cor" value={data.color} />}
             {data.engine && <SpecItem label="Motor" value={data.engine} />}
             {data.doors !== null && data.doors !== undefined && (
@@ -388,7 +376,7 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
             </>
           )}
           <img
-            src={photos[photoIndex].url}
+            src={photos[photoIndex]}
             alt={vehicleTitle(data)}
             className="max-w-[92vw] max-h-[88vh] object-contain"
             onClick={(e) => e.stopPropagation()}

@@ -1,20 +1,21 @@
-import { useMemo } from "react";
-import { TransmissionType, FuelType, VehicleWithPhoto } from "@/lib/vehicles";
 import {
-  RootQueryToProductConnectionWhereArgs,
-  ProductsOrderByEnum,
-  OrderEnum,
-} from "@/graphql/__gen__/graphql";
+  Vehicle,
+  TRANSMISSION_OPTIONS,
+  FUEL_OPTIONS,
+  COLOR_OPTIONS,
+  CONDITION_OPTIONS,
+} from "@/lib/vehicles";
+import { useMemo } from "react";
 
 export const SORT_OPTIONS = ["recent", "price_asc", "price_desc", "year_desc", "km_asc"] as const;
 export type SearchSort = (typeof SORT_OPTIONS)[number];
 
 export interface SearchParams {
-  q: string;
-  brand: string;
+  search: string;
+  productBrand: string;
   model: string;
-  priceMin: number | undefined;
-  priceMax: number | undefined;
+  minPrice: number | undefined;
+  maxPrice: number | undefined;
   yearMin: number | undefined;
   yearMax: number | undefined;
   kmMax: number | undefined;
@@ -22,84 +23,99 @@ export interface SearchParams {
   fuel: string;
   condition: string;
   color: string;
-  tags: string[];
+  tagIn: string[];
   category: string;
   sort: SearchSort;
 }
 
-export function useVehicleFilters(all: VehicleWithPhoto[], search: SearchParams, sortKey: string) {
-  const brandOptions = useMemo(() => Array.from(new Set(all.map((v) => v.brand))).sort(), [all]);
-  const modelOptions = useMemo(() => {
-    return Array.from(
-      new Set(all.filter((v) => !search.brand || v.brand === search.brand).map((v) => v.model)),
-    ).sort();
-  }, [all, search.brand]);
-  const categoryOptions = useMemo(
-    () => Array.from(new Set(all.flatMap((v) => v.categories))).sort(),
+/** A single filter option with display label and API slug. */
+export interface VehicleFilterOption {
+  name: string;
+  slug: string;
+}
+
+/** Options that come from the API (taxonomy queries). */
+export interface VehicleFilterApiOptions {
+  brands: VehicleFilterOption[];
+  categories: VehicleFilterOption[];
+  tags: VehicleFilterOption[];
+}
+
+export function useVehicleFilters(
+  all: Vehicle[],
+  search: SearchParams,
+  sortKey: string,
+  apiOptions?: VehicleFilterApiOptions,
+) {
+  const brandOptions = useMemo(
+    () =>
+      apiOptions?.brands ??
+      Array.from(new Set(all.map((v) => v.brand)))
+        .sort()
+        .map((n) => ({ name: n, slug: n })),
+    [apiOptions?.brands, all],
+  );
+  const modelOptions = useMemo(
+    () =>
+      Array.from(new Set(all.map((v) => v.model)))
+        .filter(Boolean)
+        .sort(),
     [all],
   );
-  const tagOptions = useMemo(() => Array.from(new Set(all.flatMap((v) => v.tags))).sort(), [all]);
+  const categoryOptions = useMemo(
+    () =>
+      apiOptions?.categories ??
+      Array.from(new Set(all.flatMap((v) => v.categories)))
+        .sort()
+        .map((n) => ({ name: n, slug: n })),
+    [apiOptions?.categories, all],
+  );
+  const tagOptions = useMemo(
+    () =>
+      apiOptions?.tags ??
+      Array.from(new Set(all.flatMap((v) => v.tags ?? [])))
+        .sort()
+        .map((n) => ({ name: n, slug: n })),
+    [apiOptions?.tags, all],
+  );
+
+  const transmissionOptions = TRANSMISSION_OPTIONS;
+  const fuelOptions = FUEL_OPTIONS;
+  const colorOptions = COLOR_OPTIONS;
+  const conditionOptions = CONDITION_OPTIONS;
 
   const filtered = useMemo(() => filterVehicles(all, search), [all, search]);
   const sorted = useMemo(() => sortVehicles(filtered, sortKey), [filtered, sortKey]);
 
-  return { brandOptions, modelOptions, categoryOptions, tagOptions, filtered, sorted };
+  return {
+    brandOptions,
+    modelOptions,
+    categoryOptions,
+    tagOptions,
+    transmissionOptions,
+    fuelOptions,
+    colorOptions,
+    conditionOptions,
+    filtered,
+    sorted,
+  };
 }
 
-export function buildWhereArgs(s: SearchParams): RootQueryToProductConnectionWhereArgs {
-  const where: RootQueryToProductConnectionWhereArgs = {};
-
-  if (s.q?.trim()) {
-    where.search = s.q.trim();
-  }
-
-  if (s.brand) {
-    where.productBrand = s.brand;
-  }
-
-  if (s.category) {
-    where.category = s.category;
-  }
-
-  if (s.priceMin !== undefined) {
-    where.minPrice = s.priceMin;
-  }
-
-  if (s.priceMax !== undefined) {
-    where.maxPrice = s.priceMax;
-  }
-
-  switch (s.sort) {
-    case "price_asc":
-      where.orderby = [{ field: ProductsOrderByEnum.Price, order: OrderEnum.Asc }];
-      break;
-    case "price_desc":
-      where.orderby = [{ field: ProductsOrderByEnum.Price, order: OrderEnum.Desc }];
-      break;
-    default:
-      where.orderby = [{ field: ProductsOrderByEnum.Date, order: OrderEnum.Desc }];
-      break;
-  }
-
-  return where;
-}
-
-function filterVehicles(list: VehicleWithPhoto[], s: SearchParams): VehicleWithPhoto[] {
+function filterVehicles(list: Vehicle[], s: SearchParams): Vehicle[] {
   return list.filter((v) => {
     if (s.model && v.model !== s.model) return false;
+    if (s.transmission && v.transmission !== s.transmission) return false;
+    if (s.fuel && v.fuel !== s.fuel) return false;
+    if (s.color && v.color !== s.color) return false;
+    if (s.condition && v.condition !== s.condition) return false;
     if (s.yearMin !== undefined && v.year_model < s.yearMin) return false;
     if (s.yearMax !== undefined && v.year_model > s.yearMax) return false;
     if (s.kmMax !== undefined && v.mileage > s.kmMax) return false;
-    if (s.transmission && v.transmission !== (s.transmission as TransmissionType)) return false;
-    if (s.fuel && v.fuel !== (s.fuel as FuelType)) return false;
-    if (s.color && v.color.toLowerCase() !== s.color.toLowerCase()) return false;
-    if (s.condition && v.condition !== s.condition) return false;
-    if (s.tags.length > 0 && !s.tags.some((t) => v.tags?.includes(t))) return false;
     return true;
   });
 }
 
-function sortVehicles(list: VehicleWithPhoto[], sort: string): VehicleWithPhoto[] {
+function sortVehicles(list: Vehicle[], sort: string): Vehicle[] {
   const copy = [...list];
   switch (sort) {
     case "price_asc":

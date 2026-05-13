@@ -1,17 +1,9 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import {
-  vehicleTitle,
-  formatMileage,
-  formatPrice,
-  TRANSMISSION_LABELS,
-  VehicleWithPhoto,
-} from "@/lib/vehicles";
+import { vehicleTitle, formatMileage, formatPrice, Vehicle } from "@/lib/vehicles";
 
-export function VehicleCard({ vehicle }: { vehicle: VehicleWithPhoto }) {
-  const cover =
-    vehicle.vehicle_photos.find((p) => p.is_cover) ??
-    [...vehicle.vehicle_photos].sort((a, b) => a.position - b.position)[0];
+export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
+  const cover = vehicle.photos?.[0];
 
   return (
     <Link
@@ -21,7 +13,7 @@ export function VehicleCard({ vehicle }: { vehicle: VehicleWithPhoto }) {
       <div className="aspect-4/3 overflow-hidden bg-muted relative">
         {cover ? (
           <img
-            src={cover.url}
+            src={cover}
             alt={vehicleTitle(vehicle)}
             loading="lazy"
             className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-105"
