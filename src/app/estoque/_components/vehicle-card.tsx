@@ -47,13 +47,12 @@ export function VehicleCard({ vehicle }: { vehicle: VehicleWithPhoto }) {
             <span className="text-muted-foreground text-sm"> {vehicle.version}</span>
           )}
         </h3>
-        <span className="font-medium text-lg">{vehicle.name}</span>
         <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
           <span>{vehicle.year_model}</span>
           <span>·</span>
           <span>{formatMileage(vehicle.mileage)}</span>
           <span>·</span>
-          <span>{TRANSMISSION_LABELS[vehicle.transmission]}</span>
+          <span>{vehicle.transmission}</span>
         </div>
         <div className="mt-5 pt-4 border-t border-border flex items-center justify-between">
           <p className="text-xl font-light">{formatPrice(Number(vehicle.price))}</p>

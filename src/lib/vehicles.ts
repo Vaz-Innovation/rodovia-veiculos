@@ -1,5 +1,5 @@
-export type TransmissionType = "manual" | "automatico" | "cvt" | "automatizado";
-export type FuelType = "flex" | "gasolina" | "diesel" | "hibrido" | "eletrico" | "gnv";
+export type TransmissionType = "Manual" | "Automatico" | "CVT" | "Automatizado";
+export type FuelType = "Flex" | "Gasolina" | "Diesel" | "Hibrido" | "Eletrico" | "GNV";
 export type VehicleStatus = "disponivel" | "vendido" | "reservado";
 
 export interface Vehicle {
@@ -7,6 +7,7 @@ export interface Vehicle {
   brand: string;
   model: string;
   version: string | null;
+  description: string | null;
   year_model: number;
   year_manufacture: number;
   price: number;
@@ -16,9 +17,8 @@ export interface Vehicle {
   color: string;
   doors: number | null;
   plate_end: string | null;
-  description: string | null;
   categories: string[];
-  tags: string[];
+  tags: string[] | null;
   featured: boolean;
   status: VehicleStatus;
   created_at: string;
@@ -43,19 +43,19 @@ export interface VehiclePhoto {
 export type VehicleWithPhoto = Vehicle & { vehicle_photos: VehiclePhoto[] };
 
 export const TRANSMISSION_LABELS: Record<TransmissionType, string> = {
-  manual: "Manual",
-  automatico: "Automático",
-  cvt: "CVT",
-  automatizado: "Automatizado",
+  Manual: "Manual",
+  Automatico: "Automático",
+  CVT: "CVT",
+  Automatizado: "Automatizado",
 };
 
 export const FUEL_LABELS: Record<FuelType, string> = {
-  flex: "Flex",
-  gasolina: "Gasolina",
-  diesel: "Diesel",
-  hibrido: "Híbrido",
-  eletrico: "Elétrico",
-  gnv: "GNV",
+  Flex: "Flex",
+  Gasolina: "Gasolina",
+  Diesel: "Diesel",
+  Hibrido: "Híbrido",
+  Eletrico: "Elétrico",
+  GNV: "GNV",
 };
 
 export const STATUS_LABELS: Record<VehicleStatus, string> = {
@@ -75,6 +75,8 @@ export const COMMON_COLORS = [
   "Bege",
   "Verde",
 ];
+
+export const COMMON_CONDITIONS = ["NOVO", "USADO", "SEMI-NOVO"];
 
 export function formatPrice(value: number): string {
   return value.toLocaleString("pt-BR", {

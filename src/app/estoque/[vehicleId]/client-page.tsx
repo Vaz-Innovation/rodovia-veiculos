@@ -11,7 +11,6 @@ import {
   Check,
   Heart,
   Share2,
-  Phone,
   X,
   Star,
 } from "lucide-react";
@@ -109,9 +108,6 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
           <span className="text-border">/</span>
           <span className="text-foreground">{data.model}</span>
         </nav>
-        <div className="py-4">
-          <span className="text-3xl ">{data.name}</span>
-        </div>
       </section>
 
       <section className="mx-auto max-w-350 w-full md:px-4 lg:px-8">
@@ -262,14 +258,20 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
 
           <dl className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4">
             {(data.city || data.district) && (
-              <SpecItem 
-                label="Cidade" 
-                value={[data.city, data.district].filter((s): s is string => Boolean(s)).map(s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()).join(" - ")} 
+              <SpecItem
+                label="Cidade"
+                value={[data.city, data.district]
+                  .filter((s): s is string => Boolean(s))
+                  .map((s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
+                  .join(" - ")}
               />
             )}
             <SpecItem label="Ano" value={`${data.year_manufacture}/${data.year_model}`} />
             <SpecItem label="KM" value={formatMileage(data.mileage)} />
-            <SpecItem label="Câmbio" value={TRANSMISSION_LABELS[data.transmission] || data.transmission} />
+            <SpecItem
+              label="Câmbio"
+              value={TRANSMISSION_LABELS[data.transmission] || data.transmission}
+            />
             <SpecItem label="Combustível" value={FUEL_LABELS[data.fuel] || data.fuel} />
             {data.color && <SpecItem label="Cor" value={data.color} />}
             {data.engine && <SpecItem label="Motor" value={data.engine} />}
@@ -291,7 +293,7 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
             </div>
           )}
 
-          {data.tags.length > 0 && (
+          {data.tags && data.tags.length > 0 && (
             <div className="mt-10 pt-8 border-t border-border">
               <h2 className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
                 Itens e opcionais

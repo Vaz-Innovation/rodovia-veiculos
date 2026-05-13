@@ -26,17 +26,8 @@ export const CarsListPaginatedQuery = graphql(`
             }
           }
           productTags {
-            edges {
-              node {
-                name
-              }
-            }
-          }
-          productBrands {
-            edges {
-              node {
-                name
-              }
+            nodes {
+              name
             }
           }
           ... on SimpleProduct {
@@ -59,17 +50,10 @@ export const CarsListPaginatedQuery = graphql(`
           image {
             sourceUrl
           }
-
-          galleryImages {
-            nodes {
-              sourceUrl
-            }
-          }
         }
       }
     }
   }
 `);
 
-// Keep the old query for backwards compatibility if needed
 export const CarsListQuery = CarsListPaginatedQuery;

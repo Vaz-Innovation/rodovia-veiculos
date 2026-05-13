@@ -12,6 +12,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import {
   COMMON_COLORS,
+  COMMON_CONDITIONS,
   FUEL_LABELS,
   TRANSMISSION_LABELS,
   type VehicleWithPhoto,
@@ -43,6 +44,7 @@ const DEFAULT_SEARCH: SearchParams = {
   kmMax: undefined,
   transmission: "",
   fuel: "",
+  condition: "",
   color: "",
   tags: [],
   category: "",
@@ -72,6 +74,7 @@ function parseSearchParams(params: URLSearchParams): SearchParams {
     transmission: params.get("transmission") ?? "",
     fuel: params.get("fuel") ?? "",
     color: params.get("color") ?? "",
+    condition: params.get("condition") ?? "",
     tags: params.getAll("tags").filter(Boolean),
     category: params.get("category") ?? "",
     sort,
@@ -97,6 +100,7 @@ function buildQueryString(next: SearchParams): string {
   set("transmission", next.transmission);
   set("fuel", next.fuel);
   set("color", next.color);
+  set("condition", next.condition);
   set("category", next.category);
 
   for (const tag of next.tags) params.append("tags", tag);
@@ -190,6 +194,7 @@ export function EstoqueClient() {
     (search.transmission ? 1 : 0) +
     (search.fuel ? 1 : 0) +
     (search.color ? 1 : 0) +
+    (search.condition ? 1 : 0) +
     search.tags.length +
     (search.category ? 1 : 0);
 
@@ -248,7 +253,6 @@ export function EstoqueClient() {
                 </button>
               )}
             </div>
-
             <FilterGroup label="Marca">
               <select
                 value={search.brand}
@@ -263,7 +267,6 @@ export function EstoqueClient() {
                 ))}
               </select>
             </FilterGroup>
-
             <FilterGroup label="Modelo">
               <select
                 value={search.model}
@@ -279,7 +282,6 @@ export function EstoqueClient() {
                 ))}
               </select>
             </FilterGroup>
-
             <FilterGroup label="Categoria">
               <select
                 value={search.category}
@@ -294,34 +296,34 @@ export function EstoqueClient() {
                 ))}
               </select>
             </FilterGroup>
-
-            <FilterGroup label="Tags">
-              <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-                {tagOptions.map((t) => {
-                  const checked = search.tags.includes(t);
-                  return (
-                    <label
-                      key={t}
-                      className="flex items-center gap-2 text-sm cursor-pointer hover:text-foreground/80"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => {
-                          const next = checked
-                            ? search.tags.filter((x) => x !== t)
-                            : [...search.tags, t];
-                          update({ tags: next });
-                        }}
-                        className="accent-foreground"
-                      />
-                      <span>{t}</span>
-                    </label>
-                  );
-                })}
-              </div>
-            </FilterGroup>
-
+            {tagOptions && (
+              <FilterGroup label="Tags">
+                <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                  {tagOptions.map((t) => {
+                    const checked = search.tags.includes(t);
+                    return (
+                      <label
+                        key={t}
+                        className="flex items-center gap-2 text-sm cursor-pointer hover:text-foreground/80"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            const next = checked
+                              ? search.tags.filter((x) => x !== t)
+                              : [...search.tags, t];
+                            update({ tags: next });
+                          }}
+                          className="accent-foreground"
+                        />
+                        <span>{t}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </FilterGroup>
+            )}
             <FilterGroup label="Preço">
               <div className="grid grid-cols-2 gap-2">
                 <NumberInput
@@ -336,7 +338,6 @@ export function EstoqueClient() {
                 />
               </div>
             </FilterGroup>
-
             <FilterGroup label="Ano">
               <div className="grid grid-cols-2 gap-2">
                 <NumberInput
@@ -351,7 +352,6 @@ export function EstoqueClient() {
                 />
               </div>
             </FilterGroup>
-
             <FilterGroup label="Km máxima">
               <NumberInput
                 placeholder="Ex.: 80000"
@@ -359,7 +359,6 @@ export function EstoqueClient() {
                 onChange={(v: number | undefined) => update({ kmMax: v })}
               />
             </FilterGroup>
-
             <FilterGroup label="Câmbio">
               <select
                 value={search.transmission}
@@ -374,7 +373,6 @@ export function EstoqueClient() {
                 ))}
               </select>
             </FilterGroup>
-
             <FilterGroup label="Combustível">
               <select
                 value={search.fuel}
@@ -389,7 +387,6 @@ export function EstoqueClient() {
                 ))}
               </select>
             </FilterGroup>
-
             <FilterGroup label="Cor">
               <select
                 value={search.color}
@@ -398,6 +395,20 @@ export function EstoqueClient() {
               >
                 <option value="">Todas</option>
                 {COMMON_COLORS.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </FilterGroup>
+            <FilterGroup label="Condição">
+              <select
+                value={search.condition}
+                onChange={(e) => update({ condition: e.target.value })}
+                className="w-full bg-card border border-border px-3 py-2 text-sm"
+              >
+                <option value="">Todas</option>
+                {COMMON_CONDITIONS.map((c) => (
                   <option key={c} value={c}>
                     {c}
                   </option>

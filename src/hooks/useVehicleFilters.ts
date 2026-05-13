@@ -20,6 +20,7 @@ export interface SearchParams {
   kmMax: number | undefined;
   transmission: string;
   fuel: string;
+  condition: string;
   color: string;
   tags: string[];
   category: string;
@@ -92,7 +93,8 @@ function filterVehicles(list: VehicleWithPhoto[], s: SearchParams): VehicleWithP
     if (s.transmission && v.transmission !== (s.transmission as TransmissionType)) return false;
     if (s.fuel && v.fuel !== (s.fuel as FuelType)) return false;
     if (s.color && v.color.toLowerCase() !== s.color.toLowerCase()) return false;
-    if (s.tags.length > 0 && !s.tags.some((t) => v.tags.includes(t))) return false;
+    if (s.condition && v.condition !== s.condition) return false;
+    if (s.tags.length > 0 && !s.tags.some((t) => v.tags?.includes(t))) return false;
     return true;
   });
 }
