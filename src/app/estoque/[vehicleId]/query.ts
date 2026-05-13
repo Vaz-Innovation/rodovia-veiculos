@@ -7,6 +7,8 @@ export const CarByIdQuery = graphql(`
       databaseId
       name
       date
+      description
+      shortDescription
       productCategories {
         edges {
           node {
@@ -21,15 +23,12 @@ export const CarByIdQuery = graphql(`
           }
         }
       }
-      productsfields {
-        model
-        version
-        yearmodel
-        mileage
-        transmission
-        fuel
-        color
-        featured
+      productBrands {
+        edges {
+          node {
+            name
+          }
+        }
       }
       ... on SimpleProduct {
         onSale
@@ -41,6 +40,12 @@ export const CarByIdQuery = graphql(`
         stockStatus
         stockQuantity
         soldIndividually
+        attributes {
+          nodes {
+            name
+            options
+          }
+        }
       }
       image {
         sourceUrl

@@ -261,16 +261,23 @@ export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
           </div>
 
           <dl className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4">
-            <SpecItem label="Cidade" value="Brasília - DF" />
+            {(data.city || data.district) && (
+              <SpecItem 
+                label="Cidade" 
+                value={[data.city, data.district].filter((s): s is string => Boolean(s)).map(s => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()).join(" - ")} 
+              />
+            )}
             <SpecItem label="Ano" value={`${data.year_manufacture}/${data.year_model}`} />
             <SpecItem label="KM" value={formatMileage(data.mileage)} />
-            <SpecItem label="Câmbio" value={TRANSMISSION_LABELS[data.transmission]} />
-            <SpecItem label="Combustível" value={FUEL_LABELS[data.fuel]} />
-            {data.plate_end && <SpecItem label="Final de placa" value={data.plate_end} />}
-            <SpecItem label="Cor" value={data.color} />
+            <SpecItem label="Câmbio" value={TRANSMISSION_LABELS[data.transmission] || data.transmission} />
+            <SpecItem label="Combustível" value={FUEL_LABELS[data.fuel] || data.fuel} />
+            {data.color && <SpecItem label="Cor" value={data.color} />}
+            {data.engine && <SpecItem label="Motor" value={data.engine} />}
             {data.doors !== null && data.doors !== undefined && (
               <SpecItem label="Portas" value={String(data.doors)} />
             )}
+            {data.condition && <SpecItem label="Condição" value={data.condition} />}
+            {data.plate_end && <SpecItem label="Final de placa" value={data.plate_end} />}
           </dl>
 
           {data.description && (
