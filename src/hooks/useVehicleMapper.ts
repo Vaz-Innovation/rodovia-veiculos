@@ -1,11 +1,12 @@
 import { useCallback } from "react";
 import { Vehicle } from "@/lib/vehicles";
-import { ProductsPaginatedQuery, CarByIdQuery } from "@/graphql/__gen__/graphql";
+import {
+  Estoque_ProductsFragmentFragment,
+  VehicleDetail_ProductsFragmentFragment,
+} from "@/graphql/__gen__/graphql";
 
-export type CarNode = NonNullable<
-  NonNullable<ProductsPaginatedQuery["products"]>["edges"][0]
->["node"];
-export type DetailedCarNode = NonNullable<CarByIdQuery["product"]>;
+export type CarNode = Estoque_ProductsFragmentFragment;
+export type DetailedCarNode = VehicleDetail_ProductsFragmentFragment;
 
 type AttributeNode = {
   name?: string | null;

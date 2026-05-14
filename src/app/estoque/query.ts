@@ -26,50 +26,14 @@ const CarsListPaginated_Query = graphql(`
       edges {
         cursor
         node {
-          id
-          databaseId
-          name
-          date
-          featured
-          productCategories {
-            edges {
-              node {
-                name
-              }
-            }
-          }
-          productTags {
-            nodes {
-              name
-            }
-          }
-          ... on SimpleProduct {
-            onSale
-            stockStatus
-            price
-            rawPrice: price(format: RAW)
-            regularPrice
-            salePrice
-            stockStatus
-            stockQuantity
-            soldIndividually
-            attributes {
-              nodes {
-                name
-                options
-              }
-            }
-          }
-          image {
-            sourceUrl
-          }
+          ...Estoque_ProductsFragment
         }
       }
     }
   }
 `);
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 24;
 
 const VehicleFilterOptions_Query = graphql(`
   query VehicleFilterOptions {

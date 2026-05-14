@@ -26,18 +26,63 @@ import { ContactCard } from "./_components/contact-card";
 
 import { getCarByIdQueryOptions } from "./query";
 import { useVehicleMapper } from "@/hooks/useVehicleMapper";
+import { graphql, useFragment } from "@/graphql/__gen__";
 
-export function VehicleDetailClient({ vehicleId }: { vehicleId: string }) {
+export const VehicleDetail_ProductsFragment = graphql(`
+  fragment VehicleDetail_ProductsFragment on Product {
+    id
+    databaseId
+    name
+    date
+    shortDescription
+    featured
+    productTags {
+      nodes {
+        name
+      }
+    }
+    ... on SimpleProduct {
+      onSale
+      stockStatus
+      price
+      rawPrice: price(format: RAW)
+      regularPrice
+      salePrice
+      stockStatus
+      stockQuantity
+      soldIndividually
+      attributes {
+        nodes {
+          name
+          options
+        }
+      }
+    }
+    image {
+      sourceUrl
+    }
+    galleryImages {
+      nodes {
+        sourceUrl
+      }
+    }
+  }
+`);
+
+type VehicleDetailClientProps = Readonly<{
+  vehicleId: string;
+}>;
+
+export function VehicleDetailClient({ vehicleId }: VehicleDetailClientProps) {
   const mapVehicle = useVehicleMapper();
   const [photoIndex, setPhotoIndex] = useState(0);
   const [lightbox, setLightbox] = useState(false);
 
   const { data: rawData, isLoading } = useSuspenseQuery(getCarByIdQueryOptions(vehicleId));
 
-  const data = useMemo(
-    () => (rawData?.product ? mapVehicle(rawData.product) : null),
-    [rawData, mapVehicle],
-  );
+  const unmasked = useFragment(VehicleDetail_ProductsFragment, rawData?.product);
+
+  const data = useMemo(() => (unmasked ? mapVehicle(unmasked) : null), [unmasked, mapVehicle]);
 
   if (!data) {
     return <NotFoundView />;

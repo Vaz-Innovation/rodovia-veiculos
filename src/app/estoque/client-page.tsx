@@ -9,7 +9,6 @@ import { Search, SlidersHorizontal, X } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { Vehicle } from "@/lib/vehicles";
 import { cn } from "@/lib/utils";
 import { useQueryStates } from "nuqs";
 
@@ -27,6 +26,49 @@ import {
   getVehicleFilterOptionsQueryOptions,
   carsListSearchParams,
 } from "./query";
+import { graphql, useFragment } from "@/graphql/__gen__";
+
+export const Estoque_ProductsFragment = graphql(`
+  fragment Estoque_ProductsFragment on Product {
+    id
+    databaseId
+    name
+    date
+    featured
+    productCategories {
+      edges {
+        node {
+          name
+        }
+      }
+    }
+    productTags {
+      nodes {
+        name
+      }
+    }
+    ... on SimpleProduct {
+      onSale
+      stockStatus
+      price
+      rawPrice: price(format: RAW)
+      regularPrice
+      salePrice
+      stockStatus
+      stockQuantity
+      soldIndividually
+      attributes {
+        nodes {
+          name
+          options
+        }
+      }
+    }
+    image {
+      sourceUrl
+    }
+  }
+`);
 
 export function EstoqueClient() {
   const mapProductToVehicle = useVehicleMapper();
@@ -41,11 +83,17 @@ export function EstoqueClient() {
 
   const { data: filterOptionsData } = useQuery(getVehicleFilterOptionsQueryOptions());
 
-  const allVehicles: Vehicle[] = useMemo(() => {
-    return (data?.pages ?? []).flatMap((page) =>
-      (page?.products?.edges ?? []).map((e) => mapProductToVehicle(e.node)),
-    );
-  }, [data, mapProductToVehicle]);
+  const allMaskedNodes = useMemo(
+    () => (data?.pages ?? []).flatMap((page) => page?.products?.edges?.map((e) => e.node) ?? []),
+    [data],
+  );
+
+  const unmaskedNodes = useFragment(Estoque_ProductsFragment, allMaskedNodes);
+
+  const allVehicles = useMemo(
+    () => unmaskedNodes.map(mapProductToVehicle),
+    [unmaskedNodes, mapProductToVehicle],
+  );
 
   const search = useMemo(
     (): SearchParams => ({
