@@ -1,11 +1,10 @@
 import { graphql } from "@/graphql/__gen__";
 import { gqlInfiniteOptions, gqlQueryOptions } from "@/graphql/gqlpc";
 import {
-  AttributeOperatorEnum,
-  ProductAttributeEnum,
+  AttributeGroupRelationEnum,
   ProductsOrderByEnum,
   OrderEnum,
-  type ProductAttributeFilterInput,
+  type MultiAttributeFilterInput,
   type RootQueryToProductConnectionWhereArgs,
 } from "@/graphql/__gen__/graphql";
 import { SORT_OPTIONS } from "@/hooks/useVehicleFilters";
@@ -88,23 +87,14 @@ export function getCarsListInfiniteQueryOptions(
 ) {
   const slug = (v: string) => v.toLowerCase();
 
-  const attrQueries: ProductAttributeFilterInput[] = [];
-  if (params.model)
-    attrQueries.push({ taxonomy: ProductAttributeEnum.PaModel, terms: [slug(params.model)] });
+  const multiAttributes: MultiAttributeFilterInput[] = [];
+  if (params.model) multiAttributes.push({ taxonomy: "PA_MODEL", terms: [slug(params.model)] });
   if (params.transmission)
-    attrQueries.push({
-      taxonomy: ProductAttributeEnum.PaTransmission,
-      terms: [slug(params.transmission)],
-    });
-  if (params.fuel)
-    attrQueries.push({ taxonomy: ProductAttributeEnum.PaFuel, terms: [slug(params.fuel)] });
-  if (params.color)
-    attrQueries.push({ taxonomy: ProductAttributeEnum.PaColor, terms: [slug(params.color)] });
+    multiAttributes.push({ taxonomy: "PA_TRANSMISSION", terms: [slug(params.transmission)] });
+  if (params.fuel) multiAttributes.push({ taxonomy: "PA_FUEL", terms: [slug(params.fuel)] });
+  if (params.color) multiAttributes.push({ taxonomy: "PA_COLOR", terms: [slug(params.color)] });
   if (params.condition)
-    attrQueries.push({
-      taxonomy: ProductAttributeEnum.PaCondition,
-      terms: [slug(params.condition)],
-    });
+    multiAttributes.push({ taxonomy: "PA_CONDITION", terms: [slug(params.condition)] });
 
   const where: RootQueryToProductConnectionWhereArgs = {
     ...(params.search && { search: params.search }),
@@ -113,8 +103,9 @@ export function getCarsListInfiniteQueryOptions(
     ...(params.minPrice != null && { minPrice: params.minPrice }),
     ...(params.maxPrice != null && { maxPrice: params.maxPrice }),
     ...(params.tagIn.length && { tagIn: params.tagIn }),
-    ...(attrQueries.length && {
-      attributes: { queries: attrQueries, relation: AttributeOperatorEnum.And },
+    ...(multiAttributes.length && {
+      multiAttributes,
+      multiAttributeRelation: AttributeGroupRelationEnum.And,
     }),
     orderby: buildOrderBy(params.sort),
   };

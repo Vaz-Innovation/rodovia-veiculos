@@ -101,13 +101,10 @@ export function useVehicleFilters(
   };
 }
 
+// Attribute, brand, category, tag, price and search filters are applied server-side.
+// Only year and km ranges stay client-side since the server doesn't expose them.
 function filterVehicles(list: Vehicle[], s: SearchParams): Vehicle[] {
   return list.filter((v) => {
-    if (s.model && v.model !== s.model) return false;
-    if (s.transmission && v.transmission !== s.transmission) return false;
-    if (s.fuel && v.fuel !== s.fuel) return false;
-    if (s.color && v.color !== s.color) return false;
-    if (s.condition && v.condition !== s.condition) return false;
     if (s.yearMin !== undefined && v.year_model < s.yearMin) return false;
     if (s.yearMax !== undefined && v.year_model > s.yearMax) return false;
     if (s.kmMax !== undefined && v.mileage > s.kmMax) return false;
