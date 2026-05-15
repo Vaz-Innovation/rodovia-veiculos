@@ -36,12 +36,6 @@ const PAGE_SIZE = 24;
 
 const VehicleFilterOptions_Query = graphql(`
   query VehicleFilterOptions {
-    productBrands(first: 100) {
-      nodes {
-        name
-        slug
-      }
-    }
     productCategories(first: 100) {
       nodes {
         name
@@ -50,9 +44,34 @@ const VehicleFilterOptions_Query = graphql(`
     }
     productTags(first: 100) {
       nodes {
+        databaseId
         name
         slug
       }
+    }
+    brands: productAttributeTerms(taxonomy: "pa_brand") {
+      name
+      slug
+    }
+    models: productAttributeTerms(taxonomy: "pa_model") {
+      name
+      slug
+    }
+    transmissions: productAttributeTerms(taxonomy: "pa_transmission") {
+      name
+      slug
+    }
+    fuels: productAttributeTerms(taxonomy: "pa_fuel") {
+      name
+      slug
+    }
+    colors: productAttributeTerms(taxonomy: "pa_color") {
+      name
+      slug
+    }
+    conditions: productAttributeTerms(taxonomy: "pa_condition") {
+      name
+      slug
     }
   }
 `);
@@ -88,6 +107,8 @@ export function getCarsListInfiniteQueryOptions(
   const slug = (v: string) => v.toLowerCase();
 
   const multiAttributes: MultiAttributeFilterInput[] = [];
+  if (params.productBrand)
+    multiAttributes.push({ taxonomy: "PA_BRAND", terms: [slug(params.productBrand)] });
   if (params.model) multiAttributes.push({ taxonomy: "PA_MODEL", terms: [slug(params.model)] });
   if (params.transmission)
     multiAttributes.push({ taxonomy: "PA_TRANSMISSION", terms: [slug(params.transmission)] });
@@ -96,18 +117,32 @@ export function getCarsListInfiniteQueryOptions(
   if (params.condition)
     multiAttributes.push({ taxonomy: "PA_CONDITION", terms: [slug(params.condition)] });
 
+  const numericAttributeRanges: { taxonomy: string; min?: number; max?: number }[] = [];
+  if (params.yearMin != null || params.yearMax != null) {
+    numericAttributeRanges.push({
+      taxonomy: "pa_yearmodel",
+      ...(params.yearMin != null && { min: params.yearMin }),
+      ...(params.yearMax != null && { max: params.yearMax }),
+    });
+  }
+  if (params.kmMax != null) {
+    numericAttributeRanges.push({ taxonomy: "pa_mileage", max: params.kmMax });
+  }
+
   const where: RootQueryToProductConnectionWhereArgs = {
     ...(params.search && { search: params.search }),
-    ...(params.productBrand && { productBrand: params.productBrand }),
     ...(params.category && { category: params.category }),
     ...(params.minPrice != null && { minPrice: params.minPrice }),
     ...(params.maxPrice != null && { maxPrice: params.maxPrice }),
-    ...(params.tagIn.length && { tagIn: params.tagIn }),
+    ...(params.tagIn.length && {
+      tagIdAnd: params.tagIn.map(Number).filter((n) => Number.isFinite(n)),
+    }),
     ...(multiAttributes.length && {
       multiAttributes,
       multiAttributeRelation: AttributeGroupRelationEnum.And,
     }),
-    orderby: buildOrderBy(params.sort),
+    ...(numericAttributeRanges.length && { numericAttributeRanges }),
+    ...buildSortWhere(params.sort),
   };
 
   return gqlInfiniteOptions(CarsListPaginated_Query, {
@@ -120,14 +155,18 @@ export function getCarsListInfiniteQueryOptions(
   });
 }
 
-function buildOrderBy(sort: string) {
+function buildSortWhere(sort: string): Partial<RootQueryToProductConnectionWhereArgs> {
   switch (sort) {
     case "price_asc":
-      return [{ field: ProductsOrderByEnum.Price, order: OrderEnum.Asc }];
+      return { orderby: [{ field: ProductsOrderByEnum.Price, order: OrderEnum.Asc }] };
     case "price_desc":
-      return [{ field: ProductsOrderByEnum.Price, order: OrderEnum.Desc }];
+      return { orderby: [{ field: ProductsOrderByEnum.Price, order: OrderEnum.Desc }] };
+    case "year_desc":
+      return { orderByAttribute: { taxonomy: "pa_yearmodel", order: OrderEnum.Desc } };
+    case "km_asc":
+      return { orderByAttribute: { taxonomy: "pa_mileage", order: OrderEnum.Asc } };
     default:
-      return [{ field: ProductsOrderByEnum.Date, order: OrderEnum.Desc }];
+      return { orderby: [{ field: ProductsOrderByEnum.Date, order: OrderEnum.Desc }] };
   }
 }
 

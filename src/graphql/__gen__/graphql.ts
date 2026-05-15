@@ -9972,6 +9972,16 @@ export type NodeWithTrackbacks = {
   toPing?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
 };
 
+/** Filter products where a numeric-valued attribute taxonomy term is within a range. */
+export type NumericAttributeRangeInput = {
+  /** Inclusive upper bound. */
+  max?: InputMaybe<Scalars['Int']['input']>;
+  /** Inclusive lower bound. */
+  min?: InputMaybe<Scalars['Int']['input']>;
+  /** Attribute taxonomy slug (term slugs must be parseable integers). */
+  taxonomy: Scalars['String']['input'];
+};
+
 /** A direct one-to-one relationship between objects. Unlike plural connections, this represents a single related object rather than a collection. */
 export type OneToOneConnection = {
   /** Opaque reference to the nodes position in the connection. Value can be used with pagination args. */
@@ -10216,6 +10226,14 @@ export type OrderTotalArgs = {
 /** A order object */
 export type OrderTotalTaxArgs = {
   format?: InputMaybe<PricingFieldFormatEnum>;
+};
+
+/** Sort products by the numeric value of an attribute taxonomy term. */
+export type OrderByAttributeInput = {
+  /** Sort direction (default: ASC). */
+  order?: InputMaybe<OrderEnum>;
+  /** Attribute taxonomy slug. */
+  taxonomy: Scalars['String']['input'];
 };
 
 /** A paginated collection of Order Nodes, Supports cursor-based pagination and filtering to efficiently retrieve sets of Order Nodes */
@@ -20946,6 +20964,17 @@ export type ProductAttributeQueryInput = {
   relation?: InputMaybe<AttributeOperatorEnum>;
 };
 
+/** A term within a WooCommerce product attribute taxonomy. */
+export type ProductAttributeTerm = {
+  __typename?: 'ProductAttributeTerm';
+  /** Human-readable term name. */
+  name: Scalars['String']['output'];
+  /** Term slug, used for filtering. */
+  slug: Scalars['String']['output'];
+  /** WordPress term ID. */
+  termId: Scalars['Int']['output'];
+};
+
 /** Product attribute object. */
 export type ProductAttributeTermObject = {
   __typename?: 'ProductAttributeTermObject';
@@ -28453,6 +28482,8 @@ export type RootQuery = {
   posts?: Maybe<RootQueryToPostConnection>;
   /** A product object */
   product?: Maybe<Product>;
+  /** List all terms within a product attribute taxonomy. */
+  productAttributeTerms?: Maybe<Array<ProductAttributeTerm>>;
   /** Connection between the RootQuery type and the GlobalProductAttribute type */
   productAttributes?: Maybe<RootQueryToGlobalProductAttributeConnection>;
   /** A 0bject */
@@ -29161,6 +29192,13 @@ export type RootQueryPostsArgs = {
 export type RootQueryProductArgs = {
   id: Scalars['ID']['input'];
   idType?: InputMaybe<ProductIdTypeEnum>;
+};
+
+
+/** The root entry point into the Graph */
+export type RootQueryProductAttributeTermsArgs = {
+  hideEmpty?: InputMaybe<Scalars['Boolean']['input']>;
+  taxonomy: Scalars['String']['input'];
 };
 
 
@@ -31970,8 +32008,12 @@ export type RootQueryToProductConnectionWhereArgs = {
   multiAttributeRelation?: InputMaybe<AttributeGroupRelationEnum>;
   /** Filter by multiple attribute taxonomies at once. */
   multiAttributes?: InputMaybe<Array<InputMaybe<MultiAttributeFilterInput>>>;
+  /** Filter by numeric ranges on attribute taxonomies (e.g., pa_yearmodel). */
+  numericAttributeRanges?: InputMaybe<Array<InputMaybe<NumericAttributeRangeInput>>>;
   /** Limit result set to products on sale. */
   onSale?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Sort by the numeric value of an attribute taxonomy term. Overrides the default `orderby` when set. */
+  orderByAttribute?: InputMaybe<OrderByAttributeInput>;
   /** What paramater to use to order the objects by. */
   orderby?: InputMaybe<Array<InputMaybe<ProductsOrderbyInput>>>;
   /** Use ID to return only children. Use 0 to return only top-level items. */
@@ -32012,6 +32054,8 @@ export type RootQueryToProductConnectionWhereArgs = {
   tag?: InputMaybe<Scalars['String']['input']>;
   /** Limit result set to products assigned a specific tag ID. */
   tagId?: InputMaybe<Scalars['Int']['input']>;
+  /** Product must have ALL listed tag IDs (AND semantics). Complement to tagIdIn which is OR. */
+  tagIdAnd?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   /** Limit result set to products assigned to a specific group of tag IDs. */
   tagIdIn?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   /** Limit result set to products not assigned to a specific group of tag IDs. */
@@ -32255,8 +32299,12 @@ export type RootQueryToProductUnionConnectionWhereArgs = {
   multiAttributeRelation?: InputMaybe<AttributeGroupRelationEnum>;
   /** Filter by multiple attribute taxonomies at once. */
   multiAttributes?: InputMaybe<Array<InputMaybe<MultiAttributeFilterInput>>>;
+  /** Filter by numeric ranges on attribute taxonomies (e.g., pa_yearmodel). */
+  numericAttributeRanges?: InputMaybe<Array<InputMaybe<NumericAttributeRangeInput>>>;
   /** Limit result set to products on sale. */
   onSale?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Sort by the numeric value of an attribute taxonomy term. Overrides the default `orderby` when set. */
+  orderByAttribute?: InputMaybe<OrderByAttributeInput>;
   /** What paramater to use to order the objects by. */
   orderby?: InputMaybe<Array<InputMaybe<ProductsOrderbyInput>>>;
   /** Use ID to return only children. Use 0 to return only top-level items. */
@@ -32297,6 +32345,8 @@ export type RootQueryToProductUnionConnectionWhereArgs = {
   tag?: InputMaybe<Scalars['String']['input']>;
   /** Limit result set to products assigned a specific tag ID. */
   tagId?: InputMaybe<Scalars['Int']['input']>;
+  /** Product must have ALL listed tag IDs (AND semantics). Complement to tagIdIn which is OR. */
+  tagIdAnd?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   /** Limit result set to products assigned to a specific group of tag IDs. */
   tagIdIn?: InputMaybe<Array<InputMaybe<Scalars['Int']['input']>>>;
   /** Limit result set to products not assigned to a specific group of tag IDs. */
@@ -40049,7 +40099,7 @@ export type ProductsPaginatedQuery = { __typename?: 'RootQuery', products?: { __
 export type VehicleFilterOptionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type VehicleFilterOptionsQuery = { __typename?: 'RootQuery', productBrands?: { __typename?: 'RootQueryToProductBrandConnection', nodes: Array<{ __typename?: 'ProductBrand', name?: string | null, slug?: string | null }> } | null, productCategories?: { __typename?: 'RootQueryToProductCategoryConnection', nodes: Array<{ __typename?: 'ProductCategory', name?: string | null, slug?: string | null }> } | null, productTags?: { __typename?: 'RootQueryToProductTagConnection', nodes: Array<{ __typename?: 'ProductTag', name?: string | null, slug?: string | null }> } | null };
+export type VehicleFilterOptionsQuery = { __typename?: 'RootQuery', productCategories?: { __typename?: 'RootQueryToProductCategoryConnection', nodes: Array<{ __typename?: 'ProductCategory', name?: string | null, slug?: string | null }> } | null, productTags?: { __typename?: 'RootQueryToProductTagConnection', nodes: Array<{ __typename?: 'ProductTag', databaseId: number, name?: string | null, slug?: string | null }> } | null, brands?: Array<{ __typename?: 'ProductAttributeTerm', name: string, slug: string }> | null, models?: Array<{ __typename?: 'ProductAttributeTerm', name: string, slug: string }> | null, transmissions?: Array<{ __typename?: 'ProductAttributeTerm', name: string, slug: string }> | null, fuels?: Array<{ __typename?: 'ProductAttributeTerm', name: string, slug: string }> | null, colors?: Array<{ __typename?: 'ProductAttributeTerm', name: string, slug: string }> | null, conditions?: Array<{ __typename?: 'ProductAttributeTerm', name: string, slug: string }> | null };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -40250,12 +40300,6 @@ export const ProductsPaginatedDocument = new TypedDocumentString(`
 }`) as unknown as TypedDocumentString<ProductsPaginatedQuery, ProductsPaginatedQueryVariables>;
 export const VehicleFilterOptionsDocument = new TypedDocumentString(`
     query VehicleFilterOptions {
-  productBrands(first: 100) {
-    nodes {
-      name
-      slug
-    }
-  }
   productCategories(first: 100) {
     nodes {
       name
@@ -40264,9 +40308,34 @@ export const VehicleFilterOptionsDocument = new TypedDocumentString(`
   }
   productTags(first: 100) {
     nodes {
+      databaseId
       name
       slug
     }
+  }
+  brands: productAttributeTerms(taxonomy: "pa_brand") {
+    name
+    slug
+  }
+  models: productAttributeTerms(taxonomy: "pa_model") {
+    name
+    slug
+  }
+  transmissions: productAttributeTerms(taxonomy: "pa_transmission") {
+    name
+    slug
+  }
+  fuels: productAttributeTerms(taxonomy: "pa_fuel") {
+    name
+    slug
+  }
+  colors: productAttributeTerms(taxonomy: "pa_color") {
+    name
+    slug
+  }
+  conditions: productAttributeTerms(taxonomy: "pa_condition") {
+    name
+    slug
   }
 }
     `) as unknown as TypedDocumentString<VehicleFilterOptionsQuery, VehicleFilterOptionsQueryVariables>;

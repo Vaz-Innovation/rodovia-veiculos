@@ -20,6 +20,7 @@ import {
   SearchSort,
   VehicleFilterApiOptions,
   VehicleFilterOption,
+  VehicleFilterTagOption,
 } from "@/hooks/useVehicleFilters";
 import {
   getCarsListInfiniteQueryOptions,
@@ -90,7 +91,7 @@ export function EstoqueClient() {
 
   const unmaskedNodes = useFragment(Estoque_ProductsFragment, allMaskedNodes);
 
-  const allVehicles = useMemo(
+  const vehicles = useMemo(
     () => unmaskedNodes.map(mapProductToVehicle),
     [unmaskedNodes, mapProductToVehicle],
   );
@@ -109,7 +110,7 @@ export function EstoqueClient() {
 
   const apiOptions = useMemo((): VehicleFilterApiOptions | undefined => {
     if (!filterOptionsData) return undefined;
-    const toOptions = (
+    const fromNodes = (
       nodes:
         | Array<{ name?: string | null; slug?: string | null } | null | undefined>
         | null
@@ -119,10 +120,39 @@ export function EstoqueClient() {
         .map((n) => ({ name: n?.name ?? "", slug: n?.slug ?? "" }))
         .filter((n) => n.name && n.slug)
         .sort((a, b) => a.name.localeCompare(b.name));
+    const fromTerms = (
+      terms: ReadonlyArray<{ name: string; slug: string }> | null | undefined,
+    ): VehicleFilterOption[] =>
+      (terms ?? [])
+        .map((t) => ({ name: t.name, slug: t.slug }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    const tagsFromNodes = (
+      nodes:
+        | Array<
+            | { databaseId?: number | null; name?: string | null; slug?: string | null }
+            | null
+            | undefined
+          >
+        | null
+        | undefined,
+    ): VehicleFilterTagOption[] =>
+      (nodes ?? [])
+        .map((n) => ({
+          id: Number(n?.databaseId ?? 0),
+          name: n?.name ?? "",
+          slug: n?.slug ?? "",
+        }))
+        .filter((t) => t.id > 0 && t.name)
+        .sort((a, b) => a.name.localeCompare(b.name));
     return {
-      brands: toOptions(filterOptionsData.productBrands?.nodes),
-      categories: toOptions(filterOptionsData.productCategories?.nodes),
-      tags: toOptions(filterOptionsData.productTags?.nodes),
+      brands: fromTerms(filterOptionsData.brands),
+      categories: fromNodes(filterOptionsData.productCategories?.nodes),
+      tags: tagsFromNodes(filterOptionsData.productTags?.nodes),
+      models: fromTerms(filterOptionsData.models),
+      transmissions: fromTerms(filterOptionsData.transmissions),
+      fuels: fromTerms(filterOptionsData.fuels),
+      colors: fromTerms(filterOptionsData.colors),
+      conditions: fromTerms(filterOptionsData.conditions),
     };
   }, [filterOptionsData]);
 
@@ -135,8 +165,7 @@ export function EstoqueClient() {
     fuelOptions,
     colorOptions,
     conditionOptions,
-    sorted,
-  } = useVehicleFilters(allVehicles, search, search.sort, apiOptions);
+  } = useVehicleFilters(apiOptions);
 
   const update = (patch: Partial<SearchParams>) => {
     const nuqsPatch = Object.fromEntries(
@@ -259,8 +288,8 @@ export function EstoqueClient() {
               >
                 <option value="">Todos</option>
                 {modelOptions.map((m) => (
-                  <option key={m} value={m}>
-                    {m}
+                  <option key={m.slug} value={m.slug}>
+                    {m.name}
                   </option>
                 ))}
               </select>
@@ -279,14 +308,15 @@ export function EstoqueClient() {
                 ))}
               </select>
             </FilterGroup>
-            {tagOptions && (
+            {tagOptions.length > 0 && (
               <FilterGroup label="Tags">
                 <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
                   {tagOptions.map((t) => {
-                    const checked = search.tagIn.includes(t.slug);
+                    const id = String(t.id);
+                    const checked = search.tagIn.includes(id);
                     return (
                       <label
-                        key={t.slug}
+                        key={t.id}
                         className="flex items-center gap-2 text-sm cursor-pointer hover:text-foreground/80"
                       >
                         <input
@@ -294,8 +324,8 @@ export function EstoqueClient() {
                           checked={checked}
                           onChange={() => {
                             const next = checked
-                              ? search.tagIn.filter((x) => x !== t.slug)
-                              : [...search.tagIn, t.slug];
+                              ? search.tagIn.filter((x) => x !== id)
+                              : [...search.tagIn, id];
                             update({ tagIn: next });
                           }}
                           className="accent-foreground"
@@ -349,9 +379,9 @@ export function EstoqueClient() {
                 className="w-full bg-card border border-border px-3 py-2 text-sm"
               >
                 <option value="">Todos</option>
-                {Object.entries(transmissionOptions).map(([v, label]) => (
-                  <option key={v} value={v}>
-                    {label}
+                {transmissionOptions.map((o) => (
+                  <option key={o.slug} value={o.slug}>
+                    {o.name}
                   </option>
                 ))}
               </select>
@@ -363,9 +393,9 @@ export function EstoqueClient() {
                 className="w-full bg-card border border-border px-3 py-2 text-sm"
               >
                 <option value="">Todos</option>
-                {Object.entries(fuelOptions).map(([v, label]) => (
-                  <option key={v} value={v}>
-                    {label}
+                {fuelOptions.map((o) => (
+                  <option key={o.slug} value={o.slug}>
+                    {o.name}
                   </option>
                 ))}
               </select>
@@ -377,9 +407,9 @@ export function EstoqueClient() {
                 className="w-full bg-card border border-border px-3 py-2 text-sm"
               >
                 <option value="">Todas</option>
-                {Object.entries(colorOptions).map(([v, label]) => (
-                  <option key={v} value={v}>
-                    {label}
+                {colorOptions.map((o) => (
+                  <option key={o.slug} value={o.slug}>
+                    {o.name}
                   </option>
                 ))}
               </select>
@@ -391,9 +421,9 @@ export function EstoqueClient() {
                 className="w-full bg-card border border-border px-3 py-2 text-sm"
               >
                 <option value="">Todas</option>
-                {Object.entries(conditionOptions).map(([v, label]) => (
-                  <option key={v} value={v}>
-                    {label}
+                {conditionOptions.map((o) => (
+                  <option key={o.slug} value={o.slug}>
+                    {o.name}
                   </option>
                 ))}
               </select>
@@ -405,7 +435,7 @@ export function EstoqueClient() {
               <p className="text-sm text-muted-foreground">
                 {isLoading
                   ? "Carregando..."
-                  : `${sorted.length} ${sorted.length === 1 ? "veículo encontrado" : "veículos encontrados"}`}
+                  : `${vehicles.length} ${vehicles.length === 1 ? "veículo encontrado" : "veículos encontrados"}`}
               </p>
               <div className="flex items-center gap-2">
                 <label className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
@@ -431,7 +461,7 @@ export function EstoqueClient() {
                   <div key={i} className="bg-card aspect-4/3 animate-pulse" />
                 ))}
               </div>
-            ) : sorted.length === 0 ? (
+            ) : vehicles.length === 0 ? (
               <div className="bg-card border border-border p-12 text-center">
                 <p className="text-muted-foreground">
                   Nenhum veículo encontrado com os filtros aplicados.
@@ -447,7 +477,7 @@ export function EstoqueClient() {
               </div>
             ) : (
               <VirtualizedVehicleList
-                vehicles={sorted}
+                vehicles={vehicles}
                 hasNextPage={hasNextPage ?? false}
                 isFetchingNextPage={isFetchingNextPage}
                 fetchNextPage={handleFetchNextPage}

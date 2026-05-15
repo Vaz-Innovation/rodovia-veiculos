@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "gen": "graphql-codegen -r dotenv/config --config codegen.ts",
-    "gen:watch": "graphql-codegen -r dotenv/config --config codegen.ts --watch",
+    "gen:local": "DOTENV_CONFIG_PATH=.env.local graphql-codegen -r dotenv/config --config codegen.ts",
+    "gen": "DOTENV_CONFIG_PATH=.env graphql-codegen -r dotenv/config --config codegen.ts",
+    "gen:watch": "DOTENV_CONFIG_PATH=.env.local graphql-codegen -r dotenv/config --config codegen.ts --watch",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
