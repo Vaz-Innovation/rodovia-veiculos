@@ -3,211 +3,212 @@
 import { FilterGroup } from "./_components/filter-group";
 import { NumberInput } from "./_components/number-input";
 import { VirtualizedVehicleList } from "./_components/virtualized-vehicle-list";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { useMemo, useState, useCallback } from "react";
+import { useInfiniteQuery, useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useCallback, useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import {
-  COMMON_COLORS,
-  COMMON_FEATURES,
-  FUEL_LABELS,
-  TRANSMISSION_LABELS,
-  type VehicleWithPhoto,
-} from "@/lib/vehicles";
 import { cn } from "@/lib/utils";
-import { execute } from "@/graphql/execute";
-import { filterVehicles, sortVehicles } from "@/hooks/useVehicleFilters";
-import { CarsListPaginatedQuery } from "./query";
+import { useQueryStates } from "nuqs";
+
 import { useVehicleMapper } from "@/hooks/useVehicleMapper";
 
-const PAGE_SIZE = 24;
-const SORT_OPTIONS = ["recent", "price_asc", "price_desc", "year_desc", "km_asc"] as const;
+import {
+  useVehicleFilters,
+  SearchParams,
+  SearchSort,
+  VehicleFilterApiOptions,
+  VehicleFilterOption,
+  VehicleFilterTagOption,
+} from "@/hooks/useVehicleFilters";
+import {
+  getCarsListInfiniteQueryOptions,
+  getVehicleFilterOptionsQueryOptions,
+  carsListSearchParams,
+} from "./query";
+import { graphql, useFragment } from "@/graphql/__gen__";
 
-type SearchSort = (typeof SORT_OPTIONS)[number];
-
-interface SearchParams {
-  q: string;
-  brand: string;
-  model: string;
-  priceMin: number | undefined;
-  priceMax: number | undefined;
-  yearMin: number | undefined;
-  yearMax: number | undefined;
-  kmMax: number | undefined;
-  transmission: string;
-  fuel: string;
-  color: string;
-  features: string[];
-  sort: SearchSort;
-}
-
-const DEFAULT_SEARCH: SearchParams = {
-  q: "",
-  brand: "",
-  model: "",
-  priceMin: undefined,
-  priceMax: undefined,
-  yearMin: undefined,
-  yearMax: undefined,
-  kmMax: undefined,
-  transmission: "",
-  fuel: "",
-  color: "",
-  features: [],
-  sort: "recent",
-};
-
-const toNumber = (value: string | null) => {
-  if (value == null || value === "") return undefined;
-  const number = Number(value);
-  return Number.isFinite(number) ? number : undefined;
-};
-
-function parseSearchParams(params: URLSearchParams): SearchParams {
-  const sortRaw = params.get("sort") ?? "recent";
-  const sort = SORT_OPTIONS.includes(sortRaw as SearchSort) ? (sortRaw as SearchSort) : "recent";
-
-  return {
-    ...DEFAULT_SEARCH,
-    q: params.get("q") ?? "",
-    brand: params.get("brand") ?? "",
-    model: params.get("model") ?? "",
-    priceMin: toNumber(params.get("priceMin")),
-    priceMax: toNumber(params.get("priceMax")),
-    yearMin: toNumber(params.get("yearMin")),
-    yearMax: toNumber(params.get("yearMax")),
-    kmMax: toNumber(params.get("kmMax")),
-    transmission: params.get("transmission") ?? "",
-    fuel: params.get("fuel") ?? "",
-    color: params.get("color") ?? "",
-    features: params.getAll("features").filter(Boolean),
-    sort,
-  };
-}
-
-function buildQueryString(next: SearchParams): string {
-  const params = new URLSearchParams();
-
-  const set = (key: string, value: string | number | undefined) => {
-    if (value === undefined || value === "") return;
-    params.set(key, String(value));
-  };
-
-  set("q", next.q);
-  set("brand", next.brand);
-  set("model", next.model);
-  set("priceMin", next.priceMin);
-  set("priceMax", next.priceMax);
-  set("yearMin", next.yearMin);
-  set("yearMax", next.yearMax);
-  set("kmMax", next.kmMax);
-  set("transmission", next.transmission);
-  set("fuel", next.fuel);
-  set("color", next.color);
-
-  for (const feature of next.features) params.append("features", feature);
-
-  if (next.sort !== DEFAULT_SEARCH.sort) set("sort", next.sort);
-
-  return params.toString();
-}
+export const Estoque_ProductsFragment = graphql(`
+  fragment Estoque_ProductsFragment on Product {
+    id
+    databaseId
+    name
+    date
+    featured
+    productCategories {
+      edges {
+        node {
+          name
+        }
+      }
+    }
+    productTags {
+      nodes {
+        name
+      }
+    }
+    ... on SimpleProduct {
+      onSale
+      stockStatus
+      price
+      rawPrice: price(format: RAW)
+      regularPrice
+      salePrice
+      stockStatus
+      stockQuantity
+      soldIndividually
+      attributes {
+        nodes {
+          name
+          options
+        }
+      }
+    }
+    image {
+      sourceUrl
+    }
+  }
+`);
 
 export function EstoqueClient() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
   const mapProductToVehicle = useVehicleMapper();
   const [filtersOpen, setFiltersOpen] = useState(false);
 
-  const search = useMemo(
-    () => parseSearchParams(new URLSearchParams(searchParams.toString())),
-    [searchParams],
-  );
+  const [options, setOptions] = useQueryStates(carsListSearchParams);
 
-  // Infinite query com paginação GraphQL
-  const {
-    data,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
-    queryKey: ["vehicles-infinite"],
-    queryFn: async ({ pageParam }) => {
-      const result = await execute(CarsListPaginatedQuery, {
-        first: PAGE_SIZE,
-        after: pageParam ?? null,
-      });
-      return result;
-    },
-    initialPageParam: null as string | null,
-    getNextPageParam: (lastPage) => {
-      const pageInfo = lastPage?.products?.pageInfo;
-      if (pageInfo?.hasNextPage && pageInfo?.endCursor) {
-        return pageInfo.endCursor;
-      }
-      return undefined;
-    },
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    ...getCarsListInfiniteQueryOptions(options),
+    placeholderData: keepPreviousData,
   });
 
-  // Flatten all pages into a single array of vehicles
-  const allVehicles: VehicleWithPhoto[] = useMemo(() => {
-    if (!data?.pages) return [];
-    
-    return data.pages.flatMap((page) => {
-      const edges = page?.products?.edges ?? [];
-      return edges.map((e) => mapProductToVehicle(e.node));
-    });
-  }, [data, mapProductToVehicle]);
+  const { data: filterOptionsData } = useQuery(getVehicleFilterOptionsQueryOptions());
 
-  // Apply client-side filtering and sorting
-  const { brandOptions, modelOptions, filtered, sorted } = useMemo(() => {
-    const brandOpts = Array.from(new Set(allVehicles.map((v) => v.brand))).sort();
-    const modelOpts = Array.from(
-      new Set(allVehicles.filter((v) => !search.brand || v.brand === search.brand).map((v) => v.model)),
-    ).sort();
-    
-    const filteredList = filterVehicles(allVehicles, search);
-    const sortedList = sortVehicles(filteredList, search.sort);
-    
+  const allMaskedNodes = useMemo(
+    () => (data?.pages ?? []).flatMap((page) => page?.products?.edges?.map((e) => e.node) ?? []),
+    [data],
+  );
+
+  const unmaskedNodes = useFragment(Estoque_ProductsFragment, allMaskedNodes);
+
+  const vehicles = useMemo(
+    () => unmaskedNodes.map(mapProductToVehicle),
+    [unmaskedNodes, mapProductToVehicle],
+  );
+
+  const search = useMemo(
+    (): SearchParams => ({
+      ...options,
+      minPrice: options.minPrice ?? undefined,
+      maxPrice: options.maxPrice ?? undefined,
+      yearMin: options.yearMin ?? undefined,
+      yearMax: options.yearMax ?? undefined,
+      kmMax: options.kmMax ?? undefined,
+    }),
+    [options],
+  );
+
+  const apiOptions = useMemo((): VehicleFilterApiOptions | undefined => {
+    if (!filterOptionsData) return undefined;
+    const fromNodes = (
+      nodes:
+        | Array<{ name?: string | null; slug?: string | null } | null | undefined>
+        | null
+        | undefined,
+    ): VehicleFilterOption[] =>
+      (nodes ?? [])
+        .map((n) => ({ name: n?.name ?? "", slug: n?.slug ?? "" }))
+        .filter((n) => n.name && n.slug)
+        .sort((a, b) => a.name.localeCompare(b.name));
+    const fromTerms = (
+      terms: ReadonlyArray<{ name: string; slug: string }> | null | undefined,
+    ): VehicleFilterOption[] =>
+      (terms ?? [])
+        .map((t) => ({ name: t.name, slug: t.slug }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    const tagsFromNodes = (
+      nodes:
+        | Array<
+            | { databaseId?: number | null; name?: string | null; slug?: string | null }
+            | null
+            | undefined
+          >
+        | null
+        | undefined,
+    ): VehicleFilterTagOption[] =>
+      (nodes ?? [])
+        .map((n) => ({
+          id: Number(n?.databaseId ?? 0),
+          name: n?.name ?? "",
+          slug: n?.slug ?? "",
+        }))
+        .filter((t) => t.id > 0 && t.name)
+        .sort((a, b) => a.name.localeCompare(b.name));
     return {
-      brandOptions: brandOpts,
-      modelOptions: modelOpts,
-      filtered: filteredList,
-      sorted: sortedList,
+      brands: fromTerms(filterOptionsData.brands),
+      categories: fromNodes(filterOptionsData.productCategories?.nodes),
+      tags: tagsFromNodes(filterOptionsData.productTags?.nodes),
+      models: fromTerms(filterOptionsData.models),
+      transmissions: fromTerms(filterOptionsData.transmissions),
+      fuels: fromTerms(filterOptionsData.fuels),
+      colors: fromTerms(filterOptionsData.colors),
+      conditions: fromTerms(filterOptionsData.conditions),
     };
-  }, [allVehicles, search]);
+  }, [filterOptionsData]);
 
-  const replaceSearch = (next: SearchParams) => {
-    const qs = buildQueryString(next);
-    router.replace(qs ? `/estoque?${qs}` : "/estoque");
-  };
+  const {
+    brandOptions,
+    modelOptions,
+    categoryOptions,
+    tagOptions,
+    transmissionOptions,
+    fuelOptions,
+    colorOptions,
+    conditionOptions,
+  } = useVehicleFilters(apiOptions);
 
   const update = (patch: Partial<SearchParams>) => {
-    replaceSearch({
-      ...search,
-      ...patch,
-    });
+    const nuqsPatch = Object.fromEntries(
+      Object.entries(patch).map(([k, v]) => [k, v === undefined ? null : v]),
+    );
+    setOptions(nuqsPatch as Parameters<typeof setOptions>[0]);
   };
 
-  const clearFilters = () => replaceSearch(DEFAULT_SEARCH);
+  const clearFilters = () =>
+    setOptions({
+      search: null,
+      productBrand: null,
+      model: null,
+      minPrice: null,
+      maxPrice: null,
+      yearMin: null,
+      yearMax: null,
+      kmMax: null,
+      transmission: null,
+      fuel: null,
+      condition: null,
+      color: null,
+      tagIn: null,
+      category: null,
+      sort: null,
+    });
 
   const handleFetchNextPage = useCallback(() => {
     fetchNextPage();
   }, [fetchNextPage]);
 
   const activeFiltersCount =
-    (search.brand ? 1 : 0) +
+    (search.productBrand ? 1 : 0) +
     (search.model ? 1 : 0) +
-    (search.priceMin || search.priceMax ? 1 : 0) +
+    (search.minPrice || search.maxPrice ? 1 : 0) +
     (search.yearMin || search.yearMax ? 1 : 0) +
     (search.kmMax ? 1 : 0) +
     (search.transmission ? 1 : 0) +
     (search.fuel ? 1 : 0) +
     (search.color ? 1 : 0) +
-    search.features.length;
+    (search.condition ? 1 : 0) +
+    search.tagIn.length +
+    (search.category ? 1 : 0);
 
   return (
     <div className="bg-background text-foreground min-h-screen flex flex-col">
@@ -225,8 +226,8 @@ export function EstoqueClient() {
             <input
               type="search"
               placeholder="Buscar por marca, modelo ou versão..."
-              value={search.q}
-              onChange={(e) => update({ q: e.target.value })}
+              value={search.search}
+              onChange={(e) => update({ search: e.target.value })}
               className="w-full bg-card border border-border pl-12 pr-4 py-4 text-sm focus:outline-none focus:border-foreground/40 transition-colors"
             />
           </div>
@@ -264,22 +265,20 @@ export function EstoqueClient() {
                 </button>
               )}
             </div>
-
             <FilterGroup label="Marca">
               <select
-                value={search.brand}
-                onChange={(e) => update({ brand: e.target.value, model: "" })}
+                value={search.productBrand}
+                onChange={(e) => update({ productBrand: e.target.value, model: "" })}
                 className="w-full bg-card border border-border px-3 py-2 text-sm"
               >
                 <option value="">Todas</option>
                 {brandOptions.map((b) => (
-                  <option key={b} value={b}>
-                    {b}
+                  <option key={b.slug} value={b.slug}>
+                    {b.name}
                   </option>
                 ))}
               </select>
             </FilterGroup>
-
             <FilterGroup label="Modelo">
               <select
                 value={search.model}
@@ -289,28 +288,69 @@ export function EstoqueClient() {
               >
                 <option value="">Todos</option>
                 {modelOptions.map((m) => (
-                  <option key={m} value={m}>
-                    {m}
+                  <option key={m.slug} value={m.slug}>
+                    {m.name}
                   </option>
                 ))}
               </select>
             </FilterGroup>
-
+            <FilterGroup label="Categoria">
+              <select
+                value={search.category}
+                onChange={(e) => update({ category: e.target.value })}
+                className="w-full bg-card border border-border px-3 py-2 text-sm"
+              >
+                <option value="">Todas</option>
+                {categoryOptions.map((c) => (
+                  <option key={c.slug} value={c.slug}>
+                    {c.name}
+                  </option>
+                ))}
+              </select>
+            </FilterGroup>
+            {tagOptions.length > 0 && (
+              <FilterGroup label="Tags">
+                <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+                  {tagOptions.map((t) => {
+                    const id = String(t.id);
+                    const checked = search.tagIn.includes(id);
+                    return (
+                      <label
+                        key={t.id}
+                        className="flex items-center gap-2 text-sm cursor-pointer hover:text-foreground/80"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => {
+                            const next = checked
+                              ? search.tagIn.filter((x) => x !== id)
+                              : [...search.tagIn, id];
+                            update({ tagIn: next });
+                          }}
+                          className="accent-foreground"
+                        />
+                        <span>{t.name}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </FilterGroup>
+            )}
             <FilterGroup label="Preço">
               <div className="grid grid-cols-2 gap-2">
                 <NumberInput
                   placeholder="Mín."
-                  value={search.priceMin}
-                  onChange={(v: number | undefined) => update({ priceMin: v })}
+                  value={search.minPrice}
+                  onChange={(v: number | undefined) => update({ minPrice: v })}
                 />
                 <NumberInput
                   placeholder="Máx."
-                  value={search.priceMax}
-                  onChange={(v: number | undefined) => update({ priceMax: v })}
+                  value={search.maxPrice}
+                  onChange={(v: number | undefined) => update({ maxPrice: v })}
                 />
               </div>
             </FilterGroup>
-
             <FilterGroup label="Ano">
               <div className="grid grid-cols-2 gap-2">
                 <NumberInput
@@ -325,7 +365,6 @@ export function EstoqueClient() {
                 />
               </div>
             </FilterGroup>
-
             <FilterGroup label="Km máxima">
               <NumberInput
                 placeholder="Ex.: 80000"
@@ -333,7 +372,6 @@ export function EstoqueClient() {
                 onChange={(v: number | undefined) => update({ kmMax: v })}
               />
             </FilterGroup>
-
             <FilterGroup label="Câmbio">
               <select
                 value={search.transmission}
@@ -341,14 +379,13 @@ export function EstoqueClient() {
                 className="w-full bg-card border border-border px-3 py-2 text-sm"
               >
                 <option value="">Todos</option>
-                {Object.entries(TRANSMISSION_LABELS).map(([v, l]) => (
-                  <option key={v} value={v}>
-                    {l}
+                {transmissionOptions.map((o) => (
+                  <option key={o.slug} value={o.slug}>
+                    {o.name}
                   </option>
                 ))}
               </select>
             </FilterGroup>
-
             <FilterGroup label="Combustível">
               <select
                 value={search.fuel}
@@ -356,14 +393,13 @@ export function EstoqueClient() {
                 className="w-full bg-card border border-border px-3 py-2 text-sm"
               >
                 <option value="">Todos</option>
-                {Object.entries(FUEL_LABELS).map(([v, l]) => (
-                  <option key={v} value={v}>
-                    {l}
+                {fuelOptions.map((o) => (
+                  <option key={o.slug} value={o.slug}>
+                    {o.name}
                   </option>
                 ))}
               </select>
             </FilterGroup>
-
             <FilterGroup label="Cor">
               <select
                 value={search.color}
@@ -371,39 +407,26 @@ export function EstoqueClient() {
                 className="w-full bg-card border border-border px-3 py-2 text-sm"
               >
                 <option value="">Todas</option>
-                {COMMON_COLORS.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
+                {colorOptions.map((o) => (
+                  <option key={o.slug} value={o.slug}>
+                    {o.name}
                   </option>
                 ))}
               </select>
             </FilterGroup>
-
-            <FilterGroup label="Opcionais">
-              <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
-                {COMMON_FEATURES.map((f) => {
-                  const checked = search.features.includes(f);
-                  return (
-                    <label
-                      key={f}
-                      className="flex items-center gap-2 text-sm cursor-pointer hover:text-foreground/80"
-                    >
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => {
-                          const next = checked
-                            ? search.features.filter((x) => x !== f)
-                            : [...search.features, f];
-                          update({ features: next });
-                        }}
-                        className="accent-foreground"
-                      />
-                      <span>{f}</span>
-                    </label>
-                  );
-                })}
-              </div>
+            <FilterGroup label="Condição">
+              <select
+                value={search.condition}
+                onChange={(e) => update({ condition: e.target.value })}
+                className="w-full bg-card border border-border px-3 py-2 text-sm"
+              >
+                <option value="">Todas</option>
+                {conditionOptions.map((o) => (
+                  <option key={o.slug} value={o.slug}>
+                    {o.name}
+                  </option>
+                ))}
+              </select>
             </FilterGroup>
           </aside>
 
@@ -412,7 +435,7 @@ export function EstoqueClient() {
               <p className="text-sm text-muted-foreground">
                 {isLoading
                   ? "Carregando..."
-                  : `${sorted.length} ${sorted.length === 1 ? "veículo encontrado" : "veículos encontrados"}`}
+                  : `${vehicles.length} ${vehicles.length === 1 ? "veículo encontrado" : "veículos encontrados"}`}
               </p>
               <div className="flex items-center gap-2">
                 <label className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
@@ -420,7 +443,7 @@ export function EstoqueClient() {
                 </label>
                 <select
                   value={search.sort}
-                  onChange={(e) => update({ sort: e.target.value as SearchParams["sort"] })}
+                  onChange={(e) => update({ sort: e.target.value as SearchSort })}
                   className="bg-card border border-border px-3 py-2 text-sm"
                 >
                   <option value="recent">Mais recentes</option>
@@ -435,10 +458,10 @@ export function EstoqueClient() {
             {isLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 {Array.from({ length: 6 }).map((_, i) => (
-                  <div key={i} className="bg-card aspect-[4/3] animate-pulse" />
+                  <div key={i} className="bg-card aspect-4/3 animate-pulse" />
                 ))}
               </div>
-            ) : sorted.length === 0 ? (
+            ) : vehicles.length === 0 ? (
               <div className="bg-card border border-border p-12 text-center">
                 <p className="text-muted-foreground">
                   Nenhum veículo encontrado com os filtros aplicados.
@@ -454,7 +477,7 @@ export function EstoqueClient() {
               </div>
             ) : (
               <VirtualizedVehicleList
-                vehicles={sorted}
+                vehicles={vehicles}
                 hasNextPage={hasNextPage ?? false}
                 isFetchingNextPage={isFetchingNextPage}
                 fetchNextPage={handleFetchNextPage}

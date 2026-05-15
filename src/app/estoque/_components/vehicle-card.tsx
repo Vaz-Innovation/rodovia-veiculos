@@ -1,17 +1,9 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import {
-  vehicleTitle,
-  formatMileage,
-  formatPrice,
-  TRANSMISSION_LABELS,
-  VehicleWithPhoto,
-} from "@/lib/vehicles";
+import { vehicleTitle, formatMileage, formatPrice, Vehicle } from "@/lib/vehicles";
 
-export function VehicleCard({ vehicle }: { vehicle: VehicleWithPhoto }) {
-  const cover =
-    vehicle.vehicle_photos.find((p) => p.is_cover) ??
-    [...vehicle.vehicle_photos].sort((a, b) => a.position - b.position)[0];
+export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
+  const cover = vehicle.photos?.[0];
 
   return (
     <Link
@@ -21,7 +13,7 @@ export function VehicleCard({ vehicle }: { vehicle: VehicleWithPhoto }) {
       <div className="aspect-4/3 overflow-hidden bg-muted relative">
         {cover ? (
           <img
-            src={cover.url}
+            src={cover}
             alt={vehicleTitle(vehicle)}
             loading="lazy"
             className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-105"
@@ -47,13 +39,12 @@ export function VehicleCard({ vehicle }: { vehicle: VehicleWithPhoto }) {
             <span className="text-muted-foreground text-sm"> {vehicle.version}</span>
           )}
         </h3>
-        <span className="font-medium text-lg">{vehicle.name}</span>
         <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
           <span>{vehicle.year_model}</span>
           <span>·</span>
           <span>{formatMileage(vehicle.mileage)}</span>
           <span>·</span>
-          <span>{TRANSMISSION_LABELS[vehicle.transmission]}</span>
+          <span>{vehicle.transmission}</span>
         </div>
         <div className="mt-5 pt-4 border-t border-border flex items-center justify-between">
           <p className="text-xl font-light">{formatPrice(Number(vehicle.price))}</p>

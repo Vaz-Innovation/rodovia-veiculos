@@ -1,10 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { MessageCircle, Phone } from "lucide-react";
-import type { Vehicle, VehiclePhoto } from "@/lib/vehicles";
+import type { Vehicle } from "@/lib/vehicles";
 
-type VehicleWithPhotos = Vehicle & { vehicle_photos: VehiclePhoto[] };
-
-export function ContactCard({ vehicle }: { vehicle: VehicleWithPhotos }) {
+export function ContactCard({ vehicle }: { vehicle: Vehicle }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [complement, setComplement] = useState("");

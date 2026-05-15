@@ -32,4 +32,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+__gen__
 docker/wordpress/data

@@ -98,6 +98,14 @@ install_plugin_from_git https://github.com/Manuel-Antunes/wp-graphql-federations
 
 echo "✅ Plugins prontos!"
 
+# Fix ownership on bind-mounted writable dirs AFTER plugins are installed/activated
+# (WooCommerce activation drops placeholder images into uploads/ as root, which
+# would otherwise prevent www-data from creating wc-imports/ during CSV import)
+mkdir -p /var/www/html/wp-content/uploads /var/www/html/wp-content/upgrade
+chown -R www-data:www-data /var/www/html/wp-content/uploads /var/www/html/wp-content/upgrade
+chmod -R u+rwX,g+rwX /var/www/html/wp-content/uploads /var/www/html/wp-content/upgrade
+echo "✅ Permissões de uploads/upgrade ajustadas para www-data!"
+
 echo "🔗 Garantindo permalink como post name..."
 current_permalink="$(wp option get permalink_structure --allow-root 2>/dev/null || true)"
 
