@@ -3,7 +3,7 @@ import { LanguageCodeFilterEnum } from "./__gen__/graphql";
 export const localeToWpLanguage = {
   "pt-BR": LanguageCodeFilterEnum.Pt,
   // "es-ES": LanguageCodeFilterEnum.Es, // Fallback to Pt as WP doesn't have ES
-  "en-US": LanguageCodeFilterEnum.En,
+  // "en-US": LanguageCodeFilterEnum.En,
   // "de-DE": LanguageCodeFilterEnum.De,
   // "it-IT": LanguageCodeFilterEnum.It,
   // "fr-FR": LanguageCodeFilterEnum.Fr,

@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 
-import { STATUS_LABELS, VehicleWithPhoto, formatPrice, vehicleTitle } from "@/lib/vehicles";
+import { formatPrice, vehicleTitle } from "@/lib/vehicles";
 import { BrandLogo } from "@/components/brand-logo";
 import { useAuth } from "@/lib/use-auth";
 
@@ -211,13 +211,13 @@ function AdminDashboard() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["admin", "vehicles"],
-    queryFn: async (): Promise<VehicleWithPhoto[]> => {
+    queryFn: async (): Promise<[]> => {
       const { data, error } = await supabase
         .from("vehicles")
         .select("*, vehicle_photos(*)")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data ?? []) as VehicleWithPhoto[];
+      return (data ?? []) as [];
     },
   });
 
@@ -299,7 +299,7 @@ function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {(data ?? []).map((v) => {
+              {/* {(data ?? []).map((v) => {
                 const cover =
                   v.vehicle_photos.find((p) => p.is_cover) ??
                   [...v.vehicle_photos].sort((a, b) => a.position - b.position)[0];
@@ -347,7 +347,7 @@ function AdminDashboard() {
                     </td>
                   </tr>
                 );
-              })}
+              })} */}
 
               {(data ?? []).length === 0 && !isLoading && (
                 <tr>

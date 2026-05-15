@@ -1,4 +1,3 @@
-import type { ClientRetryPluginContext } from "@orpc/client/plugins";
 import type { ProcedureUtils } from "@orpc/tanstack-query";
 import type {
   DefaultError,
@@ -14,42 +13,6 @@ import "server-only";
 
 import { createQueryClient } from "./query-client";
 
-// const link = new OpenAPILink<ORPCClientContext>(apiContract, {
-//   url: env.BASE_URL,
-//   async headers() {
-//     const head = await headers();
-//     const org = await getFullOrganization();
-//     const augumentedHeaders = new Headers(head);
-//     augumentedHeaders.set("x-client", "Web Client");
-//     if (org) {
-//       augumentedHeaders.set("x-tenant", org.slug);
-//     }
-//     return augumentedHeaders;
-//   },
-//   plugins: orpcPlugins,
-//   interceptors: [
-//     onError((error) => {
-//       // Map oRPC BAD_REQUEST validation errors to 422 UNPROCESSABLE_CONTENT with Zod flattened data
-//       if (error instanceof ValidationError) {
-//         const zodError = new z.ZodError(error.issues as z.core.$ZodIssue[]);
-//         const message = z.prettifyError(zodError);
-//         const data = z.flattenError(zodError);
-//         throw new ORPCError("UNPROCESSABLE_CONTENT", {
-//           status: 422,
-//           message,
-//           data,
-//           cause: error.cause,
-//         });
-//       }
-//       logger.error(
-//         {
-//           error,
-//         },
-//         `Error in oRPC request in the server: ${(error as Error).message}`,
-//       );
-//     }),
-//   ],
-// });
 /**
  * This is part of the Optimize SSR setup.
  *
