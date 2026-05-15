@@ -10,8 +10,9 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://rodoviaveiculos.com
 
 const fallbackImage = {
   url: "/images/hero-fallback.jpg",
-  width: 1280,
-  height: 853,
+  width: 1152,
+  height: 648,
+  type: "image/jpeg",
   alt: "Rodovia Veículos — carros semi-novos em Brasília",
 } as const;
 
