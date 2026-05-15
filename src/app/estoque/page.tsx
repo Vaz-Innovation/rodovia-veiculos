@@ -13,9 +13,46 @@ import { createLoader, SearchParams } from "nuqs/server";
 const description =
   "Confira nosso estoque de carros semi-novos. Filtre por marca, modelo, preço, ano e mais.";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://rodoviaveiculos.com.br";
+
+const collectionJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "CollectionPage",
+      "@id": `${siteUrl}/estoque#collection`,
+      name: "Estoque",
+      description,
+      url: `${siteUrl}/estoque`,
+      isPartOf: { "@id": `${siteUrl}/#dealer` },
+      about: { "@id": `${siteUrl}/#dealer` },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Início", item: `${siteUrl}/` },
+        { "@type": "ListItem", position: 2, name: "Estoque" },
+      ],
+    },
+  ],
+};
+
 export const metadata: Metadata = {
   title: "Estoque",
   description,
+  openGraph: {
+    title: "Estoque",
+    description,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Estoque",
+    description,
+  },
+  alternates: {
+    canonical: "/estoque",
+  },
 };
 
 export default async function Page({ searchParams }: { searchParams: Promise<SearchParams> }) {
@@ -25,8 +62,14 @@ export default async function Page({ searchParams }: { searchParams: Promise<Sea
   prefetch(getVehicleFilterOptionsQueryOptions(), true);
 
   return (
-    <Suspense fallback={null}>
-      <EstoqueClient />
-    </Suspense>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
+      />
+      <Suspense fallback={null}>
+        <EstoqueClient />
+      </Suspense>
+    </>
   );
 }

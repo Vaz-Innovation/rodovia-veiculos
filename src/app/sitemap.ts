@@ -1,7 +1,9 @@
 import type { MetadataRoute } from "next";
 import { executeRaw } from "@/graphql/execute";
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://rodovia.veiculos.com.br";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://rodoviaveiculos.com.br";
+
+export const revalidate = 3600;
 
 const staticRoutes: MetadataRoute.Sitemap = [
   {

@@ -46,7 +46,7 @@ export default function HomePage() {
                 className="group cursor-pointer block"
                 aria-label={`Ver ${m.name} no estoque`}
               >
-                <div className="aspect-[4/3] overflow-hidden bg-card">
+                <div className="aspect-4/3 overflow-hidden bg-card">
                   <img
                     src={m.img.src}
                     alt={m.name}

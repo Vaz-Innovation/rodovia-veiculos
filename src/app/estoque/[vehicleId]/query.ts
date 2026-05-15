@@ -12,3 +12,24 @@ export const CarById_Query = graphql(`
 export function getCarByIdQueryOptions(id: string) {
   return gqlQueryOptions(CarById_Query, { input: { id } });
 }
+
+export const VehicleMetadata_Query = graphql(`
+  query VehicleMetadata($id: ID!) {
+    product(id: $id, idType: DATABASE_ID) {
+      name
+      shortDescription
+      image {
+        sourceUrl
+      }
+      ... on SimpleProduct {
+        price
+        attributes {
+          nodes {
+            name
+            options
+          }
+        }
+      }
+    }
+  }
+`);

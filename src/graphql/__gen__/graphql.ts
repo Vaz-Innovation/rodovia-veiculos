@@ -40065,6 +40065,13 @@ export type CarByIdQuery = { __typename?: 'RootQuery', product?: (
     & { ' $fragmentRefs'?: { 'VehicleDetail_ProductsFragment_VariableProduct_Fragment': VehicleDetail_ProductsFragment_VariableProduct_Fragment } }
   ) | null };
 
+export type VehicleMetadataQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+
+export type VehicleMetadataQuery = { __typename?: 'RootQuery', product?: { __typename?: 'ExternalProduct', name?: string | null, shortDescription?: string | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } | { __typename?: 'GroupProduct', name?: string | null, shortDescription?: string | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } | { __typename?: 'SimpleProduct', price?: string | null, name?: string | null, shortDescription?: string | null, attributes?: { __typename?: 'ProductWithAttributesToProductAttributeConnection', nodes: Array<{ __typename?: 'GlobalProductAttribute', name?: string | null, options?: Array<string | null> | null } | { __typename?: 'LocalProductAttribute', name?: string | null, options?: Array<string | null> | null }> } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } | { __typename?: 'VariableProduct', name?: string | null, shortDescription?: string | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } | null };
+
 type Estoque_ProductsFragment_ExternalProduct_Fragment = { __typename?: 'ExternalProduct', id: string, databaseId: number, name?: string | null, date?: string | null, featured?: boolean | null, productCategories?: { __typename?: 'ProductToProductCategoryConnection', edges: Array<{ __typename?: 'ProductToProductCategoryConnectionEdge', node: { __typename?: 'ProductCategory', name?: string | null } }> } | null, productTags?: { __typename?: 'ProductToProductTagConnection', nodes: Array<{ __typename?: 'ProductTag', name?: string | null }> } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } & { ' $fragmentName'?: 'Estoque_ProductsFragment_ExternalProduct_Fragment' };
 
 type Estoque_ProductsFragment_GroupProduct_Fragment = { __typename?: 'GroupProduct', id: string, databaseId: number, name?: string | null, date?: string | null, featured?: boolean | null, productCategories?: { __typename?: 'ProductToProductCategoryConnection', edges: Array<{ __typename?: 'ProductToProductCategoryConnectionEdge', node: { __typename?: 'ProductCategory', name?: string | null } }> } | null, productTags?: { __typename?: 'ProductToProductTagConnection', nodes: Array<{ __typename?: 'ProductTag', name?: string | null }> } | null, image?: { __typename?: 'MediaItem', sourceUrl?: string | null } | null } & { ' $fragmentName'?: 'Estoque_ProductsFragment_GroupProduct_Fragment' };
@@ -40244,6 +40251,26 @@ export const CarByIdDocument = new TypedDocumentString(`
     }
   }
 }`) as unknown as TypedDocumentString<CarByIdQuery, CarByIdQueryVariables>;
+export const VehicleMetadataDocument = new TypedDocumentString(`
+    query VehicleMetadata($id: ID!) {
+  product(id: $id, idType: DATABASE_ID) {
+    name
+    shortDescription
+    image {
+      sourceUrl
+    }
+    ... on SimpleProduct {
+      price
+      attributes {
+        nodes {
+          name
+          options
+        }
+      }
+    }
+  }
+}
+    `) as unknown as TypedDocumentString<VehicleMetadataQuery, VehicleMetadataQueryVariables>;
 export const ProductsPaginatedDocument = new TypedDocumentString(`
     query ProductsPaginated($first: Int!, $after: String, $where: RootQueryToProductConnectionWhereArgs) {
   products(first: $first, after: $after, where: $where) {
