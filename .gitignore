@@ -34,3 +34,4 @@ dist-ssr
 *.sw?
 __gen__
 docker/wordpress/data
+src/graphql/__gen__
