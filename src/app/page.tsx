@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { HeroCinematic } from "@/components/hero-cinematic";
+import { fetchCategoryPreviewImage } from "./query";
 
 import model1 from "@/assets/car-hatch.jpg";
 import model2 from "@/assets/car-sedan.jpg";
@@ -11,13 +12,24 @@ import model3 from "@/assets/car-suv.jpg";
 import racing from "@/assets/racing.jpg";
 import avaliacao from "@/assets/avaliacao-veiculo.jpg";
 
-const featured = [
-  { img: model1, name: "Hatch compacto", tag: "Econômico" },
-  { img: model2, name: "Sedan", tag: "Conforto" },
-  { img: model3, name: "SUV compacto", tag: "Versátil" },
-];
+const CATEGORY_CONFIGS = [
+  { slug: "hatch", name: "Hatch compacto", tag: "Econômico", placeholder: model1 },
+  { slug: "sedan", name: "Sedan", tag: "Conforto", placeholder: model2 },
+  { slug: "suv", name: "SUV compacto", tag: "Versátil", placeholder: model3 },
+] as const;
 
-export default function HomePage() {
+export default async function HomePage() {
+  const categoryImages = await Promise.all(
+    CATEGORY_CONFIGS.map((c) => fetchCategoryPreviewImage(c.slug)),
+  );
+
+  const featured = CATEGORY_CONFIGS.map((c, i) => ({
+    name: c.name,
+    tag: c.tag,
+    imgSrc: categoryImages[i] ?? c.placeholder.src,
+    href: categoryImages[i] ? `/estoque?category=${c.slug}` : "/estoque",
+  }));
+
   return (
     <div className="bg-background text-foreground">
       <SiteHeader />
@@ -44,13 +56,13 @@ export default function HomePage() {
             {featured.map((m) => (
               <Link
                 key={m.name}
-                href="/estoque"
+                href={m.href}
                 className="group cursor-pointer block"
                 aria-label={`Ver ${m.name} no estoque`}
               >
                 <div className="aspect-[4/3] overflow-hidden bg-card">
                   <img
-                    src={m.img.src}
+                    src={m.imgSrc}
                     alt={m.name}
                     width={1280}
                     height={896}
@@ -129,8 +141,8 @@ export default function HomePage() {
       </section>
 
       <section id="avaliacao" className="py-24 lg:py-32 bg-card">
-        <div className="mx-auto max-w-[1600px] px-6 lg:px-10 grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
-          <div className="aspect-[4/3] overflow-hidden">
+        <div className="mx-auto max-w-400 px-6 lg:px-10 grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
+          <div className="aspect4/3 overflow-hidden">
             <img
               src={avaliacao.src}
               alt="Avaliação profissional de veículo na Rodovia Veículos"
