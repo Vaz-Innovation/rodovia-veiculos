@@ -96,7 +96,28 @@ install_plugin_from_git https://github.com/wp-graphql/wp-graphql-woocommerce wp-
 install_plugin_from_git https://github.com/m-muhsin/wp-graphql-reading-time wp-graphql-reading-time
 install_plugin_from_git https://github.com/Manuel-Antunes/wp-graphql-federations wp-graphql-federations
 
+# Sync local plugins from /opt/local-plugins (bind-mounted or baked into image)
+if [ -d /opt/local-plugins ]; then
+  for plugin_dir in /opt/local-plugins/*/; do
+    [ -d "$plugin_dir" ] || continue
+    plugin_name=$(basename "$plugin_dir")
+    dest="/var/www/html/wp-content/plugins/$plugin_name"
+    echo "📦 Sincronizando plugin local: $plugin_name"
+    cp -r "$plugin_dir" /var/www/html/wp-content/plugins/
+    chown -R www-data:www-data "$dest"
+    wp plugin activate "$plugin_name" --allow-root || true
+  done
+fi
+
 echo "✅ Plugins prontos!"
+
+# Fix ownership on bind-mounted writable dirs AFTER plugins are installed/activated
+# (WooCommerce activation drops placeholder images into uploads/ as root, which
+# would otherwise prevent www-data from creating wc-imports/ during CSV import)
+mkdir -p /var/www/html/wp-content/uploads /var/www/html/wp-content/upgrade
+chown -R www-data:www-data /var/www/html/wp-content/uploads /var/www/html/wp-content/upgrade
+chmod -R u+rwX,g+rwX /var/www/html/wp-content/uploads /var/www/html/wp-content/upgrade
+echo "✅ Permissões de uploads/upgrade ajustadas para www-data!"
 
 echo "🔗 Garantindo permalink como post name..."
 current_permalink="$(wp option get permalink_structure --allow-root 2>/dev/null || true)"
