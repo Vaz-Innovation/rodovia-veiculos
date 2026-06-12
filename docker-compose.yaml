@@ -33,7 +33,7 @@ services:
     volumes:
       - wp_data:/var/www/html
       - ./docker/wordpress/data:/var/www/html/wp-content
-      - ./docker/wordpress/plugins/wc-multi-attribute-filter:/var/www/html/wp-content/plugins/wc-multi-attribute-filter
+      - ./docker/wordpress/plugins:/opt/local-plugins
     networks:
       - wp_network
 

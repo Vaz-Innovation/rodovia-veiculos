@@ -120,12 +120,6 @@ export function EstoqueClient() {
         .map((n) => ({ name: n?.name ?? "", slug: n?.slug ?? "" }))
         .filter((n) => n.name && n.slug)
         .sort((a, b) => a.name.localeCompare(b.name));
-    const fromTerms = (
-      terms: ReadonlyArray<{ name: string; slug: string }> | null | undefined,
-    ): VehicleFilterOption[] =>
-      (terms ?? [])
-        .map((t) => ({ name: t.name, slug: t.slug }))
-        .sort((a, b) => a.name.localeCompare(b.name));
     const tagsFromNodes = (
       nodes:
         | Array<
@@ -145,14 +139,14 @@ export function EstoqueClient() {
         .filter((t) => t.id > 0 && t.name)
         .sort((a, b) => a.name.localeCompare(b.name));
     return {
-      brands: fromTerms(filterOptionsData.brands),
+      brands: fromNodes(filterOptionsData.brands),
       categories: fromNodes(filterOptionsData.productCategories?.nodes),
       tags: tagsFromNodes(filterOptionsData.productTags?.nodes),
-      models: fromTerms(filterOptionsData.models),
-      transmissions: fromTerms(filterOptionsData.transmissions),
-      fuels: fromTerms(filterOptionsData.fuels),
-      colors: fromTerms(filterOptionsData.colors),
-      conditions: fromTerms(filterOptionsData.conditions),
+      models: fromNodes(filterOptionsData.models),
+      transmissions: fromNodes(filterOptionsData.transmissions),
+      fuels: fromNodes(filterOptionsData.fuels),
+      colors: fromNodes(filterOptionsData.colors),
+      conditions: fromNodes(filterOptionsData.conditions),
     };
   }, [filterOptionsData]);
 
