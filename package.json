@@ -7,7 +7,7 @@
     "dev": "next dev",
     "gen": "graphql-codegen -r dotenv/config --config codegen.ts",
     "gen:watch": "graphql-codegen -r dotenv/config --config codegen.ts --watch",
-    "build": "next build",
+    "build": "graphql-codegen --config codegen.ts && next build",
     "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write ."
