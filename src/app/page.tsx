@@ -9,7 +9,7 @@ import model1 from "@/assets/car-hatch.jpg";
 import model2 from "@/assets/car-sedan.jpg";
 import model3 from "@/assets/car-suv.jpg";
 import racing from "@/assets/racing.jpg";
-import avaliacao from "@/assets/avaliacao-veiculo.jpg";
+import avaliacao from "@/assets/vender-ou-trocar.webp";
 
 const featured = [
   { img: model1, name: "Hatch compacto", tag: "Econômico" },
