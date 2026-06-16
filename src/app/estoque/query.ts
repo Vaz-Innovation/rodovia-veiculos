@@ -130,6 +130,7 @@ export function getCarsListInfiniteQueryOptions(
   }
 
   const where: RootQueryToProductConnectionWhereArgs = {
+    status: "publish",
     ...(params.search && { search: params.search }),
     ...(params.category && { category: params.category }),
     ...(params.minPrice != null && { minPrice: params.minPrice }),
