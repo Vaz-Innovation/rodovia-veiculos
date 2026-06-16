@@ -68,24 +68,22 @@ export function HeroCinematic() {
           muted
           loop
           playsInline
-          className={`h-full w-full object-cover ${
-            autoplayFailed ? "hidden" : "block"
-          }`}
+          className={`h-full w-full object-cover ${autoplayFailed ? "hidden" : "block"}`}
         >
           <source src="/videos/hero-background.mp4" type="video/mp4" />
         </video>
 
         {/* Overlays for legibility */}
         {/* Base gradient — bottom heavy */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/70 to-background/30 md:from-background/90 md:via-background/55 md:to-background/20" />
+        {/* <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/70 to-background/30 md:from-background/90 md:via-background/55 md:to-background/20" /> */}
         {/* Radial scrim focused on the text area (lower-center) */}
-        <div
+        {/* <div
           className="absolute inset-0"
           style={{
             background:
               "radial-gradient(ellipse 70% 55% at 50% 78%, color-mix(in oklab, var(--background) 75%, transparent) 0%, transparent 70%)",
           }}
-        />
+        /> */}
       </div>
 
       {/* CONTENT */}
