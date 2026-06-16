@@ -10,13 +10,13 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
       href={`/estoque/${vehicle.id}`}
       className="group block bg-card border border-border hover:border-foreground/30 transition-colors"
     >
-      <div className="aspect-4/3 overflow-hidden bg-muted relative">
+      <div className="aspect-video sm:aspect-4/3 overflow-hidden bg-muted relative">
         {cover ? (
           <img
             src={cover}
             alt={vehicleTitle(vehicle)}
             loading="lazy"
-            className="h-full w-full object-contain transition-transform duration-700 group-hover:scale-105"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
           <div className="flex items-center justify-center h-full text-muted-foreground text-xs uppercase tracking-[0.2em]">
@@ -29,11 +29,11 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
           </span>
         )}
       </div>
-      <div className="p-5">
+      <div className="p-3 sm:p-5">
         <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
           {vehicle.brand}
         </p>
-        <h3 className="mt-1 text-lg font-light leading-tight">
+        <h3 className="mt-1 text-base sm:text-lg font-light leading-tight">
           {vehicle.model}
           {vehicle.version && (
             <span className="text-muted-foreground text-sm"> {vehicle.version}</span>
@@ -46,8 +46,8 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
           <span>·</span>
           <span>{vehicle.transmission}</span>
         </div>
-        <div className="mt-5 pt-4 border-t border-border flex items-center justify-between">
-          <p className="text-xl font-light">{formatPrice(Number(vehicle.price))}</p>
+        <div className="mt-3 sm:mt-5 pt-3 sm:pt-4 border-t border-border flex items-center justify-between">
+          <p className="text-base sm:text-xl font-light">{formatPrice(Number(vehicle.price))}</p>
           <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-foreground" />
         </div>
       </div>

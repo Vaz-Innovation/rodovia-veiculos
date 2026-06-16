@@ -60,9 +60,9 @@ export function VirtualizedVehicleList({
   const virtualizer = useVirtualizer({
     count: hasNextPage ? rows.length + 1 : rows.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 500, // Altura estimada do card + espaçamento
+    estimateSize: () => 500,
     overscan: 2,
-    gap: 24, // gap-6 = 24px entre as linhas
+    gap: 24,
   });
 
   const virtualItems = virtualizer.getVirtualItems();
@@ -89,6 +89,24 @@ export function VirtualizedVehicleList({
 
   if (vehicles.length === 0) {
     return null;
+  }
+
+  if (columns === 1) {
+    return (
+      <div className="flex flex-col gap-6">
+        {vehicles.map((vehicle) => (
+          <VehicleCard key={vehicle.id} vehicle={vehicle} />
+        ))}
+        {isFetchingNextPage && (
+          <div className="flex items-center justify-center py-8">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span className="text-sm">Carregando mais veículos...</span>
+            </div>
+          </div>
+        )}
+      </div>
+    );
   }
 
   return (
