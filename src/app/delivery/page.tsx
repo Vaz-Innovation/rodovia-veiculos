@@ -5,7 +5,7 @@ import { ArrowRight, Car, MapPin, CalendarCheck, ShieldCheck } from "lucide-reac
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import heroCar from "@/assets/hero-rodovia.jpg";
+import heroCar from "@/assets/hero-rodovia.webp";
 
 const description =
   "Levamos o veículo até você para um test-drive sem custo e sem compromisso. Escolha o modelo no estoque e agende pelo WhatsApp.";
