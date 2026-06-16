@@ -3,7 +3,7 @@ import { execute } from "@/graphql/execute";
 
 export const CategoryPreview_Query = graphql(`
   query CategoryPreview($category: String!) {
-    products(first: 1, where: { category: $category }) {
+    products(first: 1, where: { category: $category, status: "publish" }) {
       edges {
         node {
           image {
