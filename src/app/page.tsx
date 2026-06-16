@@ -9,8 +9,8 @@ import { fetchCategoryPreviewImage } from "./query";
 import model1 from "@/assets/car-hatch.jpg";
 import model2 from "@/assets/car-sedan.jpg";
 import model3 from "@/assets/car-suv.jpg";
-import racing from "@/assets/racing.jpg";
-import avaliacao from "@/assets/avaliacao-veiculo.jpg";
+import racing from "@/assets/racing.webp";
+import avaliacao from "@/assets/avaliacao-veiculo.webp";
 
 const CATEGORY_CONFIGS = [
   { slug: "hatch", name: "Hatch compacto", tag: "Econômico", placeholder: model1 },
