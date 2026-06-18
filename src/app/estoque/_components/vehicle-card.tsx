@@ -33,12 +33,7 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
         <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
           {vehicle.brand}
         </p>
-        <h3 className="mt-1 text-base sm:text-lg font-light leading-tight">
-          {vehicle.model}
-          {vehicle.version && (
-            <span className="text-muted-foreground text-sm"> {vehicle.version}</span>
-          )}
-        </h3>
+        <h3 className=" mt-1 text-base sm:text-lg font-light leading-tight">{vehicle.model}</h3>
         <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
           <span>{vehicle.year_model}</span>
           <span>·</span>
