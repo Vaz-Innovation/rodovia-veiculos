@@ -1,25 +1,21 @@
-export type TransmissionType = "manual" | "automatico" | "cvt" | "automatizado";
-export type FuelType = "flex" | "gasolina" | "diesel" | "hibrido" | "eletrico" | "gnv";
-export type VehicleStatus = "disponivel" | "vendido" | "reservado";
-
 export interface Vehicle {
   id: string;
   brand: string;
   model: string;
   version: string | null;
+  description: string | null;
   year_model: number;
   year_manufacture: number;
   price: number;
   mileage: number;
-  transmission: TransmissionType;
-  fuel: FuelType;
+  transmission: string;
+  fuel: string;
   color: string;
   doors: number | null;
   plate_end: string | null;
-  description: string | null;
-  features: string[];
+  categories: string[];
+  tags: string[] | null;
   featured: boolean;
-  status: VehicleStatus;
   created_at: string;
   updated_at: string;
   name?: string | null;
@@ -27,72 +23,8 @@ export interface Vehicle {
   district?: string | null;
   engine?: string | null;
   condition?: string | null;
+  photos?: string[];
 }
-
-export interface VehiclePhoto {
-  id: string;
-  vehicle_id: string;
-  url: string;
-  storage_path: string | null;
-  position: number;
-  is_cover: boolean;
-  created_at: string;
-}
-
-export type VehicleWithPhoto = Vehicle & { vehicle_photos: VehiclePhoto[] };
-
-export const TRANSMISSION_LABELS: Record<TransmissionType, string> = {
-  manual: "Manual",
-  automatico: "Automático",
-  cvt: "CVT",
-  automatizado: "Automatizado",
-};
-
-export const FUEL_LABELS: Record<FuelType, string> = {
-  flex: "Flex",
-  gasolina: "Gasolina",
-  diesel: "Diesel",
-  hibrido: "Híbrido",
-  eletrico: "Elétrico",
-  gnv: "GNV",
-};
-
-export const STATUS_LABELS: Record<VehicleStatus, string> = {
-  disponivel: "Disponível",
-  vendido: "Vendido",
-  reservado: "Reservado",
-};
-
-export const COMMON_FEATURES = [
-  "Ar-condicionado",
-  "Direção elétrica",
-  "Vidros elétricos",
-  "Travas elétricas",
-  "Airbag",
-  "ABS",
-  "Multimídia",
-  "Câmera de ré",
-  "Sensor de estacionamento",
-  "Computador de bordo",
-  "Bancos em couro",
-  "Rodas de liga leve",
-  "Faróis de LED",
-  "Piloto automático",
-  "Start/Stop",
-  "Teto solar",
-] as const;
-
-export const COMMON_COLORS = [
-  "Branco",
-  "Prata",
-  "Preto",
-  "Cinza",
-  "Vermelho",
-  "Azul",
-  "Marrom",
-  "Bege",
-  "Verde",
-];
 
 export function formatPrice(value: number): string {
   return value.toLocaleString("pt-BR", {
@@ -116,3 +48,42 @@ export function whatsappLink(v: Pick<Vehicle, "brand" | "model" | "year_model">)
   );
   return `https://wa.me/556199719187?text=${text}`;
 }
+
+export const TRANSMISSION_OPTIONS: Record<string, string> = {
+  automatico: "Automático",
+  manual: "Manual",
+  cvt: "CVT",
+  automatizado: "Automatizado",
+};
+
+export const FUEL_OPTIONS: Record<string, string> = {
+  flex: "Flex",
+  gasolina: "Gasolina",
+  etanol: "Etanol",
+  diesel: "Diesel",
+  eletrico: "Elétrico",
+  hibrido: "Híbrido",
+  gnv: "GNV",
+};
+
+export const COLOR_OPTIONS: Record<string, string> = {
+  branco: "Branco",
+  preto: "Preto",
+  prata: "Prata",
+  cinza: "Cinza",
+  vermelho: "Vermelho",
+  azul: "Azul",
+  verde: "Verde",
+  amarelo: "Amarelo",
+  laranja: "Laranja",
+  marrom: "Marrom",
+  bege: "Bege",
+  vinho: "Vinho",
+  champagne: "Champagne",
+};
+
+export const CONDITION_OPTIONS: Record<string, string> = {
+  novo: "Novo",
+  semi_novo: "Semi-novo",
+  usado: "Usado",
+};

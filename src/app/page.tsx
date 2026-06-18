@@ -10,7 +10,7 @@ import model1 from "@/assets/car-hatch.jpg";
 import model2 from "@/assets/car-sedan.jpg";
 import model3 from "@/assets/car-suv.jpg";
 import racing from "@/assets/racing.jpg";
-import avaliacao from "@/assets/avaliacao-veiculo.jpg";
+import avaliacao from "@/assets/avaliacao-veiculo.webp";
 
 const CATEGORY_CONFIGS = [
   { slug: "hatch", name: "Hatch compacto", tag: "Econômico", placeholder: model1 },
@@ -40,9 +40,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-400 px-6 lg:px-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
             <div>
-              <h2 className="text-4xl md:text-5xl font-light tracking-tight">
-                Estoque
-              </h2>
+              <h2 className="text-4xl md:text-5xl font-light tracking-tight">Estoque</h2>
             </div>
             <Link
               href="/estoque"
@@ -60,7 +58,7 @@ export default async function HomePage() {
                 className="group cursor-pointer block"
                 aria-label={`Ver ${m.name} no estoque`}
               >
-                <div className="aspect-[4/3] overflow-hidden bg-card">
+                <div className="aspect-4/3 overflow-hidden bg-card">
                   <img
                     src={m.imgSrc}
                     alt={m.name}
@@ -102,17 +100,12 @@ export default async function HomePage() {
             Trabalhamos em equipe,
             <br />
             para entrega do{" "}
-            <span className="italic font-extralight text-muted-foreground">
-              melhor produto
-            </span>
+            <span className="italic font-extralight text-muted-foreground">melhor produto</span>
             <br />
             e serviço ao cliente.
             <br />
-            <span className="font-medium">
-              Há 26 anos.
-            </span>
+            <span className="font-medium">Há 26 anos.</span>
           </h2>
-
 
           <ul className="mt-16 grid grid-cols-2 md:grid-cols-5 gap-x-8 gap-y-10 max-w-5xl">
             {[
@@ -170,7 +163,6 @@ export default async function HomePage() {
               Solicite sua avaliação
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </a>
-
           </div>
         </div>
       </section>
