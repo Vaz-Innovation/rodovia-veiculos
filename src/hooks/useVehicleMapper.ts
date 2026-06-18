@@ -51,7 +51,7 @@ export function useVehicleMapper() {
     const plateEnd = getAttributeValue(attributes, "pa_plate_end");
     const city = getAttributeValue(attributes, "pa_city");
     const district = getAttributeValue(attributes, "pa_district");
-    const engine = getAttributeValue(attributes, "pa_engine");
+    const engine = getAttributeValue(attributes, "pa_engine").replace(/-/g, ".");
     const condition = getAttributeValue(attributes, "pa_condition");
     const brand = getAttributeValue(attributes, "pa_brand");
 
