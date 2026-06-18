@@ -1,67 +1,18 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export function HeroCinematic() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [autoplayFailed, setAutoplayFailed] = useState(false);
-
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.muted = true;
-    video.playsInline = true;
-    video.setAttribute("muted", "");
-    video.setAttribute("playsinline", "");
-
-    const tryPlay = async () => {
-      try {
-        video.muted = true;
-        await video.play();
-      } catch (err) {
-        if (err instanceof DOMException && err.name === "AbortError") return;
-
-        setAutoplayFailed(true);
-      }
-    };
-
-    const handleCanPlay = () => tryPlay();
-    video.addEventListener("canplay", handleCanPlay);
-
-    if (video.readyState >= 3) {
-      tryPlay();
-    }
-
-    return () => {
-      video.removeEventListener("canplay", handleCanPlay);
-    };
-  }, []);
-
   return (
     <section className="relative h-[100svh] min-h-[560px] md:min-h-[700px] w-full overflow-hidden bg-background">
       {/* BACKGROUND */}
       <div className="absolute inset-0 bg-neutral-900">
-        {/* Imagem fallback - mostrada quando autoplay falha */}
-        <img
-          src="/images/hero-fallback.jpg"
-          alt=""
-          className={`absolute inset-0 h-full w-full object-cover ${
-            autoplayFailed ? "block" : "hidden"
-          }`}
-          aria-hidden="true"
-        />
-
-        {/* Vídeo - escondido se autoplay falhar */}
         <video
-          ref={videoRef}
           autoPlay
           muted
           loop
           playsInline
-          className={`h-full w-full object-cover ${autoplayFailed ? "hidden" : "block"}`}
+          poster="/images/hero-fallback.jpg"
+          className="h-full w-full object-cover"
         >
           <source src="/videos/hero-background.mp4" type="video/mp4" />
         </video>
