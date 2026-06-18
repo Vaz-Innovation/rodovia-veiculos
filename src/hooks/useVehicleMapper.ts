@@ -39,8 +39,8 @@ export function useVehicleMapper() {
     const rawPrice = "rawPrice" in node ? node.rawPrice : null;
     const description = "shortDescription" in node ? stripHtml(node.shortDescription) : null;
     const featured = "featured" in node ? node.featured : false;
-    const model = getAttributeValue(attributes, "pa_model");
-    const version = getAttributeValue(attributes, "pa_version");
+    const model = getAttributeValue(attributes, "pa_model").replace(/-/g, " ");
+    const version = getAttributeValue(attributes, "pa_version").replace(/-/g, " ");
     const yearModel = getAttributeValue(attributes, "pa_yearmodel");
     const yearManufacture = getAttributeValue(attributes, "pa_yearassembly");
     const mileage = getAttributeValue(attributes, "pa_mileage");

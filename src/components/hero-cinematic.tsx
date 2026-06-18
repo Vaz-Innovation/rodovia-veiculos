@@ -12,33 +12,26 @@ export function HeroCinematic() {
     const video = videoRef.current;
     if (!video) return;
 
-    // IMPORTANTE: Força muted antes de qualquer tentativa de play
-    // Sem isso o autoplay é bloqueado em todos os navegadores
     video.muted = true;
     video.playsInline = true;
     video.setAttribute("muted", "");
     video.setAttribute("playsinline", "");
 
-    // Tenta reproduzir o vídeo
     const tryPlay = async () => {
       try {
-        // Garante muted novamente antes de play
         video.muted = true;
         await video.play();
-      } catch {
-        // Se autoplay falhar, esconde o vídeo para não mostrar botão de play
+      } catch (err) {
+        if (err instanceof DOMException && err.name === "AbortError") return;
+
         setAutoplayFailed(true);
       }
     };
 
-    // Tenta reproduzir quando o vídeo estiver pronto
     const handleCanPlay = () => tryPlay();
     video.addEventListener("canplay", handleCanPlay);
 
-    // Tenta imediatamente também
     if (video.readyState >= 3) {
-      tryPlay();
-    } else {
       tryPlay();
     }
 
