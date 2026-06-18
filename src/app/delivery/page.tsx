@@ -43,7 +43,7 @@ export default function DeliveryPage() {
     <div className="bg-background text-foreground min-h-screen">
       <SiteHeader />
 
-      <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
+      <section className="relative h-[70vh] min-h-125 overflow-hidden">
         <img
           src={heroCar.src}
           alt="Delivery de test-drive Rodovia Veículos"
@@ -51,15 +51,15 @@ export default function DeliveryPage() {
           height={900}
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/30" />
-        <div className="relative z-10 mx-auto max-w-[1600px] h-full px-6 lg:px-10 flex flex-col justify-end pb-16">
-          <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
+        <div className="absolute inset-0 bg-linear-to-t from-foreground/80 via-foreground/40" />
+        <div className="relative z-10 mx-auto max-w-400 h-full px-6 lg:px-10 flex flex-col justify-end pb-16">
+          <p className="text-xs uppercase tracking-[0.4em] text-white mb-4">
             Sem custo · Sem compromisso
           </p>
-          <h1 className="text-5xl md:text-7xl font-light tracking-tight">
+          <h1 className="text-5xl md:text-7xl font-light text-white tracking-tight">
             Delivery de <span className="italic font-extralight">test-drive</span>
           </h1>
-          <p className="mt-6 max-w-xl text-base md:text-lg text-foreground/75 leading-relaxed">
+          <p className="mt-6 max-w-xl text-base md:text-lg text-white/75 leading-relaxed">
             Gostou de um modelo? Nós levamos o carro até a sua casa ou trabalho para você conhecer,
             com tranquilidade.
           </p>
