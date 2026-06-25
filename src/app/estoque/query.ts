@@ -18,6 +18,7 @@ const CarsListPaginated_Query = graphql(`
     $where: RootQueryToProductConnectionWhereArgs
   ) {
     products(first: $first, after: $after, where: $where) {
+      found
       pageInfo {
         hasNextPage
         endCursor

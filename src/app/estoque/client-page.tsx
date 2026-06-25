@@ -89,6 +89,8 @@ export function EstoqueClient() {
     [data],
   );
 
+  const totalCount = data?.pages?.[0]?.products?.found ?? undefined;
+
   const unmaskedNodes = useFragment(Estoque_ProductsFragment, allMaskedNodes);
 
   const vehicles = useMemo(
@@ -429,7 +431,9 @@ export function EstoqueClient() {
               <p className="text-sm text-muted-foreground">
                 {isLoading
                   ? "Carregando..."
-                  : `${vehicles.length} ${vehicles.length === 1 ? "veículo encontrado" : "veículos encontrados"}`}
+                  : totalCount != null && totalCount > vehicles.length
+                    ? `${vehicles.length} de ${totalCount} veículos`
+                    : `${vehicles.length} ${vehicles.length === 1 ? "veículo encontrado" : "veículos encontrados"}`}
               </p>
               <div className="flex items-center gap-2">
                 <label className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
