@@ -50,7 +50,7 @@ const VehicleFilterOptions_Query = graphql(`
         slug
       }
     }
-    brands: productAttributeTerms(taxonomy: "pa_brand") {
+    brands: productAttributeTerms(taxonomy: "pa_attribute_brand") {
       name
       slug
     }
@@ -108,7 +108,8 @@ export function getCarsListInfiniteQueryOptions(
   const slug = (v: string) => v.toLowerCase();
 
   const multiAttributes: MultiAttributeFilterInput[] = [];
-  if (params.brand) multiAttributes.push({ taxonomy: "PA_BRAND", terms: [slug(params.brand)] });
+  if (params.brand)
+    multiAttributes.push({ taxonomy: "PA_ATTRIBUTE_BRAND", terms: [slug(params.brand)] });
   if (params.model) multiAttributes.push({ taxonomy: "PA_MODEL", terms: [slug(params.model)] });
   if (params.transmission)
     multiAttributes.push({ taxonomy: "PA_TRANSMISSION", terms: [slug(params.transmission)] });

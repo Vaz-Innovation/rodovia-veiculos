@@ -55,7 +55,7 @@ export function useVehicleMapper() {
     const district = getAttributeValue(attributes, "pa_district");
     const engine = getAttributeValue(attributes, "pa_engine").replace(/-/g, ".");
     const condition = getAttributeValue(attributes, "pa_condition");
-    const brand = getAttributeValue(attributes, "pa_brand");
+    const brand = getAttributeValue(attributes, "pa_attribute_brand");
 
     return {
       id: String(node.databaseId),
