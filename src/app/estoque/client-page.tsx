@@ -337,11 +337,13 @@ export function EstoqueClient() {
               <div className="grid grid-cols-2 gap-2">
                 <NumberInput
                   placeholder="Mín."
+                  currency
                   value={search.minPrice}
                   onChange={(v: number | undefined) => update({ minPrice: v })}
                 />
                 <NumberInput
                   placeholder="Máx."
+                  currency
                   value={search.maxPrice}
                   onChange={(v: number | undefined) => update({ maxPrice: v })}
                 />
