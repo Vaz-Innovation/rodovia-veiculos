@@ -173,7 +173,7 @@ export function EstoqueClient() {
   const clearFilters = () =>
     setOptions({
       search: null,
-      productBrand: null,
+      brand: null,
       model: null,
       minPrice: null,
       maxPrice: null,
@@ -194,7 +194,7 @@ export function EstoqueClient() {
   }, [fetchNextPage]);
 
   const activeFiltersCount =
-    (search.productBrand ? 1 : 0) +
+    (search.brand ? 1 : 0) +
     (search.model ? 1 : 0) +
     (search.minPrice || search.maxPrice ? 1 : 0) +
     (search.yearMin || search.yearMax ? 1 : 0) +
@@ -263,8 +263,8 @@ export function EstoqueClient() {
             </div>
             <FilterGroup label="Marca">
               <select
-                value={search.productBrand}
-                onChange={(e) => update({ productBrand: e.target.value, model: "" })}
+                value={search.brand}
+                onChange={(e) => update({ brand: e.target.value, model: "" })}
                 className="w-full bg-card border border-border px-3 py-2 text-sm"
               >
                 <option value="">Todas</option>

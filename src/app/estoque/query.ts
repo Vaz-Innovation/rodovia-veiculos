@@ -86,7 +86,7 @@ export function getVehicleFilterOptionsQueryOptions() {
 
 export const carsListSearchParams = {
   search: parseAsString.withDefault(""),
-  productBrand: parseAsString.withDefault(""),
+  brand: parseAsString.withDefault(""),
   model: parseAsString.withDefault(""),
   minPrice: parseAsInteger,
   maxPrice: parseAsInteger,
@@ -108,8 +108,7 @@ export function getCarsListInfiniteQueryOptions(
   const slug = (v: string) => v.toLowerCase();
 
   const multiAttributes: MultiAttributeFilterInput[] = [];
-  if (params.productBrand)
-    multiAttributes.push({ taxonomy: "PA_BRAND", terms: [slug(params.productBrand)] });
+  if (params.brand) multiAttributes.push({ taxonomy: "PA_BRAND", terms: [slug(params.brand)] });
   if (params.model) multiAttributes.push({ taxonomy: "PA_MODEL", terms: [slug(params.model)] });
   if (params.transmission)
     multiAttributes.push({ taxonomy: "PA_TRANSMISSION", terms: [slug(params.transmission)] });

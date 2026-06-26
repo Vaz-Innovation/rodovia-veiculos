@@ -3,7 +3,7 @@ export type SearchSort = (typeof SORT_OPTIONS)[number];
 
 export interface SearchParams {
   search: string;
-  productBrand: string;
+  brand: string;
   model: string;
   minPrice: number | undefined;
   maxPrice: number | undefined;
