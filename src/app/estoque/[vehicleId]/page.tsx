@@ -1,11 +1,13 @@
-import { cache } from "react";
 import type { Metadata } from "next";
 
-import { execute } from "@/graphql/execute";
-import { VehicleDetailClient } from "./client-page";
-import { getCarByIdQueryOptions, VehicleMetadata_Query } from "./query";
-import { prefetch } from "@/orpc/orpc.server";
+import { useFragment as getFragment } from "@/graphql/__gen__";
+import { gqlQueryOptions } from "@/graphql/gqlpc";
 import { formatPrice } from "@/lib/vehicles";
+import { fetchQuery, HydrateClient } from "@/orpc/orpc.server";
+import { cacheTag } from "next/cache";
+import { notFound } from "next/navigation";
+import { VehicleDetailClient } from "./client-page";
+import { CarById_Query, VehicleMetadata_ProductFragment } from "./query";
 
 type RouteParams = { vehicleId: string };
 
@@ -26,14 +28,20 @@ function stripHtml(value: string | null | undefined): string {
     .trim();
 }
 
-const getProductForSeo = cache(async (id: string) => {
+const getProduct = async (id: string) => {
+  "use cache";
   try {
-    const data = await execute(VehicleMetadata_Query, { id });
+    const data = await fetchQuery(gqlQueryOptions(CarById_Query, { input: { id } }));
+    cacheTag(`vehicle`, "single", id);
     return data?.product ?? null;
   } catch {
     return null;
   }
-});
+};
+
+const getProductForSeo = (product: NonNullable<Awaited<ReturnType<typeof getProduct>>>) => {
+  return getFragment(VehicleMetadata_ProductFragment, product);
+};
 
 function extractSeoFields(product: NonNullable<Awaited<ReturnType<typeof getProductForSeo>>>) {
   const attributes = "attributes" in product ? (product.attributes?.nodes ?? null) : null;
@@ -84,7 +92,7 @@ export async function generateMetadata({
   params: Promise<RouteParams>;
 }): Promise<Metadata> {
   const { vehicleId } = await params;
-  const product = await getProductForSeo(vehicleId);
+  const product = await getProduct(vehicleId);
   if (!product) {
     return { title: "Veículo não encontrado" };
   }
@@ -172,14 +180,17 @@ function buildVehicleJsonLd(
 
 export default async function VehicleDetailPage({ params }: { params: Promise<RouteParams> }) {
   const { vehicleId } = await params;
+  const product = await getProduct(vehicleId);
+  if (!product) {
+    return notFound();
+  }
 
-  prefetch(getCarByIdQueryOptions(vehicleId));
-
-  const product = await getProductForSeo(vehicleId);
-  const jsonLd = product ? buildVehicleJsonLd(extractSeoFields(product), vehicleId) : null;
+  const jsonLd = product
+    ? buildVehicleJsonLd(extractSeoFields(getProductForSeo(product)), vehicleId)
+    : null;
 
   return (
-    <>
+    <HydrateClient>
       {jsonLd && (
         <script
           type="application/ld+json"
@@ -187,6 +198,6 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Ro
         />
       )}
       <VehicleDetailClient vehicleId={vehicleId} />
-    </>
+    </HydrateClient>
   );
 }
