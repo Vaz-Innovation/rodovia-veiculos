@@ -1,6 +1,7 @@
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
-import { EstoqueShell } from "./estoque-shell";
+import { EstoqueShell, EstoqueShellFallback } from "./estoque-shell";
+import { Suspense } from "react";
 
 /**
  * Hosts the `@filters` parallel-route slot (the sidebar) alongside the default
@@ -18,7 +19,9 @@ export default function EstoqueListLayout({
   return (
     <div className="bg-background text-foreground min-h-screen flex flex-col">
       <SiteHeader />
-      <EstoqueShell filters={filters}>{children}</EstoqueShell>
+      <Suspense fallback={<EstoqueShellFallback />}>
+        <EstoqueShell filters={filters}>{children}</EstoqueShell>
+      </Suspense>
       <SiteFooter />
     </div>
   );

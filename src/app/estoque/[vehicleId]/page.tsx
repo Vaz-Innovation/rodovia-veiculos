@@ -4,13 +4,14 @@ import { useFragment as getFragment, graphql } from "@/graphql/__gen__";
 import { execute } from "@/graphql/execute";
 import { gqlQueryOptions } from "@/graphql/gqlpc";
 import { formatPrice } from "@/lib/vehicles";
-import { fetchQuery, HydrateClient, prefetch } from "@/orpc/orpc.server";
-import { cacheTag } from "next/cache";
+import { fetchQuery, HydrateClient } from "@/orpc/orpc.server";
+import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { VehicleDetailClient } from "./client-page";
 import { CarById_Query, VehicleMetadata_ProductFragment } from "./query";
-import { cache } from "react";
+import { Suspense } from "react";
 import { AllVehicleIdsQuery } from "@/graphql/__gen__/graphql";
+import { SiteHeader } from "@/components/site-header";
 
 type RouteParams = { vehicleId: string };
 
@@ -82,7 +83,7 @@ export async function generateStaticParams(): Promise<RouteParams[]> {
   return params;
 }
 
-const getProduct = cache(async (id: string) => {
+const getProduct = async (id: string) => {
   "use cache";
   try {
     const data = await execute(CarById_Query, { id });
@@ -90,7 +91,7 @@ const getProduct = cache(async (id: string) => {
   } catch {
     return null;
   }
-});
+};
 
 const getProductForSeo = (product: NonNullable<Awaited<ReturnType<typeof getProduct>>>) => {
   return getFragment(VehicleMetadata_ProductFragment, product.product)!;
@@ -232,6 +233,50 @@ function buildVehicleJsonLd(
   };
 }
 
+type LoadedProduct = NonNullable<Awaited<ReturnType<typeof getProduct>>>;
+
+function VehicleDetailFallback() {
+  return (
+    <div className="bg-background min-h-screen">
+      <SiteHeader />
+      <div className="pt-32 mx-auto max-w-350 px-6 lg:px-10">
+        <div className="grid grid-cols-3 gap-2">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="aspect-4/3 bg-card animate-pulse" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Seeds React Query and hydrates the client. `fetchQuery` reads `Date.now()`
+// internally, so this runs inside the Suspense boundary below (a dynamic hole)
+// to satisfy Cache Components on this statically-generated route.
+async function VehicleDetailContent({
+  vehicleId,
+  data,
+}: {
+  vehicleId: string;
+  data: LoadedProduct;
+}) {
+  // Opt this subtree into dynamic (request-time) rendering. `fetchQuery` reads
+  // `Date.now()`, which is only allowed once the render depends on request data;
+  // paired with the Suspense boundary above, this becomes a streamed dynamic hole.
+  await connection();
+
+  await fetchQuery({
+    ...gqlQueryOptions(CarById_Query, { input: { id: vehicleId } }),
+    queryFn: () => data,
+  });
+
+  return (
+    <HydrateClient>
+      <VehicleDetailClient vehicleId={vehicleId} />
+    </HydrateClient>
+  );
+}
+
 export default async function VehicleDetailPage({ params }: { params: Promise<RouteParams> }) {
   const { vehicleId } = await params;
   const data = await getProduct(vehicleId);
@@ -240,28 +285,17 @@ export default async function VehicleDetailPage({ params }: { params: Promise<Ro
     return notFound();
   }
 
-  await fetchQuery({
-    ...gqlQueryOptions(CarById_Query, {
-      input: {
-        id: vehicleId,
-      },
-    }),
-    queryFn: () => data,
-  }); // Prefetch the product query for client-side hydration
-
-  const jsonLd = product
-    ? buildVehicleJsonLd(extractSeoFields(getProductForSeo(data)), vehicleId)
-    : null;
+  const jsonLd = buildVehicleJsonLd(extractSeoFields(getProductForSeo(data)), vehicleId);
 
   return (
-    <HydrateClient>
-      {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-      )}
-      <VehicleDetailClient vehicleId={vehicleId} />
-    </HydrateClient>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Suspense fallback={<VehicleDetailFallback />}>
+        <VehicleDetailContent vehicleId={vehicleId} data={data} />
+      </Suspense>
+    </>
   );
 }

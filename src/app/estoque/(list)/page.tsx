@@ -14,6 +14,7 @@ import {
   productCacheTags,
   type CarsListParams,
 } from "./query";
+import { Suspense } from "react";
 
 const description =
   "Confira nosso estoque de carros semi-novos. Filtre por marca, modelo, preço, ano e mais.";

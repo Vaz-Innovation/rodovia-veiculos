@@ -1,8 +1,12 @@
+import { Suspense } from "react";
+
 import { execute } from "@/graphql/execute";
 import { fetchQuery, HydrateClient } from "@/orpc/orpc.server";
 import { cacheTag } from "next/cache";
+import { connection } from "next/server";
 import { FiltersClient } from "./filters-client";
 import { getVehicleFilterOptionsQueryOptions, VehicleFilterOptions_Query } from "./query";
+import Loading from "./loading";
 
 /**
  * Cached fetch of the filter dropdown options. `use cache` memoizes the GraphQL
@@ -18,8 +22,22 @@ const loadFilterOptions = async () => {
 };
 
 export default async function FiltersSlot() {
-  const data = await loadFilterOptions();
+  // Opt into dynamic (request-time) rendering so the `Date.now()` inside
+  // `fetchQuery` is allowed; the Suspense boundary above streams this hole.
+  await connection();
 
+  const data = await loadFilterOptions();
+  // `fetchQuery` seeds React Query, which internally reads `Date.now()`. On this
+  // otherwise-static slot that current-time access must live inside a Suspense
+  // boundary (a dynamic hole) to satisfy Cache Components.
+  return (
+    <Suspense fallback={<Loading />}>
+      <FiltersContent data={data} />
+    </Suspense>
+  );
+}
+
+async function FiltersContent({ data }: { data: Awaited<ReturnType<typeof loadFilterOptions>> }) {
   // Seed the per-request query client with the cached data so `useSuspenseQuery`
   // reads it from the hydration boundary instead of refetching on the client.
   const options = getVehicleFilterOptionsQueryOptions();

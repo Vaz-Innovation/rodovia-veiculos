@@ -1,8 +1,15 @@
 "use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { BrandLogo } from "@/components/brand-logo";
 
 export function SiteFooter() {
+  // Resolve the copyright year on the client after mount. Reading `new Date()`
+  // during render is disallowed under Cache Components (it would freeze into the
+  // prerendered HTML); computing it in an effect keeps the static prerender valid.
+  const [year, setYear] = useState<number | null>(null);
+  useEffect(() => setYear(new Date().getFullYear()), []);
+
   return (
     <footer className="bg-background border-t border-border text-foreground">
       <div className="mx-auto max-w-[1600px] px-6 lg:px-10 py-20 grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8">
@@ -52,7 +59,7 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-border">
         <div className="mx-auto max-w-[1600px] px-6 lg:px-10 py-6 flex flex-col md:flex-row justify-between gap-4 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-          <p>© {new Date().getFullYear()} Rodovia Veículos. Todos os direitos reservados.</p>
+          <p>© {year} Rodovia Veículos. Todos os direitos reservados.</p>
           <div className="flex gap-6">
             <Link href="/privacidade" className="hover:text-foreground">
               Privacidade

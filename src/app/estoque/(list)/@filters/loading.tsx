@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function loading() {
+export default function Loading() {
   return (
     <div className="space-y-6" aria-hidden>
       {Array.from({ length: 6 }).map((_, i) => (

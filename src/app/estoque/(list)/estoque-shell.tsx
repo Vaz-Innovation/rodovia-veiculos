@@ -74,3 +74,32 @@ export function EstoqueShell({
     </>
   );
 }
+
+/** Static fallback rendered while the dynamic (searchParams-driven) shell streams. */
+export function EstoqueShellFallback() {
+  return (
+    <>
+      <section className="pt-32 pb-8 mx-auto max-w-400 w-full px-6 lg:px-10">
+        <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground mb-4">
+          Estoque atual
+        </p>
+        <h1 className="text-4xl md:text-5xl font-light tracking-tight">Estoque</h1>
+        <div className="mt-8 h-14 w-full bg-card animate-pulse" />
+      </section>
+      <section className="flex-1 mx-auto max-w-400 w-full px-6 lg:px-10 pb-24">
+        <div className="grid lg:grid-cols-[280px_1fr] gap-8">
+          <div className="hidden lg:block space-y-6" aria-hidden>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="h-9 w-full bg-card animate-pulse" />
+            ))}
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6" aria-hidden>
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="bg-card aspect-4/3 animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}

@@ -1,5 +1,6 @@
 import { graphql } from "@/graphql/__gen__";
 import { execute } from "@/graphql/execute";
+import { cacheTag } from "next/cache";
 
 export const CategoryPreview_Query = graphql(`
   query CategoryPreview($category: String!) {
@@ -16,6 +17,8 @@ export const CategoryPreview_Query = graphql(`
 `);
 
 export async function fetchCategoryPreviewImage(slug: string): Promise<string | null> {
+  "use cache";
+  cacheTag("vehicle", `category:${slug}`);
   try {
     const data = await execute(CategoryPreview_Query, { category: slug });
     return data.products?.edges?.[0]?.node?.image?.sourceUrl ?? null;
