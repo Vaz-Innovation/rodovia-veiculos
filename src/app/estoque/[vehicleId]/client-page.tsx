@@ -1,32 +1,32 @@
 "use client";
 
-import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
-import { useState, useMemo } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
+  Check,
   ChevronLeft,
   ChevronRight,
-  MessageCircle,
-  Check,
   Heart,
+  MessageCircle,
   Share2,
-  X,
   Star,
+  X,
 } from "lucide-react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
-import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
-import { formatMileage, formatPrice, vehicleTitle, whatsappLink } from "@/lib/vehicles";
+import { SiteHeader } from "@/components/site-header";
 import { cn } from "@/lib/utils";
+import { formatMileage, formatPrice, vehicleTitle, whatsappLink } from "@/lib/vehicles";
+import { ContactCard } from "./_components/contact-card";
 import { NotFoundView } from "./_components/not-found-view";
 import { SpecItem } from "./_components/spec-item";
-import { ContactCard } from "./_components/contact-card";
 
-import { getCarByIdQueryOptions } from "./query";
-import { useVehicleMapper } from "@/hooks/useVehicleMapper";
 import { graphql, useFragment } from "@/graphql/__gen__";
+import { useVehicleMapper } from "@/hooks/useVehicleMapper";
+import { getCarByIdQueryOptions } from "./query";
 
 export const VehicleDetail_ProductsFragment = graphql(`
   fragment VehicleDetail_ProductsFragment on Product {
@@ -78,7 +78,7 @@ export function VehicleDetailClient({ vehicleId }: VehicleDetailClientProps) {
   const [photoIndex, setPhotoIndex] = useState(0);
   const [lightbox, setLightbox] = useState(false);
 
-  const { data: rawData, isLoading } = useQuery(getCarByIdQueryOptions(vehicleId));
+  const { data: rawData, isLoading } = useSuspenseQuery(getCarByIdQueryOptions(vehicleId));
 
   const unmasked = useFragment(VehicleDetail_ProductsFragment, rawData?.product);
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { useQueryStates } from "nuqs";
 
@@ -14,7 +14,7 @@ import { getVehicleFilterOptionsQueryOptions, mapFilterOptions } from "./query";
 export function FiltersClient() {
   const [options, setOptions] = useQueryStates(carsListSearchParams);
 
-  const { data } = useQuery(getVehicleFilterOptionsQueryOptions());
+  const { data } = useSuspenseQuery(getVehicleFilterOptionsQueryOptions());
   const apiOptions = mapFilterOptions(data);
 
   const {

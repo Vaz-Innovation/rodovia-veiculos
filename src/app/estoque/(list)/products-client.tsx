@@ -1,6 +1,6 @@
 "use client";
 
-import { useInfiniteQuery, useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { useQueryStates } from "nuqs";
 import { useCallback, useMemo } from "react";
 
