@@ -7,6 +7,7 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import SuperJSON from "superjson";
+import generatedIntrospection from "../graphql/__gen__/possible-types.json";
 
 declare global {
   interface Window {
@@ -15,7 +16,9 @@ declare global {
 }
 
 export const createQueryClient = () => {
-  const cache = new InMemoryCache();
+  const cache = new InMemoryCache({
+    possibleTypes: generatedIntrospection.possibleTypes,
+  });
 
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -23,6 +26,7 @@ export const createQueryClient = () => {
         // With SSR, we usually want to set some default staleTime
         // above 0 to avoid refetching immediately on the client
         staleTime: 30 * 1000,
+        refetchOnWindowFocus: false,
       },
       dehydrate: {
         serializeData: SuperJSON.serialize,

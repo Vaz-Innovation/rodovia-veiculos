@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
-import { useFragment as getFragment } from "@/graphql/__gen__";
+import { useFragment as getFragment, graphql } from "@/graphql/__gen__";
+import { execute } from "@/graphql/execute";
 import { gqlQueryOptions } from "@/graphql/gqlpc";
 import { formatPrice } from "@/lib/vehicles";
 import { fetchQuery, HydrateClient } from "@/orpc/orpc.server";
@@ -8,6 +9,8 @@ import { cacheTag } from "next/cache";
 import { notFound } from "next/navigation";
 import { VehicleDetailClient } from "./client-page";
 import { CarById_Query, VehicleMetadata_ProductFragment } from "./query";
+import { cache } from "react";
+import { AllVehicleIdsQuery } from "@/graphql/__gen__/graphql";
 
 type RouteParams = { vehicleId: string };
 
@@ -28,16 +31,65 @@ function stripHtml(value: string | null | undefined): string {
     .trim();
 }
 
-const getProduct = async (id: string) => {
-  "use cache";
+const ALL_VEHICLE_IDS_QUERY = graphql(`
+  query AllVehicleIds($first: Int!, $after: String) {
+    products(first: $first, after: $after, where: { status: "publish" }) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          databaseId
+        }
+      }
+    }
+  }
+`);
+
+type AllVehicleIdsResult = {
+  products?: {
+    pageInfo?: { hasNextPage?: boolean | null; endCursor?: string | null } | null;
+    edges?: Array<{ node?: { databaseId?: number | null } | null } | null> | null;
+  } | null;
+};
+
+// Prebuild a static page for every published vehicle by paginating the catalog.
+export async function generateStaticParams(): Promise<RouteParams[]> {
+  const params: RouteParams[] = [];
+  let after: string | null = null;
+
+  try {
+    // Safety-capped loop (100 pages × 100 = 10k vehicles) to avoid a runaway build.
+    for (let page = 0; page < 100; page++) {
+      const data: AllVehicleIdsQuery = await execute(ALL_VEHICLE_IDS_QUERY, { first: 100, after });
+
+      for (const edge of data.products?.edges ?? []) {
+        const id = edge?.node?.databaseId;
+        if (id != null) params.push({ vehicleId: String(id) });
+      }
+
+      const pageInfo = data.products?.pageInfo;
+      if (!pageInfo?.hasNextPage || !pageInfo.endCursor) break;
+      after = pageInfo.endCursor;
+    }
+  } catch {
+    // If the catalog can't be reached at build time, fall back to on-demand
+    // generation for every id instead of failing the whole build.
+    return params;
+  }
+
+  return params;
+}
+
+const getProduct = cache(async (id: string) => {
   try {
     const data = await fetchQuery(gqlQueryOptions(CarById_Query, { input: { id } }));
-    cacheTag(`vehicle`, "single", id);
     return data?.product ?? null;
   } catch {
     return null;
   }
-};
+});
 
 const getProductForSeo = (product: NonNullable<Awaited<ReturnType<typeof getProduct>>>) => {
   return getFragment(VehicleMetadata_ProductFragment, product);

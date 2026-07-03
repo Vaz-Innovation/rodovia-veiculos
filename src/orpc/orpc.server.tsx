@@ -2,6 +2,8 @@ import type { ProcedureUtils } from "@orpc/tanstack-query";
 import type {
   DefaultError,
   FetchQueryOptions,
+  FetchInfiniteQueryOptions,
+  InfiniteData,
   QueryKey,
   queryOptions as tanstackQueryOptions,
   infiniteQueryOptions as tanstackInfiniteQueryOptions,
@@ -47,6 +49,17 @@ export function fetchQuery<
 >(options: FetchQueryOptions<TQueryFnData, TError, TData, TQueryKey, TPageParam>) {
   const queryClient = getQueryClient();
   return queryClient.fetchQuery(options);
+}
+
+export function fetchInfiniteQuery<
+  TQueryFnData,
+  TError = DefaultError,
+  TData = InfiniteData<TQueryFnData>,
+  TQueryKey extends QueryKey = QueryKey,
+  TPageParam = unknown,
+>(options: FetchInfiniteQueryOptions<TQueryFnData, TError, TData, TQueryKey, TPageParam>) {
+  const queryClient = getQueryClient();
+  return queryClient.fetchInfiniteQuery(options);
 }
 export function HydrateClient(props: { children: React.ReactNode }) {
   const queryClient = getQueryClient();

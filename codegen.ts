@@ -12,6 +12,12 @@ const config: CodegenConfig = {
         documentMode: "string",
       },
     },
+    "./src/graphql/__gen__/possible-types.json": {
+      plugins: ["fragment-matcher"],
+      config: {
+        useExplicitTyping: true,
+      },
+    },
   },
 };
 

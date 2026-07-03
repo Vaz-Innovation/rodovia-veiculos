@@ -1,5 +1,6 @@
+import { graphql } from "@/graphql/__gen__";
+import { execute } from "@/graphql/execute";
 import type { MetadataRoute } from "next";
-import { executeRaw } from "@/graphql/execute";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://rodoviaveiculos.com.br";
 
@@ -56,26 +57,35 @@ type ProductsResult = {
     edges?: Array<{ node: { databaseId: number; date?: string | null } }>;
   };
 };
-
-async function fetchAllProductIds(): Promise<Array<{ id: number; date: string | null }>> {
-  const query = `
-    query SitemapProducts($first: Int!, $after: String) {
-      products(first: $first, after: $after) {
-        pageInfo { hasNextPage endCursor }
-        edges { node { databaseId date } }
+const query = graphql(`
+  query SitemapProducts($first: Int!, $after: String) {
+    products(first: $first, after: $after) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        node {
+          databaseId
+          date
+        }
       }
     }
-  `;
-
+  }
+`);
+async function fetchAllProductIds(): Promise<Array<{ id: number; date: string | null }>> {
   const ids: Array<{ id: number; date: string | null }> = [];
   let cursor: string | null = null;
 
   // Page through all products (max 10 iterations = 1000 vehicles)
   for (let i = 0; i < 10; i++) {
-    const variables: Record<string, unknown> = { first: 100 };
+    const variables: {
+      first: number;
+      after?: string | null;
+    } = { first: 100 };
     if (cursor) variables.after = cursor;
 
-    const data = await executeRaw<ProductsResult>(query, variables);
+    const data = await execute(query, variables);
     const edges = data?.products?.edges ?? [];
 
     for (const edge of edges) {

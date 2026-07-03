@@ -1,5 +1,5 @@
 import { graphql } from "@/graphql/__gen__";
-import { gqlInfiniteOptions, gqlQueryOptions } from "@/graphql/gqlpc";
+import { gqlInfiniteOptions } from "@/graphql/gqlpc";
 import {
   AttributeGroupRelationEnum,
   ProductsOrderByEnum,
@@ -11,7 +11,7 @@ import { SORT_OPTIONS } from "@/hooks/useVehicleFilters";
 import { parseAsArrayOf, parseAsInteger, parseAsString, parseAsStringLiteral } from "nuqs/server";
 import type { inferParserType } from "nuqs/server";
 
-const CarsListPaginated_Query = graphql(`
+export const CarsListPaginated_Query = graphql(`
   query ProductsPaginated(
     $first: Int!
     $after: String
@@ -33,56 +33,7 @@ const CarsListPaginated_Query = graphql(`
   }
 `);
 
-const PAGE_SIZE = 24;
-
-const VehicleFilterOptions_Query = graphql(`
-  query VehicleFilterOptions {
-    productCategories(first: 100) {
-      nodes {
-        name
-        slug
-      }
-    }
-    productTags(first: 100) {
-      nodes {
-        databaseId
-        name
-        slug
-      }
-    }
-    brands: productAttributeTerms(taxonomy: "pa_attribute_brand") {
-      name
-      slug
-    }
-    models: productAttributeTerms(taxonomy: "pa_model") {
-      name
-      slug
-    }
-    transmissions: productAttributeTerms(taxonomy: "pa_transmission") {
-      name
-      slug
-    }
-    fuels: productAttributeTerms(taxonomy: "pa_fuel") {
-      name
-      slug
-    }
-    colors: productAttributeTerms(taxonomy: "pa_color") {
-      name
-      slug
-    }
-    conditions: productAttributeTerms(taxonomy: "pa_condition") {
-      name
-      slug
-    }
-  }
-`);
-
-export function getVehicleFilterOptionsQueryOptions() {
-  return gqlQueryOptions(VehicleFilterOptions_Query, {
-    staleTime: Infinity,
-    gcTime: Infinity,
-  });
-}
+export const PAGE_SIZE = 24;
 
 export const carsListSearchParams = {
   search: parseAsString.withDefault(""),
@@ -102,9 +53,11 @@ export const carsListSearchParams = {
   sort: parseAsStringLiteral(SORT_OPTIONS).withDefault("recent"),
 };
 
-export function getCarsListInfiniteQueryOptions(
-  params: inferParserType<typeof carsListSearchParams>,
-) {
+export type CarsListParams = inferParserType<typeof carsListSearchParams>;
+
+/** Builds the GraphQL `where` args from the parsed search params. Deterministic so
+ * the server prefetch and the client infinite query resolve to the same query key. */
+export function buildProductsWhere(params: CarsListParams): RootQueryToProductConnectionWhereArgs {
   const slug = (v: string) => v.toLowerCase();
 
   const multiAttributes: MultiAttributeFilterInput[] = [];
@@ -130,7 +83,7 @@ export function getCarsListInfiniteQueryOptions(
     numericAttributeRanges.push({ taxonomy: "pa_mileage", max: params.kmMax });
   }
 
-  const where: RootQueryToProductConnectionWhereArgs = {
+  return {
     status: "publish",
     ...(params.search && { search: params.search }),
     ...(params.category && { category: params.category }),
@@ -146,6 +99,10 @@ export function getCarsListInfiniteQueryOptions(
     ...(numericAttributeRanges.length && { numericAttributeRanges }),
     ...buildSortWhere(params.sort),
   };
+}
+
+export function getCarsListInfiniteQueryOptions(params: CarsListParams) {
+  const where = buildProductsWhere(params);
 
   return gqlInfiniteOptions(CarsListPaginated_Query, {
     input: (after) => ({ first: PAGE_SIZE, after: after ?? undefined, where }),
@@ -172,4 +129,55 @@ function buildSortWhere(sort: string): Partial<RootQueryToProductConnectionWhere
   }
 }
 
-export const CarsListQuery = CarsListPaginated_Query;
+/**
+ * Cache tags for the `use cache` wrapper around the ProductsPaginated fetch.
+ * Empty values are dropped because `cacheTag` rejects empty strings; the constant
+ * `vehicle` tag lets every products cache entry be revalidated in one call, while
+ * the per-filter tags allow narrower `revalidateTag(brandSlug)` invalidations.
+ */
+export function productCacheTags(params: CarsListParams): string[] {
+  return [
+    "vehicle",
+    params.search,
+    params.brand,
+    params.model,
+    params.category,
+    params.tagIn.slice().sort().join(","),
+  ].filter((tag) => tag.length > 0);
+}
+
+/** Number of active filters (search text excluded), used for the "Limpar" badges. */
+export function countActiveFilters(params: CarsListParams): number {
+  return (
+    (params.brand ? 1 : 0) +
+    (params.model ? 1 : 0) +
+    (params.minPrice || params.maxPrice ? 1 : 0) +
+    (params.yearMin || params.yearMax ? 1 : 0) +
+    (params.kmMax ? 1 : 0) +
+    (params.transmission ? 1 : 0) +
+    (params.fuel ? 1 : 0) +
+    (params.color ? 1 : 0) +
+    (params.condition ? 1 : 0) +
+    params.tagIn.length +
+    (params.category ? 1 : 0)
+  );
+}
+
+/** nuqs patch that resets every listing filter back to its default. */
+export const CLEARED_FILTERS = {
+  search: null,
+  brand: null,
+  model: null,
+  minPrice: null,
+  maxPrice: null,
+  yearMin: null,
+  yearMax: null,
+  kmMax: null,
+  transmission: null,
+  fuel: null,
+  condition: null,
+  color: null,
+  tagIn: null,
+  category: null,
+  sort: null,
+} as const;

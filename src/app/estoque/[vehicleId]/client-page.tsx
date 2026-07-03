@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useState, useMemo } from "react";
 import {
   ArrowLeft,
@@ -78,7 +78,7 @@ export function VehicleDetailClient({ vehicleId }: VehicleDetailClientProps) {
   const [photoIndex, setPhotoIndex] = useState(0);
   const [lightbox, setLightbox] = useState(false);
 
-  const { data: rawData, isLoading } = useSuspenseQuery(getCarByIdQueryOptions(vehicleId));
+  const { data: rawData, isLoading } = useQuery(getCarByIdQueryOptions(vehicleId));
 
   const unmasked = useFragment(VehicleDetail_ProductsFragment, rawData?.product);
 

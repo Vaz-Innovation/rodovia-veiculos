@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useCallback, useEffect, useMemo, useState } from "react";
+import { useRef, useEffect, useMemo, useState } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Loader2 } from "lucide-react";
 
@@ -15,25 +15,28 @@ interface VirtualizedVehicleListProps {
   isLoading?: boolean;
 }
 
-// Número de colunas baseado no breakpoint
-function useColumns() {
-  const getColumns = useCallback(() => {
-    if (typeof window === "undefined") return 3;
-    const width = window.innerWidth;
-    if (width < 640) return 1; // sm
-    if (width < 1280) return 2; // xl
-    return 3;
-  }, []);
+// Número de colunas usado na renderização do servidor. A primeira renderização
+// no cliente precisa usar o mesmo valor para evitar hydration mismatch.
+const SSR_COLUMNS = 3;
 
-  const [columns, setColumns] = useState(getColumns);
+function getColumnsForWidth(width: number) {
+  if (width < 640) return 1; // sm
+  if (width < 1280) return 2; // xl
+  return 3;
+}
+
+// Número de colunas baseado no breakpoint. Inicia com o valor do servidor e só
+// ajusta para a largura real do viewport após a montagem, mantendo a primeira
+// renderização do cliente igual à do servidor.
+function useColumns() {
+  const [columns, setColumns] = useState(SSR_COLUMNS);
 
   useEffect(() => {
-    const handleResize = () => {
-      setColumns(getColumns());
-    };
+    const handleResize = () => setColumns(getColumnsForWidth(window.innerWidth));
+    handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [getColumns]);
+  }, []);
 
   return columns;
 }

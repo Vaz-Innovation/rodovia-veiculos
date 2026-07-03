@@ -1,4 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { addTypenameToDocument } from "@apollo/client/utilities";
 import type { TypedDocumentString } from "./__gen__/graphql";
+import { parse, print } from "graphql";
+
+const cache = new WeakMap<TypedDocumentString<any, any>, string>();
+
+function toRequestString(doc: TypedDocumentString<any, any>): string {
+  const hit = cache.get(doc);
+  if (hit) return hit;
+  const transformed = print(addTypenameToDocument(parse(doc.toString())));
+  cache.set(doc, transformed);
+  return transformed;
+}
 
 interface GraphQLResponse<T> {
   data?: T;
@@ -8,13 +21,11 @@ interface GraphQLResponse<T> {
 type RawVariables = Record<string, unknown> | null | undefined;
 
 async function runGraphQLRequest<TResult>(
-  query: string,
+  query: TypedDocumentString<any, any>,
   variables?: RawVariables,
 ): Promise<TResult> {
   const isServer = typeof window === "undefined";
-  const endpoint = isServer
-    ? process.env.WORDPRESS_API_URL
-    : "/api/wordpress/graphql";
+  const endpoint = isServer ? process.env.WORDPRESS_API_URL : "/api/wordpress/graphql";
 
   if (!endpoint) {
     throw new Error("WORDPRESS_API_URL is not set for server-side execution");
@@ -33,7 +44,7 @@ async function runGraphQLRequest<TResult>(
     method: "POST",
     headers,
     body: JSON.stringify({
-      query,
+      query: toRequestString(query),
       variables,
     }),
   });
@@ -58,19 +69,6 @@ async function runGraphQLRequest<TResult>(
 export async function execute<
   TResult,
   TVariables extends Record<string, unknown> = Record<string, never>,
->(
-  query: TypedDocumentString<TResult, TVariables>,
-  variables?: TVariables,
-): Promise<TResult> {
-  return runGraphQLRequest<TResult>(
-    query.toString(),
-    variables,
-  );
-}
-
-export async function executeRaw<TResult>(
-  query: string,
-  variables?: RawVariables,
-): Promise<TResult> {
+>(query: TypedDocumentString<TResult, TVariables>, variables?: TVariables): Promise<TResult> {
   return runGraphQLRequest<TResult>(query, variables);
 }

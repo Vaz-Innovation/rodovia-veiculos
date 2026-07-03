@@ -1,13 +1,13 @@
-import type { ApolloCache } from '@apollo/client';
-import type { Query, QueryKey } from '@tanstack/react-query';
-import { notifyManager, QueryCache } from '@tanstack/react-query';
+import type { ApolloCache } from "@apollo/client";
+import type { Query, QueryKey } from "@tanstack/react-query";
+import { notifyManager, QueryCache } from "@tanstack/react-query";
 
 import {
   evictQueryFromApolloCache,
   isGraphQLQueryKey,
   readQueryFromApolloCache,
   writeQueryToApolloCache,
-} from './apollo-helpers';
+} from "./apollo-helpers";
 
 /**
  * GraphQueryCache integrates React Query with Apollo Cache for GraphQL queries.
@@ -29,7 +29,7 @@ export class GraphQueryCache extends QueryCache {
     // Set up notification listener for query updates
     this.subscribe(
       notifyManager.batchCalls((event) => {
-        if (event?.type === 'updated' && event.query) {
+        if (event?.type === "updated" && event.query) {
           this.handleQueryUpdate(event.query);
         }
       }),
@@ -37,15 +37,31 @@ export class GraphQueryCache extends QueryCache {
   }
 
   /**
+   * Infinite queries store `InfiniteData` (`{ pages, pageParams }`) rather than a
+   * raw GraphQL result, so their state never matches the document shape that
+   * Apollo's normalized cache is keyed on — writing throws "Missing field" and
+   * reading returns null. Skip them entirely; they are served from React Query.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private isInfiniteQuery(query: Query<any, any, any, any>): boolean {
+    const options = query.options as { getNextPageParam?: unknown };
+    if (typeof options?.getNextPageParam === "function") {
+      return true;
+    }
+    const data = query.state.data as { pages?: unknown; pageParams?: unknown } | undefined;
+    return Array.isArray(data?.pages) && Array.isArray(data?.pageParams);
+  }
+
+  /**
    * Handles query updates and syncs to Apollo Cache
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private handleQueryUpdate(query: Query<any, any, any, any>): void {
-    if (!isGraphQLQueryKey(query.queryKey)) {
+    if (!isGraphQLQueryKey(query.queryKey) || this.isInfiniteQuery(query)) {
       return;
     }
 
-    if (query.state.status === 'success' && query.state.data !== undefined) {
+    if (query.state.status === "success" && query.state.data !== undefined) {
       const [, queryString, variables] = query.queryKey;
       writeQueryToApolloCache(
         this.apolloCache,
@@ -97,12 +113,13 @@ export class GraphQueryCache extends QueryCache {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private hydrateQueryFromApollo(query: Query<any, any, any, any>): void {
-    if (!isGraphQLQueryKey(query.queryKey)) {
+    if (!isGraphQLQueryKey(query.queryKey) || this.isInfiniteQuery(query)) {
       return;
     }
 
-    // Only hydrate if query doesn't have fresh data
-    if (query.state.status === 'success' && query.state.dataUpdatedAt) {
+    // Only hydrate if query doesn't have fresh data. `dataUpdatedAt` is epoch
+    // milliseconds (React Query uses `Date.now()`), so compare against `Date.now()`.
+    if (query.state.status === "success" && query.state.dataUpdatedAt) {
       const timeSinceUpdate = Date.now() - query.state.dataUpdatedAt;
       if (timeSinceUpdate < 1000) {
         // Data is fresh (less than 1 second old), don't hydrate
@@ -131,8 +148,8 @@ export class GraphQueryCache extends QueryCache {
         fetchFailureCount: 0,
         fetchFailureReason: null,
         fetchMeta: null,
-        fetchStatus: 'idle',
-        status: 'success',
+        fetchStatus: "idle",
+        status: "success",
       });
     }
   }
@@ -142,9 +159,7 @@ export class GraphQueryCache extends QueryCache {
    */
   override clear(): void {
     // Get all GraphQL queries before clearing
-    const graphqlQueries = this.getAll().filter((query) =>
-      isGraphQLQueryKey(query.queryKey),
-    );
+    const graphqlQueries = this.getAll().filter((query) => isGraphQLQueryKey(query.queryKey));
 
     // Evict them from Apollo Cache
     graphqlQueries.forEach((query) => {
