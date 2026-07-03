@@ -4,7 +4,7 @@ import { useFragment as getFragment, graphql } from "@/graphql/__gen__";
 import { execute } from "@/graphql/execute";
 import { gqlQueryOptions } from "@/graphql/gqlpc";
 import { formatPrice } from "@/lib/vehicles";
-import { fetchQuery, HydrateClient } from "@/orpc/orpc.server";
+import { fetchQuery, HydrateClient, prefetch } from "@/orpc/orpc.server";
 import { cacheTag } from "next/cache";
 import { notFound } from "next/navigation";
 import { VehicleDetailClient } from "./client-page";
@@ -83,16 +83,17 @@ export async function generateStaticParams(): Promise<RouteParams[]> {
 }
 
 const getProduct = cache(async (id: string) => {
+  "use cache";
   try {
-    const data = await fetchQuery(gqlQueryOptions(CarById_Query, { input: { id } }));
-    return data?.product ?? null;
+    const data = await execute(CarById_Query, { id });
+    return data;
   } catch {
     return null;
   }
 });
 
 const getProductForSeo = (product: NonNullable<Awaited<ReturnType<typeof getProduct>>>) => {
-  return getFragment(VehicleMetadata_ProductFragment, product);
+  return getFragment(VehicleMetadata_ProductFragment, product.product)!;
 };
 
 function extractSeoFields(product: NonNullable<Awaited<ReturnType<typeof getProductForSeo>>>) {
@@ -144,7 +145,8 @@ export async function generateMetadata({
   params: Promise<RouteParams>;
 }): Promise<Metadata> {
   const { vehicleId } = await params;
-  const product = await getProduct(vehicleId);
+  const data = await getProduct(vehicleId);
+  const product = data?.product;
   if (!product) {
     return { title: "Veículo não encontrado" };
   }
@@ -232,13 +234,23 @@ function buildVehicleJsonLd(
 
 export default async function VehicleDetailPage({ params }: { params: Promise<RouteParams> }) {
   const { vehicleId } = await params;
-  const product = await getProduct(vehicleId);
+  const data = await getProduct(vehicleId);
+  const product = data?.product;
   if (!product) {
     return notFound();
   }
 
+  await fetchQuery({
+    ...gqlQueryOptions(CarById_Query, {
+      input: {
+        id: vehicleId,
+      },
+    }),
+    queryFn: () => data,
+  }); // Prefetch the product query for client-side hydration
+
   const jsonLd = product
-    ? buildVehicleJsonLd(extractSeoFields(getProductForSeo(product)), vehicleId)
+    ? buildVehicleJsonLd(extractSeoFields(getProductForSeo(data)), vehicleId)
     : null;
 
   return (
