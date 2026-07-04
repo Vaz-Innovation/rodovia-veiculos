@@ -6,6 +6,7 @@ import { gqlQueryOptions } from "@/graphql/gqlpc";
 import { formatPrice } from "@/lib/vehicles";
 import { fetchQuery, HydrateClient } from "@/orpc/orpc.server";
 import { connection } from "next/server";
+import { cacheTag } from "next/cache";
 import { notFound } from "next/navigation";
 import { VehicleDetailClient } from "./client-page";
 import { CarById_Query, VehicleMetadata_ProductFragment } from "./query";
@@ -85,6 +86,7 @@ export async function generateStaticParams(): Promise<RouteParams[]> {
 
 const getProduct = async (id: string) => {
   "use cache";
+  cacheTag("vehicle", `vehicle:${id}`);
   try {
     const data = await execute(CarById_Query, { id });
     return data;
