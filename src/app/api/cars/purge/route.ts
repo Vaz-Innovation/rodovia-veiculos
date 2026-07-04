@@ -8,17 +8,18 @@ export async function POST(req: NextRequest) {
     return Response.json({ ok: false, error: "PURGE_SECRET not set" }, { status: 500 });
   }
 
-  const raw = await req.text();
+  const rawBody = Buffer.from(await req.arrayBuffer());
 
   const wcSignature = req.headers.get("x-wc-webhook-signature");
   const plainSecret = req.headers.get("x-purge-secret") ?? req.nextUrl.searchParams.get("secret");
 
   let authorized = false;
-  if (wcSignature) {
-    const expected = createHmac("sha256", secret).update(raw, "utf8").digest("base64");
+  if (plainSecret && safeEqual(plainSecret, secret)) {
+    authorized = true;
+  }
+  if (!authorized && wcSignature) {
+    const expected = createHmac("sha256", secret).update(rawBody).digest("base64");
     authorized = safeEqual(wcSignature, expected);
-  } else if (plainSecret) {
-    authorized = safeEqual(plainSecret, secret);
   }
 
   if (!authorized) {
