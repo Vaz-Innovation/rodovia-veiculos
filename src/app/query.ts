@@ -19,6 +19,7 @@ export const CategoryPreview_Query = graphql(`
 export async function fetchCategoryPreviewImage(slug: string): Promise<string | null> {
   "use cache";
   cacheTag("vehicle", `category:${slug}`);
+
   try {
     const data = await execute(CategoryPreview_Query, { category: slug });
     return data.products?.edges?.[0]?.node?.image?.sourceUrl ?? null;
