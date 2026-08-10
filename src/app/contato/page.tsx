@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 
 const PHONE_DISPLAY = "(61) 3387-2700";
 const PHONE_TEL = "tel:+556133872700";
-const WHATSAPP_DISPLAY = "(61) 99971-9187";
-const WHATSAPP_URL = "https://wa.me/556199719187";
+const WHATSAPP_DISPLAY = "(61) 3387-2700";
+const WHATSAPP_URL = "https://wa.me/556133872700";
 const ADDRESS_LINE_1 = "Quadra 6, CL 03 — Loja 03";
 const ADDRESS_LINE_2 = "Sobradinho, Brasília — DF · CEP 73.026-510";
 const MAPS_URL =

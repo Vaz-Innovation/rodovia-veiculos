@@ -120,7 +120,7 @@ export default function DeliveryPage() {
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <a
-              href="https://wa.me/556199719187?text=Ol%C3%A1%21%20Gostaria%20de%20agendar%20um%20test-drive%20com%20delivery."
+              href="https://wa.me/556133872700?text=Ol%C3%A1%21%20Gostaria%20de%20agendar%20um%20test-drive%20com%20delivery."
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 border border-foreground/30 text-foreground px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-foreground hover:text-background transition-colors"
@@ -129,7 +129,7 @@ export default function DeliveryPage() {
             </a>
           </div>
           <p className="mt-6 text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
-            Atendimento no Distrito Federal · (61) 99971-9187
+            Atendimento no Distrito Federal · (61) 3387-2700
           </p>
         </div>
       </section>
