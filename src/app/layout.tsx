@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 
 import "../styles.css";
 import { Providers } from "./providers";
+import { ADDRESS, BUSINESS_NAME, PHONE, SOCIAL } from "@/lib/contact";
 
-const siteDescription =
-  "Tradição e qualidade há 26 anos. Carros semi-novos em Sobradinho, Brasília — DF.";
+const siteDescription = `Tradição e qualidade há 26 anos. Carros semi-novos em ${ADDRESS.short}.`;
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://rodoviaveiculos.com.br";
 
@@ -13,47 +13,47 @@ const fallbackImage = {
   width: 1152,
   height: 648,
   type: "image/jpeg",
-  alt: "Rodovia Veículos — carros semi-novos em Brasília",
+  alt: `${BUSINESS_NAME} — carros semi-novos em ${ADDRESS.city}`,
 } as const;
 
 const autoDealerJsonLd = {
   "@context": "https://schema.org",
   "@type": "AutoDealer",
   "@id": `${siteUrl}/#dealer`,
-  name: "Rodovia Veículos",
+  name: BUSINESS_NAME,
   description: siteDescription,
   url: siteUrl,
   image: `${siteUrl}${fallbackImage.url}`,
-  telephone: "+556133872700",
+  telephone: PHONE.e164,
   address: {
     "@type": "PostalAddress",
-    addressLocality: "Sobradinho",
-    addressRegion: "DF",
-    addressCountry: "BR",
+    addressLocality: ADDRESS.locality,
+    addressRegion: ADDRESS.state,
+    addressCountry: ADDRESS.country,
   },
-  areaServed: { "@type": "City", name: "Brasília" },
+  areaServed: { "@type": "City", name: ADDRESS.city },
 };
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Rodovia Veículos",
-    template: "%s | Rodovia Veículos",
+    default: BUSINESS_NAME,
+    template: `%s | ${BUSINESS_NAME}`,
   },
   description: siteDescription,
   keywords: [
     "carros semi-novos",
-    "Sobradinho",
-    "Brasília",
-    "DF",
-    "Rodovia Veículos",
+    ADDRESS.locality,
+    ADDRESS.city,
+    ADDRESS.state,
+    BUSINESS_NAME,
     "concessionária",
     "veículos usados",
   ],
-  applicationName: "Rodovia Veículos",
+  applicationName: BUSINESS_NAME,
   openGraph: {
-    siteName: "Rodovia Veículos",
-    title: "Rodovia Veículos",
+    siteName: BUSINESS_NAME,
+    title: BUSINESS_NAME,
     description: siteDescription,
     locale: "pt_BR",
     type: "website",
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Rodovia Veículos",
+    title: BUSINESS_NAME,
     description: siteDescription,
     images: [fallbackImage.url],
   },

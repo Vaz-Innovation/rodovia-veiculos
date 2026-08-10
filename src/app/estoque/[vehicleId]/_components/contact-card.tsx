@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { MessageCircle, Phone } from "lucide-react";
 import type { Vehicle } from "@/lib/vehicles";
+import { PHONE, whatsappUrl } from "@/lib/contact";
 
 export function ContactCard({ vehicle }: { vehicle: Vehicle }) {
   const [name, setName] = useState("");
@@ -19,10 +20,10 @@ export function ContactCard({ vehicle }: { vehicle: Vehicle }) {
 
   const submit = (e: FormEvent) => {
     e.preventDefault();
-    const text = encodeURIComponent(
+    const url = whatsappUrl(
       `${fixedMessage}${complement ? "\n" + complement : ""}\n\nNome: ${name}${phone ? `\nTelefone: ${phone}` : ""}`,
     );
-    window.open(`https://wa.me/556133872700?text=${text}`, "_blank", "noopener");
+    window.open(url, "_blank", "noopener");
   };
 
   return (
@@ -67,10 +68,10 @@ export function ContactCard({ vehicle }: { vehicle: Vehicle }) {
         </button>
       </form>
       <a
-        href="tel:+556133872700"
+        href={PHONE.tel}
         className="mt-3 w-full inline-flex items-center justify-center gap-2 border border-border text-foreground px-5 py-3 text-sm font-medium hover:bg-card"
       >
-        <Phone className="h-4 w-4" /> (61) 3387-2700
+        <Phone className="h-4 w-4" /> {PHONE.display}
       </a>
     </div>
   );

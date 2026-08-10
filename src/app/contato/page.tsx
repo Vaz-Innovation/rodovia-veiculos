@@ -3,23 +3,22 @@ import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { HeroVideoBackground } from "@/components/hero-video-background";
+import {
+  ADDRESS,
+  BUSINESS_NAME,
+  MAPS_URL,
+  OPENING_HOURS,
+  PHONE,
+  SOCIAL,
+  WHATSAPP,
+} from "@/lib/contact";
 
-const description =
-  "Fale com a Rodovia Veículos. WhatsApp, telefone, endereço em Sobradinho — Brasília e horário de atendimento.";
+const description = `Fale com a ${BUSINESS_NAME}. WhatsApp, telefone, endereço em ${ADDRESS.short} e horário de atendimento.`;
 
 export const metadata: Metadata = {
   title: "Contato",
   description,
 };
-
-const PHONE_DISPLAY = "(61) 3387-2700";
-const PHONE_TEL = "tel:+556133872700";
-const WHATSAPP_DISPLAY = "(61) 3387-2700";
-const WHATSAPP_URL = "https://wa.me/556133872700";
-const ADDRESS_LINE_1 = "Quadra 6, CL 03 — Loja 03";
-const ADDRESS_LINE_2 = "Sobradinho, Brasília — DF · CEP 73.026-510";
-const MAPS_URL =
-  "https://www.google.com/maps/place/Rodovia+Ve%C3%ADculos/@-15.6521107,-47.8025031,17z/data=!3m1!4b1!4m6!3m5!1s0x935a3f81c27911c1:0x5db2f04c15726fcf!8m2!3d-15.6521107!4d-47.8025031!16s%2Fg%2F11b6r_wt_1?entry=ttu";
 
 import { Phone, MapPin, Clock, Globe, Instagram, Facebook, ArrowUpRight } from "lucide-react";
 
@@ -88,7 +87,7 @@ export default function ContatoPage() {
       <section className="py-24 mx-auto max-w-[1600px] px-6 lg:px-10 grid lg:grid-cols-2 gap-8">
         <div className="flex flex-col gap-6">
           <a
-            href={WHATSAPP_URL}
+            href={WHATSAPP.url}
             target="_blank"
             rel="noopener noreferrer"
             className="group border border-border bg-card/40 p-8 flex gap-5 hover:border-foreground/40 transition-colors"
@@ -100,7 +99,7 @@ export default function ContatoPage() {
               <h3 className="text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-3">
                 WhatsApp
               </h3>
-              <p className="text-base text-foreground">{WHATSAPP_DISPLAY}</p>
+              <p className="text-base text-foreground">{WHATSAPP.display}</p>
               <span className="mt-3 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-foreground/80 group-hover:text-foreground transition-colors">
                 Iniciar conversa
                 <ArrowUpRight className="h-3.5 w-3.5" />
@@ -109,7 +108,7 @@ export default function ContatoPage() {
           </a>
 
           <a
-            href={PHONE_TEL}
+            href={PHONE.tel}
             className="group border border-border bg-card/40 p-8 flex gap-5 hover:border-foreground/40 transition-colors"
           >
             <div className="flex h-10 w-10 shrink-0 items-center justify-center border border-border">
@@ -119,7 +118,7 @@ export default function ContatoPage() {
               <h3 className="text-[10px] uppercase tracking-[0.3em] text-foreground/60 mb-3">
                 Telefone
               </h3>
-              <p className="text-base text-foreground">{PHONE_DISPLAY}</p>
+              <p className="text-base text-foreground">{PHONE.display}</p>
               <span className="mt-3 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-foreground/80 group-hover:text-foreground transition-colors">
                 Ligar agora
                 <ArrowUpRight className="h-3.5 w-3.5" />
@@ -141,9 +140,9 @@ export default function ContatoPage() {
                 Endereço
               </h3>
               <p className="text-base text-foreground leading-relaxed">
-                {ADDRESS_LINE_1}
+                {ADDRESS.line1}
                 <br />
-                <span className="text-muted-foreground">{ADDRESS_LINE_2}</span>
+                <span className="text-muted-foreground">{ADDRESS.line2}</span>
               </p>
               <span className="mt-3 inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] text-foreground/80 group-hover:text-foreground transition-colors">
                 Como chegar
@@ -163,18 +162,12 @@ export default function ContatoPage() {
                 Horário de atendimento
               </h3>
               <ul className="text-base text-foreground space-y-1.5">
-                <li className="flex justify-between gap-6">
-                  <span className="text-muted-foreground">Seg — Sex</span>
-                  <span>08h — 19h</span>
-                </li>
-                <li className="flex justify-between gap-6">
-                  <span className="text-muted-foreground">Sábado</span>
-                  <span>08h — 16h</span>
-                </li>
-                <li className="flex justify-between gap-6">
-                  <span className="text-muted-foreground">Domingo</span>
-                  <span>Fechado</span>
-                </li>
+                {OPENING_HOURS.map((entry) => (
+                  <li key={entry.label} className="flex justify-between gap-6">
+                    <span className="text-muted-foreground">{entry.label}</span>
+                    <span>{entry.value}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -189,23 +182,23 @@ export default function ContatoPage() {
               </h3>
               <div className="flex flex-col gap-3">
                 <a
-                  href="https://instagram.com/rodovia.veiculos/"
+                  href={SOCIAL.instagram.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 text-sm text-foreground hover:text-foreground/70 transition-colors"
                 >
                   <Instagram className="h-4 w-4" />
-                  @rodovia.veiculos
+                  {SOCIAL.instagram.handle}
                   <ArrowUpRight className="h-3.5 w-3.5 ml-auto" />
                 </a>
                 <a
-                  href="https://www.facebook.com/rodoviaveiculosltda/"
+                  href={SOCIAL.facebook.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-3 text-sm text-foreground hover:text-foreground/70 transition-colors"
                 >
                   <Facebook className="h-4 w-4" />
-                  Rodovia Veículos
+                  {SOCIAL.facebook.handle}
                   <ArrowUpRight className="h-3.5 w-3.5 ml-auto" />
                 </a>
               </div>
@@ -213,7 +206,7 @@ export default function ContatoPage() {
           </div>
 
           <a
-            href={WHATSAPP_URL}
+            href={WHATSAPP.url}
             target="_blank"
             rel="noopener noreferrer"
             className="group inline-flex items-center justify-center gap-3 bg-primary text-primary-foreground px-8 py-5 text-xs uppercase tracking-[0.25em] hover:bg-primary/90 transition-colors"

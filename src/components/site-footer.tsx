@@ -2,10 +2,9 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BrandLogo } from "@/components/brand-logo";
+import { BUSINESS_NAME, PHONE, whatsappUrl } from "@/lib/contact";
 
-const WHATSAPP_URL = `https://wa.me/556133872700?text=${encodeURIComponent(
-  "Oi, gostaria de mais informações sobre a Rodovia Veículos.",
-)}`;
+const WHATSAPP_URL = whatsappUrl(`Oi, gostaria de mais informações sobre a ${BUSINESS_NAME}.`);
 
 export function SiteFooter() {
   // Resolve the copyright year on the client after mount. Reading `new Date()`
@@ -69,10 +68,10 @@ export function SiteFooter() {
               rel="noopener noreferrer"
               className="text-sm text-foreground hover:text-muted-foreground transition-colors"
             >
-              (61) 3387-2700
+              {PHONE.display}
             </a>
             <div className="mt-4 flex flex-col gap-3 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
-              <a href="tel:+556133872700" className="hover:text-foreground transition-colors">
+              <a href={PHONE.tel} className="hover:text-foreground transition-colors">
                 Ligar
               </a>
               <a
@@ -89,7 +88,9 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-border">
         <div className="mx-auto max-w-[1600px] px-6 lg:px-10 py-6 flex flex-col md:flex-row justify-between gap-4 text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-          <p>© {year} Rodovia Veículos. Todos os direitos reservados.</p>
+          <p>
+            © {year} {BUSINESS_NAME}. Todos os direitos reservados.
+          </p>
           <div className="flex gap-6">
             <Link href="/privacidade" className="hover:text-foreground">
               Privacidade

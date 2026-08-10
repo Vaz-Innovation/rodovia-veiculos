@@ -4,6 +4,7 @@ import { useFragment as getFragment, graphql } from "@/graphql/__gen__";
 import { execute } from "@/graphql/execute";
 import { gqlQueryOptions } from "@/graphql/gqlpc";
 import { formatPrice } from "@/lib/vehicles";
+import { ADDRESS, BUSINESS_NAME } from "@/lib/contact";
 import { fetchQuery, HydrateClient } from "@/orpc/orpc.server";
 import { connection } from "next/server";
 import { cacheTag } from "next/cache";
@@ -119,9 +120,7 @@ function extractSeoFields(product: NonNullable<Awaited<ReturnType<typeof getProd
   const shortDesc = stripHtml(product.shortDescription);
   const description =
     shortDesc ||
-    [priceStr, mileageStr, "Rodovia Veículos — Sobradinho, Brasília — DF"]
-      .filter(Boolean)
-      .join(" · ");
+    [priceStr, mileageStr, `${BUSINESS_NAME} — ${ADDRESS.short}`].filter(Boolean).join(" · ");
   const image = product.image?.sourceUrl ?? null;
 
   return {
