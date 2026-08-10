@@ -55,6 +55,32 @@ export function SiteFooter() {
               </Link>
             </li>
           </ul>
+          <div className="mt-8 pt-6 border-t border-border space-y-5">
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-foreground/50 mb-2">
+                Telefone
+              </p>
+              <a
+                href="tel:+556133872700"
+                className="text-sm text-foreground hover:text-muted-foreground transition-colors"
+              >
+                (61) 3387-2700
+              </a>
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-[0.3em] text-foreground/50 mb-2">
+                WhatsApp
+              </p>
+              <a
+                href="https://wa.me/556199719187"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-foreground hover:text-muted-foreground transition-colors"
+              >
+                (61) 99971-9187
+              </a>
+            </div>
+          </div>
         </div>
       </div>
       <div className="border-t border-border">
