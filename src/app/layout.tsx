@@ -24,7 +24,7 @@ const autoDealerJsonLd = {
   description: siteDescription,
   url: siteUrl,
   image: `${siteUrl}${fallbackImage.url}`,
-  telephone: "+5561999719187",
+  telephone: "+556133872700",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Sobradinho",

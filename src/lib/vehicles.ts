@@ -46,7 +46,7 @@ export function whatsappLink(v: Pick<Vehicle, "brand" | "model" | "year_model">)
   const text = encodeURIComponent(
     `Olá! Tenho interesse no ${v.brand} ${v.model} ${v.year_model} anunciado no site da Rodovia Veículos.`,
   );
-  return `https://wa.me/556199719187?text=${text}`;
+  return `https://wa.me/556133872700?text=${text}`;
 }
 
 export const TRANSMISSION_OPTIONS: Record<string, string> = {

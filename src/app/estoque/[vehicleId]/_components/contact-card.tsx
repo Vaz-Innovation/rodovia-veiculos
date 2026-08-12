@@ -22,7 +22,7 @@ export function ContactCard({ vehicle }: { vehicle: Vehicle }) {
     const text = encodeURIComponent(
       `${fixedMessage}${complement ? "\n" + complement : ""}\n\nNome: ${name}${phone ? `\nTelefone: ${phone}` : ""}`,
     );
-    window.open(`https://wa.me/556199719187?text=${text}`, "_blank", "noopener");
+    window.open(`https://wa.me/556133872700?text=${text}`, "_blank", "noopener");
   };
 
   return (
@@ -67,10 +67,10 @@ export function ContactCard({ vehicle }: { vehicle: Vehicle }) {
         </button>
       </form>
       <a
-        href="tel:+556199719187"
+        href="tel:+556133872700"
         className="mt-3 w-full inline-flex items-center justify-center gap-2 border border-border text-foreground px-5 py-3 text-sm font-medium hover:bg-card"
       >
-        <Phone className="h-4 w-4" /> (61) 99971-9187
+        <Phone className="h-4 w-4" /> (61) 3387-2700
       </a>
     </div>
   );

@@ -3,6 +3,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { BrandLogo } from "@/components/brand-logo";
 
+const WHATSAPP_URL = `https://wa.me/556133872700?text=${encodeURIComponent(
+  "Oi, gostaria de mais informações sobre a Rodovia Veículos.",
+)}`;
+
 export function SiteFooter() {
   // Resolve the copyright year on the client after mount. Reading `new Date()`
   // during render is disallowed under Cache Components (it would freeze into the
@@ -55,6 +59,32 @@ export function SiteFooter() {
               </Link>
             </li>
           </ul>
+          <div className="mt-8 pt-6 border-t border-border">
+            <p className="text-[10px] uppercase tracking-[0.3em] text-foreground/50 mb-2">
+              Telefone e WhatsApp
+            </p>
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-foreground hover:text-muted-foreground transition-colors"
+            >
+              (61) 3387-2700
+            </a>
+            <div className="mt-4 flex flex-col gap-3 text-[11px] uppercase tracking-[0.25em] text-muted-foreground">
+              <a href="tel:+556133872700" className="hover:text-foreground transition-colors">
+                Ligar
+              </a>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground transition-colors"
+              >
+                Falar no WhatsApp
+              </a>
+            </div>
+          </div>
         </div>
       </div>
       <div className="border-t border-border">

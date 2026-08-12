@@ -69,11 +69,11 @@ export default function LocalizacaoPage() {
               <ul className="text-base text-foreground space-y-1.5">
                 <li className="flex justify-between gap-6">
                   <span className="text-muted-foreground">Seg — Sex</span>
-                  <span>08h — 18h</span>
+                  <span>08h — 19h</span>
                 </li>
                 <li className="flex justify-between gap-6">
                   <span className="text-muted-foreground">Sábado</span>
-                  <span>09h — 14h</span>
+                  <span>08h — 16h</span>
                 </li>
                 <li className="flex justify-between gap-6">
                   <span className="text-muted-foreground">Domingo</span>
