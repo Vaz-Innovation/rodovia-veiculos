@@ -70,6 +70,10 @@ export function VirtualizedVehicleList({
 
   const virtualItems = virtualizer.getVirtualItems();
 
+  useEffect(() => {
+    virtualizer.measure();
+  }, [columns, virtualizer]);
+
   // Infinite scroll trigger
   useEffect(() => {
     const lastItem = virtualItems[virtualItems.length - 1];
@@ -94,24 +98,6 @@ export function VirtualizedVehicleList({
     return null;
   }
 
-  if (columns === 1) {
-    return (
-      <div className="flex flex-col gap-6">
-        {vehicles.map((vehicle) => (
-          <VehicleCard key={vehicle.id} vehicle={vehicle} />
-        ))}
-        {isFetchingNextPage && (
-          <div className="flex items-center justify-center py-8">
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Loader2 className="h-5 w-5 animate-spin" />
-              <span className="text-sm">Carregando mais veículos...</span>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
-
   return (
     <div ref={parentRef} className="h-[calc(100vh-280px)] overflow-y-auto overflow-x-hidden">
       <div
@@ -128,12 +114,13 @@ export function VirtualizedVehicleList({
           return (
             <div
               key={virtualRow.key}
+              data-index={virtualRow.index}
+              ref={virtualizer.measureElement}
               style={{
                 position: "absolute",
                 top: 0,
                 left: 0,
                 width: "100%",
-                height: `${virtualRow.size}px`,
                 transform: `translateY(${virtualRow.start}px)`,
               }}
             >
@@ -147,7 +134,7 @@ export function VirtualizedVehicleList({
                   )}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6 h-full">
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-6">
                   {row?.map((vehicle) => (
                     <VehicleCard key={vehicle.id} vehicle={vehicle} />
                   ))}
