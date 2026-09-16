@@ -4,20 +4,14 @@ import { MapPin, Phone, Clock, ArrowUpRight } from "lucide-react";
 
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
+import { ADDRESS, BUSINESS_NAME, MAPS_EMBED_URL, MAPS_URL, OPENING_HOURS } from "@/lib/contact";
 
-const description =
-  "Visite a Rodovia Veículos. Veja nosso endereço, horário de atendimento e como chegar.";
+const description = `Visite a ${BUSINESS_NAME}. Veja nosso endereço, horário de atendimento e como chegar.`;
 
 export const metadata: Metadata = {
   title: "Localização",
   description,
 };
-
-const MAPS_URL =
-  "https://www.google.com/maps/place/Rodovia+Ve%C3%ADculos/@-15.6521107,-47.8025031,17z/data=!3m1!4b1!4m6!3m5!1s0x935a3f81c27911c1:0x5db2f04c15726fcf!8m2!3d-15.6521107!4d-47.8025031!16s%2Fg%2F11b6r_wt_1?entry=ttu";
-
-const MAPS_EMBED =
-  "https://www.google.com/maps?q=-15.6521107,-47.8025031&hl=pt-BR&z=17&output=embed";
 
 export default function LocalizacaoPage() {
   return (
@@ -42,9 +36,11 @@ export default function LocalizacaoPage() {
                 Endereço
               </h3>
               <p className="text-base text-foreground leading-relaxed">
-                Rodovia Veículos
+                {BUSINESS_NAME}
                 <br />
-                <span className="text-muted-foreground">Brasília — DF</span>
+                <span className="text-muted-foreground">
+                  {ADDRESS.city} — {ADDRESS.state}
+                </span>
               </p>
               <a
                 href={MAPS_URL}
@@ -67,18 +63,12 @@ export default function LocalizacaoPage() {
                 Horário
               </h3>
               <ul className="text-base text-foreground space-y-1.5">
-                <li className="flex justify-between gap-6">
-                  <span className="text-muted-foreground">Seg — Sex</span>
-                  <span>08h — 19h</span>
-                </li>
-                <li className="flex justify-between gap-6">
-                  <span className="text-muted-foreground">Sábado</span>
-                  <span>08h — 16h</span>
-                </li>
-                <li className="flex justify-between gap-6">
-                  <span className="text-muted-foreground">Domingo</span>
-                  <span>Fechado</span>
-                </li>
+                {OPENING_HOURS.map((entry) => (
+                  <li key={entry.label} className="flex justify-between gap-6">
+                    <span className="text-muted-foreground">{entry.label}</span>
+                    <span>{entry.value}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -111,8 +101,8 @@ export default function LocalizacaoPage() {
 
         <div className="overflow-hidden border border-border bg-card min-h-[500px] lg:min-h-0">
           <iframe
-            title="Mapa da Rodovia Veículos"
-            src={MAPS_EMBED}
+            title={`Mapa da ${BUSINESS_NAME}`}
+            src={MAPS_EMBED_URL}
             className="h-full w-full"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"

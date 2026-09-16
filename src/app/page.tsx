@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { HeroCinematic } from "@/components/hero-cinematic";
+import { whatsappUrl } from "@/lib/contact";
 import { fetchCategoryPreviewImage } from "./query";
 
 import model1 from "@/assets/car-hatch.jpg";
@@ -155,7 +156,7 @@ export default async function HomePage() {
               Nossa equipe analisa seu veículo para fazer a melhor proposta do mercado.
             </p>
             <a
-              href="https://wa.me/556133872700?text=Ol%C3%A1%21%20Gostaria%20de%20solicitar%20a%20avalia%C3%A7%C3%A3o%20do%20meu%20ve%C3%ADculo."
+              href={whatsappUrl("Olá! Gostaria de solicitar a avaliação do meu veículo.")}
               target="_blank"
               rel="noopener noreferrer"
               className="group mt-10 inline-flex items-center gap-3 bg-primary text-primary-foreground px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-primary/90 transition-colors"

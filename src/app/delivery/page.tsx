@@ -6,6 +6,7 @@ import { ArrowRight, Car, MapPin, CalendarCheck, ShieldCheck } from "lucide-reac
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import heroCar from "@/assets/hero-rodovia.webp";
+import { PHONE, whatsappUrl } from "@/lib/contact";
 
 const description =
   "Levamos o veículo até você para um test-drive sem custo e sem compromisso. Escolha o modelo no estoque e agende pelo WhatsApp.";
@@ -120,7 +121,7 @@ export default function DeliveryPage() {
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <a
-              href="https://wa.me/556133872700?text=Ol%C3%A1%21%20Gostaria%20de%20agendar%20um%20test-drive%20com%20delivery."
+              href={whatsappUrl("Olá! Gostaria de agendar um test-drive com delivery.")}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 border border-foreground/30 text-foreground px-8 py-4 text-xs uppercase tracking-[0.25em] hover:bg-foreground hover:text-background transition-colors"
@@ -129,7 +130,7 @@ export default function DeliveryPage() {
             </a>
           </div>
           <p className="mt-6 text-[11px] uppercase tracking-[0.3em] text-muted-foreground">
-            Atendimento no Distrito Federal · (61) 3387-2700
+            Atendimento no Distrito Federal · {PHONE.display}
           </p>
         </div>
       </section>

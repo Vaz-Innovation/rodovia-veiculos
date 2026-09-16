@@ -1,3 +1,5 @@
+import { BUSINESS_NAME, whatsappUrl } from "@/lib/contact";
+
 export interface Vehicle {
   id: string;
   brand: string;
@@ -43,10 +45,9 @@ export function vehicleTitle(v: Pick<Vehicle, "brand" | "model" | "version">): s
 }
 
 export function whatsappLink(v: Pick<Vehicle, "brand" | "model" | "year_model">) {
-  const text = encodeURIComponent(
-    `Olá! Tenho interesse no ${v.brand} ${v.model} ${v.year_model} anunciado no site da Rodovia Veículos.`,
+  return whatsappUrl(
+    `Olá! Tenho interesse no ${v.brand} ${v.model} ${v.year_model} anunciado no site da ${BUSINESS_NAME}.`,
   );
-  return `https://wa.me/556133872700?text=${text}`;
 }
 
 export const TRANSMISSION_OPTIONS: Record<string, string> = {
