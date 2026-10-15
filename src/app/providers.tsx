@@ -2,17 +2,17 @@
 
 import type { ReactNode } from "react";
 
-import { ORPCReactProvider } from "@/orpc/query-client";
+import { QueryProvider } from "@/lib/query-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { NuqsAdapter } from "nuqs/adapters/next";
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <NuqsAdapter>
-      <ORPCReactProvider>
+      <QueryProvider>
         {children}
         <Toaster />
-      </ORPCReactProvider>
+      </QueryProvider>
     </NuqsAdapter>
   );
 }

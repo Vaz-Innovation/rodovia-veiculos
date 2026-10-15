@@ -35,3 +35,4 @@ dist-ssr
 __gen__
 docker/wordpress/data
 src/graphql/__gen__
+.vercel

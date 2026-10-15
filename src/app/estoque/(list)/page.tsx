@@ -1,20 +1,12 @@
 import type { Metadata } from "next";
-import { cacheTag } from "next/cache";
+import { HydrationBoundary } from "@tanstack/react-query";
+import { connection } from "next/server";
 import { createLoader, type SearchParams } from "nuqs/server";
 
-import { execute } from "@/graphql/execute";
-import { fetchInfiniteQuery, HydrateClient } from "@/orpc/orpc.server";
+import { tryCatch } from "@/lib/try-catch";
 import { ProductsClient } from "./products-client";
-import {
-  buildProductsWhere,
-  CarsListPaginated_Query,
-  carsListSearchParams,
-  getCarsListInfiniteQueryOptions,
-  PAGE_SIZE,
-  productCacheTags,
-  type CarsListParams,
-} from "./query";
-import { Suspense } from "react";
+import { carsListSearchParams } from "./_helpers/query";
+import { getCarsFirstPage } from "./_loaders/get-cars-first-page";
 
 const description =
   "Confira nosso estoque de carros semi-novos. Filtre por marca, modelo, preço, ano e mais.";
@@ -61,37 +53,28 @@ export const metadata: Metadata = {
   },
 };
 
-/**
- * Cached fetch of the first ProductsPaginated page for the current filter set.
- * `use cache` keys the result on `params`, and `cacheTag` attaches the constant
- * `vehicle` tag plus the active filter values so cached SSR renders can be
- * revalidated broadly (`revalidateTag("vehicle")`) or per filter
- * (`revalidateTag(brandSlug)`). The raw page is returned and seeded outside the
- * cache boundary so hydration is correct on both cache hits and misses.
- */
-const loadCarsFirstPage = async (params: CarsListParams) => {
-  "use cache";
-  cacheTag(...productCacheTags(params));
-  const where = buildProductsWhere(params);
-  return execute(CarsListPaginated_Query, { first: PAGE_SIZE, after: undefined, where });
-};
-
 export default async function Page({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const params = await createLoader(carsListSearchParams)(searchParams);
+  // Seeding React Query reads `Date.now()`: request time only (the listing depends
+  // on `searchParams` anyway; the data itself comes from the Data Cache).
+  await connection();
 
-  const firstPage = await loadCarsFirstPage(params);
-  // Seed the infinite query with the cached first page so the client hydrates
+  // The cached first page, dehydrated, seeds the client query so it hydrates
   // instead of refetching. Subsequent pages are fetched client-side as usual.
-  const options = getCarsListInfiniteQueryOptions(params);
-  await fetchInfiniteQuery({ ...options, queryFn: async () => firstPage });
+  const [dehydratedState, error] = await tryCatch(getCarsFirstPage(params));
+  if (error) {
+    // WordPress down or a malformed response: render without the seed and let the
+    // client query fetch the list itself instead of failing the whole page.
+    console.error("[estoque] failed to load the first page", error);
+  }
 
   return (
-    <HydrateClient>
+    <HydrationBoundary state={dehydratedState}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}
       />
       <ProductsClient />
-    </HydrateClient>
+    </HydrationBoundary>
   );
 }

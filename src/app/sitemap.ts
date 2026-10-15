@@ -1,12 +1,12 @@
-import { graphql } from "@/graphql/__gen__";
-import { execute } from "@/graphql/execute";
+import { tryCatch } from "@/lib/try-catch";
 import type { MetadataRoute } from "next";
+import { cacheLife } from "next/cache";
+
+import { getSitemapProducts } from "./_loaders/get-sitemap-products";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://rodoviaveiculos.com.br";
 
-export const revalidate = 3600;
-
-const staticRoutes: MetadataRoute.Sitemap = [
+const staticRoutes = (): MetadataRoute.Sitemap => [
   {
     url: siteUrl,
     lastModified: new Date(),
@@ -51,69 +51,35 @@ const staticRoutes: MetadataRoute.Sitemap = [
   },
 ];
 
-type ProductsResult = {
-  products?: {
-    pageInfo?: { hasNextPage: boolean; endCursor?: string | null };
-    edges?: Array<{ node: { databaseId: number; date?: string | null } }>;
-  };
-};
-const query = graphql(`
-  query SitemapProducts($first: Int!, $after: String) {
-    products(first: $first, after: $after) {
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-      edges {
-        node {
-          databaseId
-          date
-        }
-      }
-    }
+/**
+ * Cached for an hour and purged with the rest of the inventory (the queries carry
+ * the `vehicle` tag, which propagates to this entry). `new Date()` is only allowed
+ * here because it runs inside the `use cache` scope, so the timestamp is frozen
+ * with the cached entry.
+ */
+async function buildSitemap(): Promise<MetadataRoute.Sitemap> {
+  "use cache";
+
+  const [result, error] = await tryCatch(getSitemapProducts());
+  const failure = error ?? result.error;
+  if (failure) {
+    console.error("[sitemap] failed to load all vehicles", failure);
   }
-`);
-async function fetchAllProductIds(): Promise<Array<{ id: number; date: string | null }>> {
-  const ids: Array<{ id: number; date: string | null }> = [];
-  let cursor: string | null = null;
+  // A complete sitemap is cached for an hour. A degraded one (static routes only,
+  // or the vehicles collected before a page failed) is retried within minutes, so
+  // the next build of this entry fills in what was missing.
+  cacheLife(failure ? "minutes" : "hours");
 
-  // Page through all products (max 10 iterations = 1000 vehicles)
-  for (let i = 0; i < 10; i++) {
-    const variables: {
-      first: number;
-      after?: string | null;
-    } = { first: 100 };
-    if (cursor) variables.after = cursor;
+  const vehicleEntries: MetadataRoute.Sitemap = (result?.products ?? []).map(({ id, date }) => ({
+    url: `${siteUrl}/estoque/${id}`,
+    lastModified: date ? new Date(date) : new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
 
-    const data = await execute(query, variables);
-    const edges = data?.products?.edges ?? [];
-
-    for (const edge of edges) {
-      ids.push({ id: edge.node.databaseId, date: edge.node.date ?? null });
-    }
-
-    const pageInfo = data?.products?.pageInfo;
-    if (!pageInfo?.hasNextPage || !pageInfo.endCursor) break;
-    cursor = pageInfo.endCursor;
-  }
-
-  return ids;
+  return [...staticRoutes(), ...vehicleEntries];
 }
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  let vehicleEntries: MetadataRoute.Sitemap = [];
-
-  try {
-    const products = await fetchAllProductIds();
-    vehicleEntries = products.map(({ id, date }) => ({
-      url: `${siteUrl}/estoque/${id}`,
-      lastModified: date ? new Date(date) : new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    }));
-  } catch {
-    // Sitemap degrades gracefully if WordPress is unreachable at build time
-  }
-
-  return [...staticRoutes, ...vehicleEntries];
+export default function sitemap(): Promise<MetadataRoute.Sitemap> {
+  return buildSitemap();
 }

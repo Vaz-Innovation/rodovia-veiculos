@@ -142,3 +142,89 @@
     color: var(--color-foreground);
   }
 }
+
+/* Typography for HTML coming from WordPress (legal pages). */
+@layer components {
+  .legal-content {
+    @apply text-base leading-relaxed text-foreground/80;
+    overflow-wrap: anywhere;
+  }
+
+  .legal-content > :first-child {
+    @apply mt-0;
+  }
+
+  .legal-content :is(h1, h2, h3, h4, h5, h6) {
+    @apply font-light tracking-tight text-foreground;
+  }
+
+  .legal-content h1,
+  .legal-content h2 {
+    @apply mt-14 mb-5 border-t border-border pt-8 text-2xl md:text-3xl;
+  }
+
+  .legal-content h3 {
+    @apply mt-10 mb-3 text-xl md:text-2xl;
+  }
+
+  .legal-content :is(h4, h5, h6) {
+    @apply mt-8 mb-2 text-sm uppercase tracking-[0.2em];
+  }
+
+  .legal-content p {
+    @apply my-5;
+  }
+
+  .legal-content :is(ul, ol) {
+    @apply my-5 space-y-2 pl-6;
+  }
+
+  .legal-content ul {
+    @apply list-disc;
+  }
+
+  .legal-content ol {
+    @apply list-decimal;
+  }
+
+  .legal-content li::marker {
+    @apply text-muted-foreground;
+  }
+
+  .legal-content :is(ul, ol) :is(ul, ol) {
+    @apply my-2;
+  }
+
+  .legal-content a {
+    @apply text-foreground underline underline-offset-4 decoration-foreground/40 transition-colors hover:decoration-foreground;
+  }
+
+  .legal-content strong {
+    @apply font-medium text-foreground;
+  }
+
+  .legal-content blockquote {
+    @apply my-8 border-l-2 border-foreground/40 pl-6 italic text-foreground/70;
+  }
+
+  .legal-content hr {
+    @apply my-12 border-border;
+  }
+
+  .legal-content img,
+  .legal-content figure {
+    @apply my-8 h-auto max-w-full;
+  }
+
+  .legal-content table {
+    @apply my-8 block w-full overflow-x-auto border-collapse text-sm;
+  }
+
+  .legal-content :is(th, td) {
+    @apply border border-border px-4 py-3 text-left align-top;
+  }
+
+  .legal-content th {
+    @apply bg-card/60 font-medium text-foreground;
+  }
+}

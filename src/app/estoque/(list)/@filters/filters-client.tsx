@@ -1,6 +1,5 @@
 "use client";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { X } from "lucide-react";
 import { useQueryStates } from "nuqs";
 
@@ -8,13 +7,14 @@ import { FilterGroup } from "@/app/estoque/_components/filter-group";
 import { NumberInput } from "@/app/estoque/_components/number-input";
 import { useVehicleFilters, type SearchParams } from "@/hooks/useVehicleFilters";
 
-import { carsListSearchParams, CLEARED_FILTERS, countActiveFilters } from "../query";
-import { getVehicleFilterOptionsQueryOptions, mapFilterOptions } from "./query";
+import { carsListSearchParams, CLEARED_FILTERS, countActiveFilters } from "../_helpers/query";
+import type { VehicleFilterOptionsQuery } from "@/graphql/__gen__/graphql";
+import { mapFilterOptions } from "./_helpers/query";
 
-export function FiltersClient() {
+/** `data` is the cached filter-options query result loaded by the slot page. */
+export function FiltersClient({ data }: { data: VehicleFilterOptionsQuery }) {
   const [options, setOptions] = useQueryStates(carsListSearchParams);
 
-  const { data } = useSuspenseQuery(getVehicleFilterOptionsQueryOptions());
   const apiOptions = mapFilterOptions(data);
 
   const {

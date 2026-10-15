@@ -10,22 +10,14 @@
     "build": "graphql-codegen -r dotenv/config --config codegen.ts && next build",
     "start": "next start",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "format": "prettier --write ."
   },
   "dependencies": {
     "@apollo/client": "^4.1.4",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@hookform/resolvers": "^5.2.2",
-    "@orpc/client": "^1.14.1",
-    "@orpc/contract": "^1.14.1",
-    "@orpc/json-schema": "^1.14.1",
-    "@orpc/nest": "^1.14.1",
-    "@orpc/openapi": "^1.14.1",
-    "@orpc/openapi-client": "^1.14.1",
-    "@orpc/server": "^1.14.1",
-    "@orpc/tanstack-query": "^1.14.1",
-    "nuqs": "^2.4.3",
-    "@orpc/zod": "^1.14.1",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.8",
@@ -65,7 +57,8 @@
     "graphql": "^16.11.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.575.0",
-    "next": "^16.2.4",
+    "next": "^16.4.1",
+    "nuqs": "^2.4.3",
     "react": "^19.2.0",
     "react-day-picker": "^9.14.0",
     "react-dom": "^19.2.0",
@@ -83,8 +76,10 @@
   "devDependencies": {
     "@eslint/js": "^9.32.0",
     "@graphql-codegen/cli": "^5.0.7",
-    "@graphql-codegen/fragment-matcher": "^7.0.1",
     "@graphql-codegen/client-preset": "^4.8.2",
+    "@graphql-codegen/fragment-matcher": "^7.0.1",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^22.16.5",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
@@ -94,8 +89,10 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
+    "jsdom": "^30.1.3",
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.56.1"
+    "typescript-eslint": "^8.56.1",
+    "vitest": "^5"
   }
 }

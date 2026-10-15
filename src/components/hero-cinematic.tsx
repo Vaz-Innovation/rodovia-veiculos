@@ -1,5 +1,11 @@
+import { getImageProps } from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+
+// `<video poster>` takes a single URL, so resolve an optimized one up front.
+const {
+  props: { src: posterSrc },
+} = getImageProps({ src: "/images/hero-fallback.jpg", alt: "", width: 1200, height: 630 });
 
 export function HeroCinematic() {
   return (
@@ -11,7 +17,7 @@ export function HeroCinematic() {
           muted
           loop
           playsInline
-          poster="/images/hero-fallback.jpg"
+          poster={posterSrc}
           className="h-full w-full object-cover"
         >
           <source src="/videos/hero-background.mp4" type="video/mp4" />

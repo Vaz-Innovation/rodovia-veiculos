@@ -14,7 +14,7 @@ import {
   CLEARED_FILTERS,
   countActiveFilters,
   getCarsListInfiniteQueryOptions,
-} from "./query";
+} from "./_helpers/query";
 
 export const Estoque_ProductsFragment = graphql(`
   fragment Estoque_ProductsFragment on Product {

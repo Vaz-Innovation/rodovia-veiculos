@@ -5,7 +5,7 @@ import { Search, SlidersHorizontal } from "lucide-react";
 import { useQueryStates } from "nuqs";
 
 import { cn } from "@/lib/utils";
-import { carsListSearchParams, countActiveFilters } from "./query";
+import { carsListSearchParams, countActiveFilters } from "./_helpers/query";
 
 /**
  * Interactive chrome shared by both parallel-route slots. It owns the mobile

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -129,11 +130,14 @@ export function HeroVideoBackground({
 
         {/* Poster/Fallback - exibido enquanto vídeo carrega ou se houver erro */}
         {posterSrc && (!isVideoLoaded || hasError) && (
-          <img
+          <Image
             src={posterSrc}
             alt=""
             aria-hidden="true"
-            className="absolute inset-0 h-full w-full object-cover"
+            fill
+            preload
+            sizes="100vw"
+            className="object-cover"
           />
         )}
 

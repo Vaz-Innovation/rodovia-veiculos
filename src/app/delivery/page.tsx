@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Car, MapPin, CalendarCheck, ShieldCheck } from "lucide-react";
 
@@ -45,12 +46,14 @@ export default function DeliveryPage() {
       <SiteHeader />
 
       <section className="relative h-[70vh] min-h-125 overflow-hidden">
-        <img
-          src={heroCar.src}
+        <Image
+          src={heroCar}
           alt="Delivery de test-drive Rodovia Veículos"
-          width={1600}
-          height={900}
-          className="absolute inset-0 h-full w-full object-cover"
+          fill
+          preload
+          sizes="100vw"
+          placeholder="blur"
+          className="object-cover"
         />
         <div className="absolute inset-0 bg-linear-to-t from-foreground/80 via-foreground/40" />
         <div className="relative z-10 mx-auto max-w-400 h-full px-6 lg:px-10 flex flex-col justify-end pb-16">

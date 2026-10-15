@@ -1,6 +1,5 @@
 "use client";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
   Check,
@@ -12,6 +11,7 @@ import {
   Star,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -26,7 +26,7 @@ import { SpecItem } from "./_components/spec-item";
 
 import { graphql, useFragment } from "@/graphql/__gen__";
 import { useVehicleMapper } from "@/hooks/useVehicleMapper";
-import { getCarByIdQueryOptions } from "./query";
+import type { CarByIdQuery } from "@/graphql/__gen__/graphql";
 
 export const VehicleDetail_ProductsFragment = graphql(`
   fragment VehicleDetail_ProductsFragment on Product {
@@ -70,37 +70,21 @@ export const VehicleDetail_ProductsFragment = graphql(`
 `);
 
 type VehicleDetailClientProps = Readonly<{
-  vehicleId: string;
+  /** Cached `CarById` result loaded by the server page. */
+  product: CarByIdQuery["product"];
 }>;
 
-export function VehicleDetailClient({ vehicleId }: VehicleDetailClientProps) {
+export function VehicleDetailClient({ product }: VehicleDetailClientProps) {
   const mapVehicle = useVehicleMapper();
   const [photoIndex, setPhotoIndex] = useState(0);
   const [lightbox, setLightbox] = useState(false);
 
-  const { data: rawData, isLoading } = useSuspenseQuery(getCarByIdQueryOptions(vehicleId));
-
-  const unmasked = useFragment(VehicleDetail_ProductsFragment, rawData?.product);
+  const unmasked = useFragment(VehicleDetail_ProductsFragment, product);
 
   const data = useMemo(() => (unmasked ? mapVehicle(unmasked) : null), [unmasked, mapVehicle]);
 
   if (!data) {
     return <NotFoundView />;
-  }
-
-  if (isLoading) {
-    return (
-      <div className="bg-background min-h-screen">
-        <SiteHeader />
-        <div className="pt-32 mx-auto max-w-350 px-6 lg:px-10">
-          <div className="grid grid-cols-3 gap-2">
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="aspect-4/3 bg-card animate-pulse" />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
   }
 
   const photos = data.photos ?? [];
@@ -168,11 +152,12 @@ export function VehicleDetailClient({ vehicleId }: VehicleDetailClientProps) {
                     className="relative shrink-0 w-full snap-center bg-card overflow-hidden aspect-4/3"
                     aria-label="Ampliar foto"
                   >
-                    <img
+                    <Image
                       src={url}
                       alt={vehicleTitle(data)}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
+                      fill
+                      sizes="100vw"
+                      className="object-cover"
                     />
                   </button>
                 ))}
@@ -196,10 +181,12 @@ export function VehicleDetailClient({ vehicleId }: VehicleDetailClientProps) {
                   className="relative block bg-card overflow-hidden aspect-4/3 rounded-sm group"
                   aria-label="Ampliar foto"
                 >
-                  <img
+                  <Image
                     src={url}
                     alt={vehicleTitle(data)}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                    fill
+                    sizes="(min-width: 1400px) 450px, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
                   />
                 </button>
               ))
@@ -259,13 +246,13 @@ export function VehicleDetailClient({ vehicleId }: VehicleDetailClientProps) {
                 key={url}
                 onClick={() => setPhotoIndex(i)}
                 className={cn(
-                  "shrink-0 w-20 h-16 overflow-hidden bg-card rounded-sm border-2 transition-all",
+                  "relative shrink-0 w-20 h-16 overflow-hidden bg-card rounded-sm border-2 transition-all",
                   i === photoIndex
                     ? "border-foreground"
                     : "border-transparent opacity-70 hover:opacity-100",
                 )}
               >
-                <img src={url} alt="" className="h-full w-full object-cover" />
+                <Image src={url} alt="" fill sizes="80px" className="object-cover" />
               </button>
             ))}
           </div>
@@ -420,10 +407,14 @@ export function VehicleDetailClient({ vehicleId }: VehicleDetailClientProps) {
               </button>
             </>
           )}
-          <img
+          <Image
             src={photos[photoIndex]}
             alt={vehicleTitle(data)}
-            className="max-w-[92vw] max-h-[88vh] object-contain"
+            width={1600}
+            height={1200}
+            sizes="92vw"
+            loading="eager"
+            className="h-auto w-auto max-w-[92vw] max-h-[88vh] object-contain"
             onClick={(e) => e.stopPropagation()}
           />
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/70 text-xs uppercase tracking-[0.3em]">

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
@@ -5,7 +6,8 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { HeroCinematic } from "@/components/hero-cinematic";
 import { whatsappUrl } from "@/lib/contact";
-import { fetchCategoryPreviewImage } from "./query";
+import { tryCatch } from "@/lib/try-catch";
+import { getCategoryPreviewImage } from "./_loaders/get-category-preview-image";
 
 import model1 from "@/assets/car-hatch.jpg";
 import model2 from "@/assets/car-sedan.jpg";
@@ -19,15 +21,23 @@ const CATEGORY_CONFIGS = [
   { slug: "suv", name: "SUV compacto", tag: "Versátil", placeholder: model3 },
 ] as const;
 
+/** The preview is decorative: any failure falls back to the bundled placeholder. */
+async function loadCategoryImage(slug: string): Promise<string | null> {
+  const [image, error] = await tryCatch(getCategoryPreviewImage(slug));
+  if (error) {
+    console.error(`[home] category preview "${slug}" failed`, error);
+    return null;
+  }
+  return image;
+}
+
 export default async function HomePage() {
-  const categoryImages = await Promise.all(
-    CATEGORY_CONFIGS.map((c) => fetchCategoryPreviewImage(c.slug)),
-  );
+  const categoryImages = await Promise.all(CATEGORY_CONFIGS.map((c) => loadCategoryImage(c.slug)));
 
   const featured = CATEGORY_CONFIGS.map((c, i) => ({
     name: c.name,
     tag: c.tag,
-    imgSrc: categoryImages[i] ?? c.placeholder.src,
+    imgSrc: categoryImages[i] ?? c.placeholder,
     href: categoryImages[i] ? `/estoque?category=${c.slug}` : "/estoque",
   }));
 
@@ -59,14 +69,13 @@ export default async function HomePage() {
                 className="group cursor-pointer block"
                 aria-label={`Ver ${m.name} no estoque`}
               >
-                <div className="aspect-4/3 overflow-hidden bg-card">
-                  <img
+                <div className="relative aspect-4/3 overflow-hidden bg-card">
+                  <Image
                     src={m.imgSrc}
                     alt={m.name}
-                    width={1280}
-                    height={896}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    fill
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 </div>
                 <div className="mt-5">
@@ -84,13 +93,13 @@ export default async function HomePage() {
       </section>
 
       <section className="relative min-h-[80vh] overflow-hidden">
-        <img
-          src={racing.src}
+        <Image
+          src={racing}
           alt="Rodovia Veículos — tradição e compromisso"
-          width={1600}
-          height={900}
-          loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover"
+          fill
+          sizes="100vw"
+          placeholder="blur"
+          className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/90 to-background/50" />
         <div className="relative z-10 mx-auto max-w-[1600px] px-6 lg:px-10 py-24 lg:py-32">
@@ -137,12 +146,13 @@ export default async function HomePage() {
       <section id="avaliacao" className="py-24 lg:py-32 bg-card">
         <div className="mx-auto max-w-400 px-6 lg:px-10 grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="aspect4/3 overflow-hidden">
-            <img
-              src={avaliacao.src}
+            <Image
+              src={avaliacao}
               alt="Avaliação profissional de veículo na Rodovia Veículos"
               width={1600}
               height={900}
-              loading="lazy"
+              sizes="(min-width: 768px) 50vw, 100vw"
+              placeholder="blur"
               className="h-full w-full object-cover"
             />
           </div>

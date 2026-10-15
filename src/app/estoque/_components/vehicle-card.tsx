@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { vehicleTitle, formatMileage, formatPrice, Vehicle } from "@/lib/vehicles";
@@ -12,11 +13,12 @@ export function VehicleCard({ vehicle }: { vehicle: Vehicle }) {
     >
       <div className="aspect-video sm:aspect-4/3 overflow-hidden bg-muted relative">
         {cover ? (
-          <img
+          <Image
             src={cover}
             alt={vehicleTitle(vehicle)}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            fill
+            sizes="(min-width: 1280px) 33vw, (min-width: 640px) 50vw, 100vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
         ) : (
           <div className="flex items-center justify-center h-full text-muted-foreground text-xs uppercase tracking-[0.2em]">
