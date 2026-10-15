@@ -13,7 +13,4 @@ export const LegalPage_Query = graphql(`
 `);
 
 export const getLegalPageQueryOptions = (slug: string) =>
-  gqlQueryOptions(LegalPage_Query, {
-    input: { uri: `/${slug}/` },
-    init: { next: { tags: ["page", `page:${slug}`], revalidate: 60 * 60 } },
-  });
+  gqlQueryOptions(LegalPage_Query, { input: { uri: `/${slug}/` } });

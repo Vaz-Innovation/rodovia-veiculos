@@ -1,5 +1,4 @@
 import { graphql } from "@/graphql/__gen__";
-import { inventoryCache } from "@/graphql/cache-policy";
 import { gqlQueryOptions } from "@/graphql/gqlpc";
 
 export const CarById_Query = graphql(`
@@ -47,10 +46,7 @@ export const AllVehicleIds_Query = graphql(`
 `);
 
 export const getVehicleQueryOptions = (id: string) =>
-  gqlQueryOptions(CarById_Query, { input: { id }, init: inventoryCache(`vehicle:${id}`) });
+  gqlQueryOptions(CarById_Query, { input: { id } });
 
 export const getAllVehicleIdsQueryOptions = (after: string | null) =>
-  gqlQueryOptions(AllVehicleIds_Query, {
-    input: { first: 100, after },
-    init: inventoryCache(),
-  });
+  gqlQueryOptions(AllVehicleIds_Query, { input: { first: 100, after } });

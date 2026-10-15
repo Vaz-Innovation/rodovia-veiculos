@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/site-header";
 import { LegalNav } from "./_components/legal-nav";
 
 /**
- * Shared shell for the legal pages (`/privacidade`, `/termos`). The `(legal)`
+ * Shared shell for the legal pages (`/privacidade`, `/termos`, `/cookies`). The `(legal)`
  * route group adds no URL segment — it only gives these WordPress-backed pages
  * a common header, document switcher and footer.
  */

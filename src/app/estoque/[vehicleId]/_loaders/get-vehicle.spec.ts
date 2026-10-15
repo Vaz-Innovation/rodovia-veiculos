@@ -1,3 +1,4 @@
+import { cacheLife, cacheTag } from "next/cache";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { GraphQLResponseError } from "@/lib/graphql/error";
@@ -16,11 +17,9 @@ describe("getVehicle", () => {
     execute.mockResolvedValue({ product: { name: "Fiat Uno" } });
 
     await expect(getVehicle("42")).resolves.toEqual({ product: { name: "Fiat Uno" } });
-    expect(execute).toHaveBeenCalledWith(
-      CarById_Query,
-      { id: "42" },
-      { next: { tags: ["vehicle", "vehicle:42"], revalidate: 900 } },
-    );
+    expect(execute).toHaveBeenCalledWith(CarById_Query, { id: "42" });
+    expect(cacheTag).toHaveBeenCalledWith("vehicle", "vehicle:42");
+    expect(cacheLife).toHaveBeenCalledWith("inventory");
   });
 
   it("resolves a missing vehicle ({ product: null }) to null", async () => {
@@ -35,6 +34,17 @@ describe("getVehicle", () => {
     );
 
     await expect(getVehicle("999")).resolves.toBeNull();
+  });
+
+  it('resolves WPGraphQL\'s "No product exists" error (unknown id) to null, and caches that', async () => {
+    execute.mockRejectedValue(
+      new GraphQLResponseError([
+        { message: "No product exists with the database_id: 999999", path: ["product"] },
+      ]),
+    );
+
+    await expect(getVehicle("999999")).resolves.toBeNull();
+    expect(cacheLife).toHaveBeenCalledWith("inventory");
   });
 
   it("propagates other GraphQL errors instead of turning them into null", async () => {

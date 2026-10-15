@@ -58,4 +58,15 @@ describe("nullIfNotFound", () => {
     await expect(nullIfNotFound(Promise.reject(serverError))).rejects.toBe(serverError);
     await expect(nullIfNotFound(Promise.reject(networkError))).rejects.toBe(networkError);
   });
+
+  it("accepts a custom predicate for backends that report a missing resource differently", async () => {
+    const missing = new Error("no such thing");
+
+    await expect(
+      nullIfNotFound(Promise.reject(missing), (error) => error === missing),
+    ).resolves.toBeNull();
+    await expect(
+      nullIfNotFound(Promise.reject(graphqlError({ code: "NOT_FOUND" })), () => false),
+    ).rejects.toBeInstanceOf(GraphQLResponseError);
+  });
 });

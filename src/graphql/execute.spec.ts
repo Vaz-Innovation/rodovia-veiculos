@@ -131,39 +131,18 @@ describe("execute (server)", () => {
     );
   });
 
-  it("leaves fetch caching alone when the operation has no `next` policy", async () => {
+  it("never caches on its own: callers decide (use cache in the loaders)", async () => {
     fetchMock.mockResolvedValue(json({ data: { ok: true } }));
 
     await execute(document("query J { ok }"));
 
-    const init = fetchMock.mock.calls[0][1];
-    expect(init).not.toHaveProperty("cache");
-    expect(init).not.toHaveProperty("next");
+    expect(fetchMock.mock.calls[0][1]?.cache).toBe("no-store");
   });
 
-  it("hands the query's `next` policy to Next.js's fetch, with force-cache", async () => {
-    fetchMock.mockResolvedValue(json({ data: { ok: true } }));
-
-    await execute(
-      document<{ id: string }>("query K($id: ID!) { k(id: $id) }"),
-      { id: "7" },
-      {
-        next: { tags: ["vehicle", "vehicle:7"], revalidate: 900 },
-      },
-    );
-
-    expect(fetchMock.mock.calls[0][1]).toMatchObject({
-      cache: "force-cache",
-      next: { tags: ["vehicle", "vehicle:7"], revalidate: 900 },
-    });
-  });
-
-  it("raises the GraphQL error from a 500 response (what the WordPress plugin sends)", async () => {
+  it("raises the GraphQL error from a 500 response", async () => {
     fetchMock.mockResolvedValue(json({ errors: [{ message: "resolver failed" }] }, 500));
 
-    const error = await failureOf(
-      execute(document("query L { ok }"), undefined, { next: { tags: ["t"] } }),
-    );
+    const error = await failureOf(execute(document("query L { ok }")));
 
     expect(GraphQLResponseError.is(error)).toBe(true);
     expect(error.message).toBe("resolver failed");

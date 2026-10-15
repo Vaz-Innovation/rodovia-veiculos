@@ -4,21 +4,6 @@ import { GraphQLResponseError } from "@/lib/graphql/error";
 import { toRequestString } from "@/lib/graphql/request-string";
 import type { TypedDocumentString } from "./__gen__/graphql";
 
-/**
- * Per-operation options, passed as `execute`'s third argument (or `init` in
- * `gqlQueryOptions`). On the server, `next` goes straight to Next.js's `fetch`:
- * the response is stored in the Data Cache with these `tags` and `revalidate`
- * (and both propagate to the route), exactly like `fetch(url, { next })`. In the
- * browser it is ignored.
- */
-export interface ExecuteInit {
-  next?: {
-    tags?: string[];
-    /** Seconds; `false` caches until a tag is revalidated. */
-    revalidate?: number | false;
-  };
-}
-
 export const GRAPHQL_ACCEPT = "application/graphql-response+json, application/json";
 
 /**
@@ -50,14 +35,11 @@ function browserRequest(body: string): Promise<Response> {
 }
 
 /**
- * Server requests go straight to WordPress. With `init.next` they are cached in
- * the Data Cache (`force-cache` + tags/revalidate). The Data Cache only stores
- * `200` responses, so a failed operation is never cached as long as WordPress
- * answers errors with a non-2xx status — which the `wpgraphql-error-status`
- * plugin (docker/wordpress/plugins) guarantees; WPGraphQL alone answers resolver
- * errors with `200`.
+ * Server requests go straight to WordPress. They are deliberately not cached
+ * here: caching is decided by the callers (`use cache` in the `_loaders`), where
+ * failures can be handled before anything is stored.
  */
-function serverRequest(body: string, init?: ExecuteInit): Promise<Response> {
+function serverRequest(body: string): Promise<Response> {
   const endpoint = process.env.WORDPRESS_API_URL;
   if (!endpoint) {
     throw new Error("WORDPRESS_API_URL is not set for server-side execution");
@@ -71,12 +53,7 @@ function serverRequest(body: string, init?: ExecuteInit): Promise<Response> {
     headers.authorization = `Basic ${process.env.WORDPRESS_API_KEY}`;
   }
 
-  return fetch(endpoint, {
-    method: "POST",
-    headers,
-    body,
-    ...(init?.next && { cache: "force-cache", next: init.next }),
-  });
+  return fetch(endpoint, { method: "POST", headers, body, cache: "no-store" });
 }
 
 /**
@@ -87,13 +64,11 @@ function serverRequest(body: string, init?: ExecuteInit): Promise<Response> {
  */
 export async function execute<TResult, TVariables>(
   document: TypedDocumentString<TResult, TVariables>,
-  ...[variables, init]: TVariables extends Record<string, never>
-    ? [variables?: undefined, init?: ExecuteInit]
-    : [variables: TVariables, init?: ExecuteInit]
+  ...[variables]: TVariables extends Record<string, never> ? [] : [TVariables]
 ): Promise<TResult> {
   const body = JSON.stringify({ query: toRequestString(document), variables });
   const response = await (typeof window === "undefined"
-    ? serverRequest(body, init)
+    ? serverRequest(body)
     : browserRequest(body));
   return readResult<TResult>(response);
 }

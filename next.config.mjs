@@ -22,6 +22,18 @@ const nextConfig = {
   },
   cacheComponents: true,
   partialPrefetching: true,
+  cacheLife: {
+    /**
+     * Inventory data (listings, vehicles, filter options). On-demand purges via
+     * `revalidateTag("vehicle")` keep it fresh; these timings are the fallback
+     * when no webhook fires.
+     */
+    inventory: {
+      stale: 60 * 5,
+      revalidate: 60 * 15,
+      expire: 60 * 60 * 24,
+    },
+  },
 };
 
 export default nextConfig;

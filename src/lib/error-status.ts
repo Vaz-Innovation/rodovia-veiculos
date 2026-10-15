@@ -31,11 +31,17 @@ export function isNotFoundError(error: unknown): boolean {
  * digest, `status` does not). So the 404 check has to run where the error is
  * still intact, and what crosses the cache boundary is plain data: `null` means
  * "doesn't exist" (which also makes it cacheable), a throw means a real failure.
+ *
+ * `isNotFound` replaces the default 404 check for backends that report a missing
+ * resource some other way (see `isMissingProductError`).
  */
-export async function nullIfNotFound<T>(promise: Promise<T>): Promise<T | null> {
+export async function nullIfNotFound<T>(
+  promise: Promise<T>,
+  isNotFound: (error: unknown) => boolean = isNotFoundError,
+): Promise<T | null> {
   const [data, error] = await tryCatch(promise);
   if (error) {
-    if (isNotFoundError(error)) return null;
+    if (isNotFound(error)) return null;
     throw error;
   }
   return data;

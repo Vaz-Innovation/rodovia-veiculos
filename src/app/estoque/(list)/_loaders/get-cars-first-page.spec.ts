@@ -1,3 +1,4 @@
+import { cacheLife, cacheTag } from "next/cache";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { carsListSearchParams } from "../_helpers/query";
@@ -34,10 +35,13 @@ describe("getCarsFirstPage", () => {
   beforeEach(() => {
     execute.mockReset();
     execute.mockResolvedValue(firstPage);
+    vi.mocked(cacheLife).mockClear();
+    vi.mocked(cacheTag).mockClear();
+    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
   it("returns the first page as a dehydrated state for <HydrationBoundary>", async () => {
-    const state = await getCarsFirstPage(params());
+    const state = (await getCarsFirstPage(params()))!;
 
     expect(state.queries).toHaveLength(1);
     expect(execute).toHaveBeenCalledTimes(1);
@@ -45,15 +49,25 @@ describe("getCarsFirstPage", () => {
   });
 
   it("scopes the cache key to the filters (different filters never share an entry)", async () => {
-    const all = await getCarsFirstPage(params());
-    const fiat = await getCarsFirstPage(params({ brand: "Fiat" }));
+    const all = (await getCarsFirstPage(params()))!;
+    const fiat = (await getCarsFirstPage(params({ brand: "Fiat" })))!;
 
     expect(all.queries[0].queryHash).not.toBe(fiat.queries[0].queryHash);
   });
 
-  it("propagates failures instead of dehydrating an empty state", async () => {
+  it("tags the entry with the constant tag plus the active filters", async () => {
+    await getCarsFirstPage(params({ brand: "Fiat", category: "suv" }));
+
+    expect(cacheTag).toHaveBeenCalledWith("vehicle", "Fiat", "suv");
+    expect(cacheLife).toHaveBeenCalledWith("inventory");
+  });
+
+  it("degrades to null on failure (the client fetches the list), cached only briefly", async () => {
     execute.mockRejectedValue(new Error("down"));
 
-    await expect(getCarsFirstPage(params())).rejects.toThrow("down");
+    await expect(getCarsFirstPage(params())).resolves.toBeNull();
+    expect(cacheLife).toHaveBeenCalledWith("minutes");
+    expect(cacheLife).not.toHaveBeenCalledWith("inventory");
+    expect(console.error).toHaveBeenCalled();
   });
 });

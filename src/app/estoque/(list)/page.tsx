@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { HydrationBoundary } from "@tanstack/react-query";
-import { connection } from "next/server";
 import { createLoader, type SearchParams } from "nuqs/server";
 
-import { tryCatch } from "@/lib/try-catch";
 import { ProductsClient } from "./products-client";
 import { carsListSearchParams } from "./_helpers/query";
 import { getCarsFirstPage } from "./_loaders/get-cars-first-page";
@@ -55,21 +53,14 @@ export const metadata: Metadata = {
 
 export default async function Page({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const params = await createLoader(carsListSearchParams)(searchParams);
-  // Seeding React Query reads `Date.now()`: request time only (the listing depends
-  // on `searchParams` anyway; the data itself comes from the Data Cache).
-  await connection();
 
   // The cached first page, dehydrated, seeds the client query so it hydrates
-  // instead of refetching. Subsequent pages are fetched client-side as usual.
-  const [dehydratedState, error] = await tryCatch(getCarsFirstPage(params));
-  if (error) {
-    // WordPress down or a malformed response: render without the seed and let the
-    // client query fetch the list itself instead of failing the whole page.
-    console.error("[estoque] failed to load the first page", error);
-  }
+  // instead of refetching (`null` if WordPress failed: the client fetches it).
+  // Subsequent pages are fetched client-side as usual.
+  const dehydratedState = await getCarsFirstPage(params);
 
   return (
-    <HydrationBoundary state={dehydratedState}>
+    <HydrationBoundary state={dehydratedState ?? undefined}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }}

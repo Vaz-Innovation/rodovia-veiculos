@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 const links = [
   { to: "/privacidade", label: "Privacidade" },
   { to: "/termos", label: "Termos de serviço" },
+  { to: "/cookies", label: "Cookies" },
 ] as const;
 
 export function LegalNav() {

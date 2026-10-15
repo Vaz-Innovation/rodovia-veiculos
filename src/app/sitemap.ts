@@ -1,6 +1,6 @@
 import { tryCatch } from "@/lib/try-catch";
 import type { MetadataRoute } from "next";
-import { cacheLife } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 
 import { getSitemapProducts } from "./_loaders/get-sitemap-products";
 
@@ -49,16 +49,22 @@ const staticRoutes = (): MetadataRoute.Sitemap => [
     changeFrequency: "yearly",
     priority: 0.3,
   },
+  {
+    url: `${siteUrl}/cookies`,
+    lastModified: new Date(),
+    changeFrequency: "yearly",
+    priority: 0.3,
+  },
 ];
 
 /**
- * Cached for an hour and purged with the rest of the inventory (the queries carry
- * the `vehicle` tag, which propagates to this entry). `new Date()` is only allowed
- * here because it runs inside the `use cache` scope, so the timestamp is frozen
- * with the cached entry.
+ * Cached for an hour and purged with the rest of the inventory via the `vehicle`
+ * tag. `new Date()` is only allowed here because it runs inside the `use cache`
+ * scope, so the timestamp is frozen with the cached entry.
  */
 async function buildSitemap(): Promise<MetadataRoute.Sitemap> {
   "use cache";
+  cacheTag("vehicle", "sitemap");
 
   const [result, error] = await tryCatch(getSitemapProducts());
   const failure = error ?? result.error;

@@ -1,3 +1,4 @@
+import { cacheLife, cacheTag } from "next/cache";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { GraphQLResponseError } from "@/lib/graphql/error";
@@ -22,11 +23,9 @@ describe("getLegalPage", () => {
       content: "<p>c</p>",
       modified: "d",
     });
-    expect(execute).toHaveBeenCalledWith(
-      LegalPage_Query,
-      { uri: "/termos/" },
-      { next: { tags: ["page", "page:termos"], revalidate: 3600 } },
-    );
+    expect(execute).toHaveBeenCalledWith(LegalPage_Query, { uri: "/termos/" });
+    expect(cacheTag).toHaveBeenCalledWith("page", "page:termos");
+    expect(cacheLife).toHaveBeenCalledWith("hours");
   });
 
   it.each([

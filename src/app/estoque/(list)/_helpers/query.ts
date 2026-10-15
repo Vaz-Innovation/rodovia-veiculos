@@ -1,5 +1,4 @@
 import { graphql } from "@/graphql/__gen__";
-import { INVENTORY_REVALIDATE } from "@/graphql/cache-policy";
 import { gqlInfiniteOptions } from "@/graphql/gqlpc";
 import {
   AttributeGroupRelationEnum,
@@ -115,9 +114,6 @@ export function getCarsListInfiniteQueryOptions(params: CarsListParams) {
     // The server seeds this query from a cache entry that can be minutes old,
     // so don't refetch it on mount.
     staleTime: 5 * 60 * 1000,
-    // Tagged with the active filters too, so `revalidateTag(brandSlug)` can purge
-    // just the listings it affects (`vehicle` purges them all).
-    init: { next: { tags: productCacheTags(params), revalidate: INVENTORY_REVALIDATE } },
   });
 
   // `gqlInfiniteOptions` leaves the variables out of the key, but the filters ARE
@@ -142,7 +138,7 @@ function buildSortWhere(sort: string): Partial<RootQueryToProductConnectionWhere
 }
 
 /**
- * Cache tags for the ProductsPaginated query (see `getCarsListInfiniteQueryOptions`).
+ * Cache tags for the `use cache` loader of the first ProductsPaginated page.
  * Empty values are dropped because Next.js rejects empty tags; the constant
  * `vehicle` tag lets every products cache entry be revalidated in one call, while
  * the per-filter tags allow narrower `revalidateTag(brandSlug)` invalidations.

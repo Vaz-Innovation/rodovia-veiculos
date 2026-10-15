@@ -1,5 +1,4 @@
 import { graphql } from "@/graphql/__gen__";
-import { inventoryCache } from "@/graphql/cache-policy";
 import { gqlQueryOptions } from "@/graphql/gqlpc";
 import type { VehicleFilterOptionsQuery } from "@/graphql/__gen__/graphql";
 import type {
@@ -50,8 +49,7 @@ export const VehicleFilterOptions_Query = graphql(`
   }
 `);
 
-export const getFilterOptionsQueryOptions = () =>
-  gqlQueryOptions(VehicleFilterOptions_Query, { init: inventoryCache("filter-options") });
+export const getFilterOptionsQueryOptions = () => gqlQueryOptions(VehicleFilterOptions_Query);
 
 type TermNodes =
   | Array<{ name?: string | null; slug?: string | null } | null | undefined>

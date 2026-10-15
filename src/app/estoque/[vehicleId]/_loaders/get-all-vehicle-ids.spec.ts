@@ -1,3 +1,4 @@
+import { cacheLife } from "next/cache";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { getAllVehicleIds } from "./get-all-vehicle-ids";
@@ -15,6 +16,7 @@ const connection = (ids: Array<number | null>, endCursor: string | null, hasNext
 describe("getAllVehicleIds", () => {
   beforeEach(() => {
     execute.mockReset();
+    vi.mocked(cacheLife).mockClear();
   });
 
   it("collects the ids of every page as strings", async () => {
@@ -24,6 +26,7 @@ describe("getAllVehicleIds", () => {
 
     await expect(getAllVehicleIds()).resolves.toEqual({ ids: ["1", "2", "3"], error: null });
     expect(execute.mock.calls[1][1]).toEqual({ first: 100, after: "c1" });
+    expect(cacheLife).toHaveBeenCalledWith("inventory");
   });
 
   it("skips nodes without a database id", async () => {
@@ -43,6 +46,9 @@ describe("getAllVehicleIds", () => {
     execute.mockResolvedValueOnce(connection([1, 2], "c1", true)).mockRejectedValueOnce(error);
 
     await expect(getAllVehicleIds()).resolves.toEqual({ ids: ["1", "2"], error });
+    // A partial list is retried soon, not kept for the full inventory lifetime.
+    expect(cacheLife).toHaveBeenCalledWith("minutes");
+    expect(cacheLife).not.toHaveBeenCalledWith("inventory");
   });
 
   it("throws when the first page fails", async () => {

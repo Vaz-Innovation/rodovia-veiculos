@@ -6,7 +6,6 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { HeroCinematic } from "@/components/hero-cinematic";
 import { whatsappUrl } from "@/lib/contact";
-import { tryCatch } from "@/lib/try-catch";
 import { getCategoryPreviewImage } from "./_loaders/get-category-preview-image";
 
 import model1 from "@/assets/car-hatch.jpg";
@@ -21,18 +20,10 @@ const CATEGORY_CONFIGS = [
   { slug: "suv", name: "SUV compacto", tag: "Versátil", placeholder: model3 },
 ] as const;
 
-/** The preview is decorative: any failure falls back to the bundled placeholder. */
-async function loadCategoryImage(slug: string): Promise<string | null> {
-  const [image, error] = await tryCatch(getCategoryPreviewImage(slug));
-  if (error) {
-    console.error(`[home] category preview "${slug}" failed`, error);
-    return null;
-  }
-  return image;
-}
-
 export default async function HomePage() {
-  const categoryImages = await Promise.all(CATEGORY_CONFIGS.map((c) => loadCategoryImage(c.slug)));
+  const categoryImages = await Promise.all(
+    CATEGORY_CONFIGS.map((c) => getCategoryPreviewImage(c.slug)),
+  );
 
   const featured = CATEGORY_CONFIGS.map((c, i) => ({
     name: c.name,
